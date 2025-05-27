@@ -1,4 +1,4 @@
-package com.example.khizana.data.remote
+package com.example.khizana.data.datasource.remote
 
 import com.example.khizana.utilis.Strings
 import okhttp3.Interceptor
