@@ -11,6 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModelProvider
+import com.example.khizana.data.remote.RemoteDataSourceImpl
+import com.example.khizana.data.remote.RetrofitFactory
+import com.example.khizana.data.repo.RepositoryImpl
+import com.example.khizana.presentation.viewModel.ProductsViewModelFactory
+import com.example.khizana.presentation.viewModel.ProductsViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,6 +24,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val factory = ProductsViewModelFactory(RepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService)))
+            val productsViewModel = ViewModelProvider(this, factory)[ProductsViewModel::class.java]
+            productsViewModel.getCollects()
             KhizanaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
