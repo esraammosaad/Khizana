@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Khizana</string>
+    <string name="hello_admin">Hello, Admin</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="activity">Activity</string>
+    <string name="of_current_week">of Current Week</string>
 </resources>
