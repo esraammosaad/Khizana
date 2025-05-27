@@ -1,5 +1,6 @@
 package com.example.khizana.data.datasource.remote
 
+import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.Product
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,6 +19,9 @@ interface ApiService {
 
     @GET("products.json")
     suspend fun getProducts(): Product
+
+    @GET("orders.json?created_at_min=2025-05-20T00:00:00Z&created_at_max=2025-05-27T23:59:59Z&status=any")
+    suspend fun getOrders(): Order
 
 //    @GET("products/{productId}.json")
 //    suspend fun getProductById(@Path("productId")  productId : Long): Response<GetProduct>

@@ -35,13 +35,13 @@ import androidx.lifecycle.ViewModelProvider
 import coil.compose.rememberAsyncImagePainter
 import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
-import com.example.khizana.data.dto.ProductsItemEntity
+import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
-import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
-import com.example.khizana.presentation.feature.home.viewModel.ProductsViewModelFactory
-import com.example.khizana.presentation.feature.home.viewModel.ProductsViewModel
+import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
+import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
 
 class MainActivity : ComponentActivity() {
@@ -50,16 +50,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val factory =
-                ProductsViewModelFactory(GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))))
-            val productsViewModel = ViewModelProvider(this, factory)[ProductsViewModel::class.java]
-            productsViewModel.getProducts()
+                HomeViewModelFactory(
+                    GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
+                    GetOrdersUseCase(
+                        OrderRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                    )
+                )
+            val homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
+            homeViewModel.getProducts()
+            homeViewModel.getOrders()
             Log.i(
                 "TAG", "onCreate: ${
-                    productsViewModel.products.observeAsState().value?.products
+                    homeViewModel.products.observeAsState().value?.products
                         ?: listOf()
                 }"
             )
-            val products = productsViewModel.products.observeAsState().value?.products
+            val products = homeViewModel.products.observeAsState().value?.products
                 ?: listOf()
 
             KhizanaTheme {
@@ -75,7 +81,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 
 @Composable
@@ -94,14 +99,99 @@ fun Greeting(products: List<ProductsItem?>?, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun HomeScreen() {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 64.dp, horizontal = 24.dp)
+    ) {
+
+        item {
+
+            Text("Hello, Admin", style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("Welcome Back!", style = TextStyle(fontSize = 18.sp, color = Color.Gray))
+            Spacer(modifier = Modifier.height(24.dp))
+            Box(
+                modifier = Modifier
+                    .padding()
+                    .background(Color(0xffd3e7e5), shape = RoundedCornerShape(12))
+                    .height(230.dp)
+                    .width(250.dp)
+            ) {
+
+                val weeklyActivity = listOf(40, 60, 80, 60, 40, 20, 20)
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ActivityChart(data = weeklyActivity)
+                    Text(
+                        "Activity",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    )
+                    Text("of Current Week", style = TextStyle(fontSize = 12.sp, color = Color.Gray))
+
+                }
 
 
+            }
+
+        }
+
+
+    }
+}
+
+@Composable
+fun ActivityChart(
+    data: List<Int>,
+    modifier: Modifier = Modifier
+) {
+    val maxValue = data.maxOrNull()?.takeIf { it > 0 } ?: 1
+    val barWidth = 20.dp
+    val spacing = 12.dp
+    val chartHeight = 100.dp
+
+    Row(
+        modifier = modifier
+            .padding(16.dp)
+            .height(chartHeight + 30.dp),
+        horizontalArrangement = Arrangement.spacedBy(spacing),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        data.forEach { value ->
+            val heightRatio = value.toFloat() / maxValue
+
+            Column(
+                modifier = Modifier.height(chartHeight + 30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(barWidth)
+                        .height(chartHeight * heightRatio)
+                        .background(Color(0xFF90c4bf), shape = RoundedCornerShape(4.dp))
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = value.toString(),
+                    style = TextStyle(fontSize = 12.sp, color = Color.Gray)
+                )
+            }
+        }
+    }
+}
 
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
     KhizanaTheme {
-        Greeting(listOf())
+        HomeScreen()
     }
 }

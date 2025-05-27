@@ -6,13 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.khizana.data.dto.Product
-import com.example.khizana.data.repository.ProductRepositoryImpl
+import com.example.khizana.domain.model.OrderDomain
 import com.example.khizana.domain.model.ProductDomain
+import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import kotlinx.coroutines.launch
 
-class ProductsViewModel(private val getProductsUseCase: GetProductsUseCase)  : ViewModel(){
+class HomeViewModel(
+    private val getProductsUseCase: GetProductsUseCase,
+    private val getOrdersUseCase: GetOrdersUseCase
+) : ViewModel() {
 
 //    private var _collects : MutableLiveData<GetCollectsResponse> = MutableLiveData()
 //    val collects : LiveData<GetCollectsResponse> = _collects
@@ -20,8 +23,11 @@ class ProductsViewModel(private val getProductsUseCase: GetProductsUseCase)  : V
 //    private var _collectDetails : MutableLiveData<GetCollectByIdResponse> = MutableLiveData()
 //    val collectDetails : LiveData<GetCollectByIdResponse> = _collectDetails
 
-    private var _products : MutableLiveData<ProductDomain> = MutableLiveData()
-    val products : LiveData<ProductDomain> = _products
+    private var _products: MutableLiveData<ProductDomain> = MutableLiveData()
+    val products: LiveData<ProductDomain> = _products
+
+    private var _orders: MutableLiveData<OrderDomain> = MutableLiveData()
+    val orders: LiveData<OrderDomain> = _orders
 
 //    fun getCollects(){
 //        viewModelScope.launch {
@@ -44,19 +50,31 @@ class ProductsViewModel(private val getProductsUseCase: GetProductsUseCase)  : V
 //        }
 //    }
 
-    fun getProducts(){
+    fun getProducts() {
         viewModelScope.launch {
             val response = getProductsUseCase.getProducts()
+            _products.postValue(response)
+            Log.i("TAG", "getProducts: $response")
 
-                _products.postValue(response)
-                Log.i("TAG", "getProducts: $response")
+        }
+    }
+
+    fun getOrders() {
+        viewModelScope.launch {
+            val response = getOrdersUseCase.getOrders()
+            _orders.postValue(response)
+            Log.i("TAG", "getOrders: $response")
 
         }
     }
 }
 
-class ProductsViewModelFactory(private val getProductsUseCase: GetProductsUseCase) : ViewModelProvider.Factory{
+class HomeViewModelFactory(
+    private val getProductsUseCase: GetProductsUseCase,
+    private val getOrdersUseCase: GetOrdersUseCase
+) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ProductsViewModel(getProductsUseCase) as T
+        return HomeViewModel(getProductsUseCase, getOrdersUseCase) as T
     }
 }
