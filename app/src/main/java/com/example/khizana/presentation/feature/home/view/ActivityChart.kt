@@ -25,9 +25,9 @@ fun ActivityChart(
     modifier: Modifier = Modifier
 ) {
     val maxValue = data.maxOrNull()?.takeIf { it > 0 } ?: 1
-    val barWidth = 20.dp
+    val barWidth = 35.dp
     val spacing = 12.dp
-    val chartHeight = 100.dp
+    val chartHeight = 105.dp
 
     Row(
         modifier = modifier
