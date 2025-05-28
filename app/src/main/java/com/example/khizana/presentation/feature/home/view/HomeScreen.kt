@@ -1,5 +1,7 @@
 package com.example.khizana.presentation.feature.home.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +33,10 @@ import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(modifier: Modifier, homeViewModel: HomeViewModel) {
+fun HomeScreen(homeViewModel: HomeViewModel) {
+    homeViewModel.getOrdersCount()
     val ordersCount = homeViewModel.ordersCount.observeAsState().value
     val weeklyActivity : MutableList<Int> = mutableListOf()
     for (i in 0..6) {
@@ -59,7 +63,6 @@ fun HomeScreen(modifier: Modifier, homeViewModel: HomeViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
             Box(
                 modifier = Modifier
-                    .padding()
                     .background(Color(0xffd3e7e5), shape = RoundedCornerShape(12))
                     .height(260.dp)
                     .fillMaxWidth()
