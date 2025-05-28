@@ -1,5 +1,7 @@
 package com.example.khizana.presentation.feature.home.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,14 +26,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.products.view.ProductsScreen
+import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel,
+    productsViewModel : ProductsViewModel
 ) {
 
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
         content = {
@@ -45,6 +52,8 @@ fun MainScreen(
                     }
 
                     1 -> {
+                        return@Column ProductsScreen(productsViewModel = productsViewModel)
+
                     }
                 }
             }

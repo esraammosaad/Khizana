@@ -20,6 +20,8 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
+import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
 import com.example.khizana.ui.theme.KhizanaTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,12 +39,16 @@ class MainActivity : ComponentActivity() {
                 )
             val homeViewModel = ViewModelProvider(this, homeFactory)[HomeViewModel::class.java]
 
+            val productsFactory = ProductsViewModelFactory(GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))))
+            val productsViewModel = ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
+
 
             KhizanaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
                         homeViewModel = homeViewModel,
+                        productsViewModel = productsViewModel
                     )
                 }
             }
