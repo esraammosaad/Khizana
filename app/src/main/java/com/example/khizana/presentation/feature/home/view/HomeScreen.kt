@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
+import com.example.khizana.ui.theme.primaryColor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -43,10 +44,11 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
         weeklyActivity.add(ordersCount?.get(i)?.count ?: 0)
     }
 
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 64.dp, horizontal = 24.dp),
+            .padding(top = 0.dp, start = 20.dp, end = 20.dp),
     ) {
 
         item {
@@ -114,6 +116,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
 
 
     }
+
 }
 
 @Composable
