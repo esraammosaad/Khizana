@@ -47,7 +47,7 @@ fun ActivityChart(
                 Box(
                     modifier = Modifier
                         .width(barWidth)
-                        .height(chartHeight * heightRatio)
+                        .height(if (value == 0) 8.dp else chartHeight * heightRatio)
                         .background(Color(0xFF90c4bf), shape = RoundedCornerShape(4.dp))
                 )
                 Spacer(modifier = Modifier.height(6.dp))

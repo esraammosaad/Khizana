@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,11 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.khizana.R
+import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
 
 @Composable
-fun HomeScreen(modifier: Modifier) {
-    val weeklyActivity = listOf(40, 60, 80, 60, 40, 20, 20)
+fun HomeScreen(modifier: Modifier, homeViewModel: HomeViewModel) {
+    val ordersCount = homeViewModel.ordersCount.observeAsState().value
+    val weeklyActivity : MutableList<Int> = mutableListOf()
+    for (i in 0..6) {
+        weeklyActivity.add(ordersCount?.get(i)?.count ?: 0)
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -147,7 +154,7 @@ private fun CustomBox(
 @Composable
 fun HomeScreenPreview() {
     KhizanaTheme {
-        HomeScreen(modifier = Modifier)
+        //HomeScreen(modifier = Modifier)
     }
 }
 

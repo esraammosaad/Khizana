@@ -1,10 +1,12 @@
 package com.example.khizana
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +48,7 @@ import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -60,6 +63,7 @@ class MainActivity : ComponentActivity() {
             val homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
             homeViewModel.getProducts()
             homeViewModel.getOrders()
+            homeViewModel.getOrdersCount()
             Log.i(
                 "TAG", "onCreate: ${
                     homeViewModel.products.observeAsState().value?.products
@@ -71,7 +75,7 @@ class MainActivity : ComponentActivity() {
 
             KhizanaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(modifier = Modifier.padding(innerPadding))
+                    HomeScreen( modifier = Modifier.padding(innerPadding),homeViewModel)
                 }
             }
         }
@@ -83,6 +87,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     KhizanaTheme {
-        HomeScreen(modifier = Modifier)
+        //HomeScreen(modifier = Modifier)
     }
 }

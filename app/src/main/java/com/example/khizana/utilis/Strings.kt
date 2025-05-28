@@ -1,5 +1,7 @@
 package com.example.khizana.utilis
 
+
+
 class Strings {
 
     companion object{
