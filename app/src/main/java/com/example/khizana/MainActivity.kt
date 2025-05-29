@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                 composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
                     val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
                     val id = data.productId
-                    ProductDetailsScreen(productId = id)
+                    ProductDetailsScreen(productId = id, productsViewModel = productsViewModel)
                 }
             }
 

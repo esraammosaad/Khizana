@@ -86,13 +86,27 @@ fun ProductsScreen(
                     modifier = Modifier
                         .animateItem()
                         .padding(bottom = 16.dp)
-                        .height(250.dp).clickable {
-                            navigationController.navigate(NavigationRoutes.ProductDetailsScreen(it?.id ?: ""))
+                        .height(250.dp)
+                        .clickable {
+                            navigationController.navigate(
+                                NavigationRoutes.ProductDetailsScreen(
+                                    it?.id ?: ""
+                                )
+                            )
                         }
                 ) {
                     CustomProductCard(modifier, it)
-                    CustomStatusBox(Modifier.align(alignment = Alignment.TopEnd), it)
-                    CustomDeleteIcon(modifier = Modifier.align(Alignment.TopStart),showDialog, selectedProduct, it)
+                    CustomStatusBox(
+                        Modifier
+                            .align(alignment = Alignment.TopEnd)
+                            .padding(5.dp), it
+                    )
+                    CustomDeleteIcon(
+                        modifier = Modifier.align(Alignment.TopStart),
+                        showDialog,
+                        selectedProduct,
+                        it
+                    )
                 }
             }
         }
@@ -131,10 +145,9 @@ private fun CustomDeleteIcon(
 }
 
 @Composable
-private fun CustomStatusBox(modifier: Modifier, it: ProductsItem?) {
+fun CustomStatusBox(modifier: Modifier, it: ProductsItem?) {
     Box(
         modifier = modifier
-            .padding(5.dp)
             .height(25.dp)
             .width(75.dp)
             .background(
@@ -249,7 +262,7 @@ private fun CustomProductInfoRow(
 }
 
 @Composable
-private fun CustomInfoBox(
+fun CustomInfoBox(
     text: String
 ) {
     Box(

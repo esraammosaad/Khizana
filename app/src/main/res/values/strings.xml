@@ -8,4 +8,7 @@
     <string name="quantity">Quantity: %1$s</string>
     <string name="delete">Delete</string>
     <string name="id">ID: #%1$s</string>
+    <string name="back_icon">Back Icon</string>
+    <string name="product_options">Product Options</string>
+    <string name="variants">Variants</string>
 </resources>
