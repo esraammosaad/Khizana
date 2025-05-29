@@ -17,7 +17,9 @@ import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
 import com.example.khizana.domain.usecase.CreateProductUseCase
 import com.example.khizana.domain.usecase.DeleteProductUseCase
+import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
+import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
@@ -53,6 +55,12 @@ class MainActivity : ComponentActivity() {
                 ),
                 DeleteProductUseCase(
                     ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                ),
+                GetProductByIdUseCase(
+                    ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                ),
+                EditProductUseCase(
+                    ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
                 )
             )
             val productsViewModel =
@@ -60,7 +68,8 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navigationController,
-                startDestination = NavigationRoutes.MainScreen) {
+                startDestination = NavigationRoutes.MainScreen
+            ) {
 
                 composable<NavigationRoutes.MainScreen> {
 
@@ -72,8 +81,7 @@ class MainActivity : ComponentActivity() {
 
                 }
 
-                composable<NavigationRoutes.ProductDetailsScreen> {
-                    backStackEntry ->
+                composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
                     val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
                     val id = data.productId
                     ProductDetailsScreen(productId = id)
