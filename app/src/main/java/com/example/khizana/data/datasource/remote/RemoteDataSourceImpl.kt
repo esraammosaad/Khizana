@@ -13,8 +13,8 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         return apiService.getProducts()
     }
 
-    override suspend fun createProduct(productRequest: ProductRequest)  {
-        apiService.createProduct(productRequest)
+    override suspend fun createProduct(product: ProductRequest)  {
+        apiService.createProduct(product)
     }
 
     override suspend fun getOrders() : Order {
@@ -28,6 +28,15 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
     override suspend fun deleteProduct(productId : String) {
         apiService.deleteProduct(productId)
     }
+
+    override suspend fun getProductById(productId : String) : ProductRequest {
+        return apiService.getProductById(productId)
+    }
+
+    override suspend fun editProduct(productId : String, product : ProductRequest) {
+        apiService.editProduct(productId, product)
+    }
+
 
 
 }

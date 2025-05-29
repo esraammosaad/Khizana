@@ -13,12 +13,20 @@ class ProductRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) 
         return remoteDataSourceImpl.getProducts().toDomain()
     }
 
-    override suspend fun createProduct(productRequestDomain: ProductRequestDomain) {
-        remoteDataSourceImpl.createProduct(productRequestDomain.toDto())
+    override suspend fun createProduct(product: ProductRequestDomain) {
+        remoteDataSourceImpl.createProduct(product.toDto())
     }
 
     override suspend fun deleteProduct(productId : String) {
         remoteDataSourceImpl.deleteProduct(productId)
+    }
+
+    override suspend fun getProductById(productId : String) : ProductRequestDomain {
+        return remoteDataSourceImpl.getProductById(productId).toDomain()
+    }
+
+    override suspend fun editProduct(productId : String, product : ProductRequestDomain) {
+        remoteDataSourceImpl.editProduct(productId, product.toDto())
     }
 
 }

@@ -4,9 +4,7 @@ import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.repository.ProductRepository
 
 class GetProductsUseCase(private val productRepository: ProductRepository) {
-
-    suspend fun getProducts() : ProductDomain {
+    suspend fun getProducts(): ProductDomain {
         return productRepository.getProducts()
     }
-
 }
