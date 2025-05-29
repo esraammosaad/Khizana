@@ -1,32 +1,39 @@
 package com.example.khizana.data.repository.mapper
 
-import com.example.khizana.data.dto.Product
-import com.example.khizana.data.dto.ProductsItemEntity
 import com.example.khizana.data.dto.ImageEntity
 import com.example.khizana.data.dto.ImagesItemEntity
-import com.example.khizana.data.dto.VariantsItemEntity
 import com.example.khizana.data.dto.OptionsItemEntity
-import com.example.khizana.domain.model.ProductDomain
-import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.data.dto.ProductRequest
+import com.example.khizana.data.dto.ProductsItemEntity
+import com.example.khizana.data.dto.VariantsItemEntity
 import com.example.khizana.domain.model.Image
 import com.example.khizana.domain.model.ImagesItem
-import com.example.khizana.domain.model.VariantsItem
 import com.example.khizana.domain.model.OptionsItem
+import com.example.khizana.domain.model.ProductRequestDomain
+import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.domain.model.VariantsItem
 
-fun Product.toDomain(): ProductDomain {
-    return ProductDomain(
-        products = products?.map { it?.toDomain() }
+fun ProductRequest.toDomain(): ProductRequestDomain {
+    return ProductRequestDomain(
+        product = product?.toDomain()
     )
 }
 
-fun ProductsItemEntity.toDomain(): ProductsItem? {
-    return ProductsItem(
-        image = image?.toDomain(),
+fun ProductRequestDomain.toDto(): ProductRequest {
+
+    return ProductRequest(
+        product = product?.toDto()
+    )
+}
+
+fun ProductsItem.toDto(): ProductsItemEntity? {
+    return ProductsItemEntity(
+        image = image?.toDto(),
         body_html = body_html,
-        images = images?.map { it?.toDomain() },
+        images = images?.map { it?.toDto() },
         created_at = created_at,
         handle = handle,
-        variants = variants?.map { it?.toDomain() },
+        variants = variants?.map { it?.toDto() },
         title = title,
         tags = tags,
         published_scope = published_scope,
@@ -35,15 +42,15 @@ fun ProductsItemEntity.toDomain(): ProductsItem? {
         updated_at = updated_at,
         vendor = vendor,
         admin_graphql_api_id = admin_graphql_api_id,
-        options = options?.map { it?.toDomain() },
+        options = options?.map { it?.toDto() },
         id = id,
         published_at = published_at,
         status = status
     ) ?: null
 }
 
-fun ImageEntity.toDomain(): Image? {
-    return Image(
+fun Image.toDto(): ImageEntity? {
+    return ImageEntity(
         updated_at = updated_at,
         src = src,
         product_id = product_id,
@@ -58,8 +65,8 @@ fun ImageEntity.toDomain(): Image? {
     ) ?: null
 }
 
-fun ImagesItemEntity.toDomain(): ImagesItem? {
-    return ImagesItem(
+fun ImagesItem.toDto(): ImagesItemEntity? {
+    return ImagesItemEntity(
         updated_at = updated_at,
         src = src,
         product_id = product_id,
@@ -74,8 +81,8 @@ fun ImagesItemEntity.toDomain(): ImagesItem? {
     ) ?: null
 }
 
-fun VariantsItemEntity.toDomain(): VariantsItem? {
-    return VariantsItem(
+fun VariantsItem.toDto(): VariantsItemEntity? {
+    return VariantsItemEntity(
         inventory_management = inventory_management,
         requires_shipping = requires_shipping,
         old_inventory_quantity = old_inventory_quantity,
@@ -105,8 +112,8 @@ fun VariantsItemEntity.toDomain(): VariantsItem? {
     ) ?: null
 }
 
-fun OptionsItemEntity.toDomain(): OptionsItem? {
-    return OptionsItem(
+fun OptionsItem.toDto(): OptionsItemEntity? {
+    return OptionsItemEntity(
         product_id = product_id,
         values = values,
         name = name,

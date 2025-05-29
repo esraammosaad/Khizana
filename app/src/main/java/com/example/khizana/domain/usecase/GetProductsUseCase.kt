@@ -9,6 +9,4 @@ class GetProductsUseCase(private val productRepository: ProductRepository) {
         return productRepository.getProducts()
     }
 
-
-
 }

@@ -19,7 +19,7 @@ data class ProductsItemEntity(
     val updated_at: String?,
     val vendor: String?,
     val admin_graphql_api_id: String?,
-    val options: List<OptionsItemEntity>?,
+    val options: List<OptionsItemEntity?>?,
     val id: String?,
     val published_at: String?,
     val status: String?

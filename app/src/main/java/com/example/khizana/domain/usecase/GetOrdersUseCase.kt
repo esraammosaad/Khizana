@@ -15,5 +15,4 @@ class GetOrdersUseCase (private val orderRepository: OrderRepository) {
     }
 
 
-
 }
