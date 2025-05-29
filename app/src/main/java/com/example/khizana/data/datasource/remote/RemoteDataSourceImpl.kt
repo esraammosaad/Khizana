@@ -25,5 +25,9 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         return apiService.getOrdersCountToday(minDate, maxDate)
     }
 
+    override suspend fun deleteProduct(productId : String) {
+        apiService.deleteProduct(productId)
+    }
+
 
 }

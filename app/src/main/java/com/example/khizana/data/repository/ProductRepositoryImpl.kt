@@ -17,4 +17,8 @@ class ProductRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) 
         remoteDataSourceImpl.createProduct(productRequestDomain.toDto())
     }
 
+    override suspend fun deleteProduct(productId : String) {
+        remoteDataSourceImpl.deleteProduct(productId)
+    }
+
 }

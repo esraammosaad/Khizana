@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.compose.foundation:foundation:1.8.2")
     testImplementation ("androidx.test:core-ktx:1.5.0")
     testImplementation ("androidx.test.ext:junit-ktx:1.1.5")
     testImplementation ("org.robolectric:robolectric:4.11")
@@ -79,8 +80,7 @@ dependencies {
     //Serialization for NavArgs & JetPack Components
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")//done
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.7")
-    val composeVersion = "1.0.0"
-    implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
+    implementation("androidx.compose.runtime:runtime-livedata:1.8.2")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
 
     //Retrofit & Media
@@ -98,7 +98,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)//done
+    implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)

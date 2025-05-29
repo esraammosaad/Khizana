@@ -5,4 +5,7 @@
     <string name="activity">Activity</string>
     <string name="of_current_week">of Current Week</string>
     <string name="product_image">product image</string>
+    <string name="quantity">Quantity: %1$s</string>
+    <string name="delete">Delete</string>
+    <string name="id">ID: #%1$s</string>
 </resources>

@@ -15,6 +15,8 @@ import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
 import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
+import com.example.khizana.domain.usecase.CreateProductUseCase
+import com.example.khizana.domain.usecase.DeleteProductUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
@@ -38,11 +40,19 @@ class MainActivity : ComponentActivity() {
                     )
                 )
             val homeViewModel = ViewModelProvider(this, homeFactory)[HomeViewModel::class.java]
-
-            val productsFactory = ProductsViewModelFactory(GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))))
-            val productsViewModel = ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
-
-
+            val productsFactory = ProductsViewModelFactory(
+                GetProductsUseCase(
+                    ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                ),
+                CreateProductUseCase(
+                    ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                ),
+                DeleteProductUseCase(
+                    ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                )
+            )
+            val productsViewModel =
+                ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
             KhizanaTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(

@@ -11,5 +11,6 @@ interface RemoteDataSource {
     suspend fun createProduct(productRequest: ProductRequest)
     suspend fun getOrders() : Order
     suspend fun getOrdersCount(minDate: String, maxDate: String) : OrdersCount
+    suspend fun deleteProduct(productId : String)
 
 }

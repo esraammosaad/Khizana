@@ -44,33 +44,17 @@ fun ProductsItemEntity.toDomain(): ProductsItem? {
 
 fun ImageEntity.toDomain(): Image? {
     return Image(
-        updated_at = updated_at,
         src = src,
-        product_id = product_id,
-        admin_graphql_api_id = admin_graphql_api_id,
         alt = alt,
-        width = width,
-        created_at = created_at,
         variant_ids = variant_ids,
-        id = id,
-        position = position,
-        height = height
     ) ?: null
 }
 
 fun ImagesItemEntity.toDomain(): ImagesItem? {
     return ImagesItem(
-        updated_at = updated_at,
         src = src,
-        product_id = product_id,
-        admin_graphql_api_id = admin_graphql_api_id,
         alt = alt,
-        width = width,
-        created_at = created_at,
         variant_ids = variant_ids,
-        id = id,
-        position = position,
-        height = height
     ) ?: null
 }
 

@@ -26,31 +26,15 @@ data class ProductsItemEntity(
 )
 
 data class ImageEntity(
-    val updated_at: String?,
     val src: String?,
-    val product_id: String?,
-    val admin_graphql_api_id: String?,
     val alt: String?,
-    val width: Int?,
-    val created_at: String?,
     val variant_ids: List<String?>?,
-    val id: String?,
-    val position: Int?,
-    val height: Int?
 )
 
 data class ImagesItemEntity(
-    val updated_at: String?,
     val src: String?,
-    val product_id: String?,
-    val admin_graphql_api_id: String?,
     val alt: String?,
-    val width: Int?,
-    val created_at: String?,
     val variant_ids: List<String?>?,
-    val id: String?,
-    val position: Int?,
-    val height: Int?
 )
 
 data class VariantsItemEntity(

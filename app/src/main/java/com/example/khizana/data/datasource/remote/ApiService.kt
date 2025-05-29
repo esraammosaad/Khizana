@@ -5,13 +5,15 @@ import com.example.khizana.data.dto.OrdersCount
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("products.json")
+    @GET("products.json?order=created_at+desc")
     suspend fun getProducts(): Product
 
     @POST("products.json")
@@ -26,6 +28,9 @@ interface ApiService {
         @Query("created_at_max") maxDate: String,
         @Query("status") status: String = "any"
     ): OrdersCount
+
+    @DELETE("products/{productId}.json")
+    suspend fun deleteProduct(@Path("productId")  productId : String)
 
 
 //    @GET("products/{productId}.json")
