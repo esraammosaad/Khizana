@@ -6,11 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
 import com.example.khizana.data.repository.OrderRepositoryImpl
@@ -22,9 +22,10 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
-import com.example.khizana.ui.theme.KhizanaTheme
+import com.example.khizana.utilis.NavigationRoutes
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -32,6 +33,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navigationController = rememberNavController()
+
+
             val homeFactory =
                 HomeViewModelFactory(
                     GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
@@ -53,15 +57,29 @@ class MainActivity : ComponentActivity() {
             )
             val productsViewModel =
                 ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
-            KhizanaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+
+            NavHost(
+                navController = navigationController,
+                startDestination = NavigationRoutes.MainScreen) {
+
+                composable<NavigationRoutes.MainScreen> {
+
                     MainScreen(
-                        modifier = Modifier.padding(innerPadding),
                         homeViewModel = homeViewModel,
-                        productsViewModel = productsViewModel
+                        productsViewModel = productsViewModel,
+                        navigationController = navigationController
                     )
+
+                }
+
+                composable<NavigationRoutes.ProductDetailsScreen> {
+                    backStackEntry ->
+                    val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
+                    val id = data.productId
+                    ProductDetailsScreen(productId = id)
                 }
             }
+
         }
     }
 }

@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.khizana.R
 import com.example.khizana.domain.model.ProductsItem
@@ -50,10 +51,15 @@ import com.example.khizana.ui.theme.KhizanaTheme
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.ConfirmationDialog
+import com.example.khizana.utilis.NavigationRoutes
 
 
 @Composable
-fun ProductsScreen(modifier: Modifier = Modifier, productsViewModel: ProductsViewModel) {
+fun ProductsScreen(
+    modifier: Modifier = Modifier,
+    productsViewModel: ProductsViewModel,
+    navigationController: NavHostController
+) {
 
     LaunchedEffect(Unit) {
         productsViewModel.getProducts()
@@ -80,11 +86,12 @@ fun ProductsScreen(modifier: Modifier = Modifier, productsViewModel: ProductsVie
                     modifier = Modifier
                         .animateItem()
                         .padding(bottom = 16.dp)
-                        .height(250.dp)
+                        .height(250.dp).clickable {
+                            navigationController.navigate(NavigationRoutes.ProductDetailsScreen(it?.id ?: ""))
+                        }
                 ) {
                     CustomProductCard(modifier, it)
                     CustomStatusBox(Modifier.align(alignment = Alignment.TopEnd), it)
-
                     CustomDeleteIcon(modifier = Modifier.align(Alignment.TopStart),showDialog, selectedProduct, it)
                 }
             }

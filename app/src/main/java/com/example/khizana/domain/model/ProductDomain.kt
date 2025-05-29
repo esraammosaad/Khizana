@@ -1,5 +1,7 @@
 package com.example.khizana.domain.model
 
+
+
 data class ProductDomain(
     val products: List<ProductsItem?>?
 )

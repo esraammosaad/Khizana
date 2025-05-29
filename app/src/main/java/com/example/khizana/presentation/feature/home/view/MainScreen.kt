@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
@@ -45,9 +46,9 @@ import com.example.khizana.presentation.feature.products.viewModel.ProductsViewM
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel,
-    productsViewModel : ProductsViewModel
+    productsViewModel: ProductsViewModel,
+    navigationController: NavHostController
 ) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -71,8 +72,11 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = { }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "More", modifier = Modifier.clickable {
-                        })
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = "More",
+                            modifier = Modifier.clickable {
+                            })
                     }
                 }
             )
@@ -89,7 +93,10 @@ fun MainScreen(
                     }
 
                     1 -> {
-                        return@Column ProductsScreen(productsViewModel = productsViewModel)
+                        return@Column ProductsScreen(
+                            productsViewModel = productsViewModel,
+                            navigationController = navigationController
+                        )
 
                     }
                 }
