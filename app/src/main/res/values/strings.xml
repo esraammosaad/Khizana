@@ -13,4 +13,8 @@
     <string name="variants">Variants</string>
     <string name="add_new_product_now">Add New Product Now!</string>
     <string name="product_description">Product Description</string>
+    <string name="product_type">Product Type</string>
+    <string name="add_product">Add Product</string>
+    <string name="product_vendor">Product Vendor</string>
+    <string name="product_title">Product Title</string>
 </resources>

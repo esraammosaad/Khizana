@@ -45,7 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.example.khizana.R
+import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
@@ -61,7 +64,6 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
     val productType = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     val options = listOf("ADIDAS", "NIKE", "TIMBERLAND", "TIMBERLAND", "TIMBERLAND")
-    val error = remember { mutableStateOf(false) }
     val imageUris = remember {
         mutableStateOf<List<Uri>?>(emptyList())
     }
@@ -94,43 +96,14 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
             )
             Spacer(modifier = Modifier.height(16.dp))
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                AsyncImage(
-                    model = imageUri.value ?: "",
-                    placeholder = painterResource(R.drawable.photo),
-                    error = painterResource(R.drawable.photo),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .border(
-                            color = primaryColor,
-                            width = 1.dp,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(16.dp)
-                )
+                CustomAsyncImage(imageUri.value ?: "")
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Start
                 ) {
                     items(imageUris.value?.size ?: 0) {
-                        AsyncImage(
-                            model = imageUris.value?.getOrNull(it),
-                            placeholder = painterResource(R.drawable.photo),
-                            error = painterResource(R.drawable.photo),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(70.dp)
-                                .border(
-                                    color = primaryColor,
-                                    width = 1.dp,
-                                    shape = RoundedCornerShape(10.dp)
-                                )
-                                .padding(8.dp)
-                                .clickable {
-                                    imageUri.value = imageUris.value?.getOrNull(it)
-                                }
-                        )
+                       CustomAsyncImage(imageUris.value?.getOrNull(it) ?: "")
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     item {
@@ -152,13 +125,12 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                CustomTextField(value = productName, error = error, label = "Product Title")
-                CustomTextArea(value = productDescription, error = error)
+                CustomTextField(value = productName, label = stringResource(R.string.product_title))
+                CustomTextArea(value = productDescription)
                 Column {
                     CustomTextField(
                         value = productVendor,
-                        error = error,
-                        label = "Product Vendor",
+                        label = stringResource(R.string.product_vendor),
                         trailingIcon = {
                             IconButton(onClick = { expanded.value = true }) {
                                 Icon(Icons.Filled.ArrowDropDown, "")
@@ -187,31 +159,21 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                 }
                 CustomTextField(
                     value = productType,
-                    error = error,
-                    label = "Product Type",
+                    label = stringResource(R.string.product_type),
                 )
                 Button(
                     modifier = Modifier.fillMaxWidth(), onClick = {
-                        val productItem = ProductsItem(
-                            image = null,
-                            body_html = productDescription.value,
-                            images = listOf(),
-                            created_at = "",
-                            variants = listOf(),
-                            title = productName.value,
-                            product_type = productType.value,
-                            updated_at = "",
-                            vendor = productVendor.value,
-                            options = listOf(),
-                            id = "",
-                            published_at = "",
-                            status = "active"
+
+                        uploadProduct(
+                            productsViewModel,
+                            imageUri,
+                            productName,
+                            productDescription,
+                            productType,
+                            productVendor,
+                            showBottomSheet
                         )
-                        productsViewModel.createProduct(productRequestDomain = ProductRequestDomain(
-                            product = productItem
-                        ))
-                        showBottomSheet.value = false
-                        productsViewModel.getProducts()
+
                 },
                     colors = ButtonColors(
                         containerColor = primaryColor,
@@ -221,17 +183,101 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                     )
                     ) {
 
-                    Text(text = "Add Product", color = Color.White)
+                    Text(text = stringResource(R.string.add_product), color = Color.White)
                 }
             }
         }
     }
 }
 
+private fun uploadProduct(
+    productsViewModel: ProductsViewModel,
+    imageUri: MutableState<Uri?>,
+    productName: MutableState<String>,
+    productDescription: MutableState<String>,
+    productType: MutableState<String>,
+    productVendor: MutableState<String>,
+    showBottomSheet: MutableState<Boolean>
+) {
+    productsViewModel.uploadImageToCloudinary(imageUri.value!!)?.callback(object :
+        UploadCallback {
+        override fun onStart(requestId: String?) {
+        }
+
+        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
+        }
+
+        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+            val imageUrl = resultData?.get("url") as String
+
+            val productItem = ProductsItem(
+                image = com.example.khizana.domain.model.Image(
+                    src = imageUrl,
+                    alt = productName.value,
+                    variant_ids = listOf()
+                ),
+                body_html = productDescription.value,
+                images = listOf(
+                    ImagesItem(
+                        src = imageUrl,
+                        alt = productName.value,
+                        variant_ids = listOf()
+                    )
+                ),
+                created_at = "",
+                variants = listOf(),
+                title = productName.value,
+                product_type = productType.value,
+                updated_at = "",
+                vendor = productVendor.value,
+                options = listOf(),
+                id = "",
+                published_at = "",
+                status = "active"
+            )
+            productsViewModel.createProduct(
+                productRequestDomain = ProductRequestDomain(
+                    product = productItem
+                )
+            )
+            showBottomSheet.value = false
+
+
+        }
+
+        override fun onError(requestId: String?, error: ErrorInfo?) {
+
+        }
+
+        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
+        }
+
+
+    }
+    )?.dispatch()
+}
+
+@Composable
+private fun CustomAsyncImage(imageUri: Any) {
+    AsyncImage(
+        model = imageUri,
+        placeholder = painterResource(R.drawable.photo),
+        error = painterResource(R.drawable.photo),
+        contentDescription = "",
+        modifier = Modifier
+            .size(150.dp)
+            .border(
+                color = primaryColor,
+                width = 1.dp,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(16.dp)
+    )
+}
+
 @Composable
 private fun CustomTextArea(
     value: MutableState<String>,
-    error: MutableState<Boolean>
 ) {
     OutlinedTextField(
         label = {
@@ -262,21 +308,12 @@ private fun CustomTextArea(
             errorPlaceholderColor = primaryColor,
             cursorColor = primaryColor
         ),
-        isError = false,
     )
-    if (error.value) {
-        Text(
-            text = "errorMessage",
-            color = primaryColor,
-            style = TextStyle(fontSize = 12.sp)
-        )
-    }
 }
 
 @Composable
 private fun CustomTextField(
     value: MutableState<String>,
-    error: MutableState<Boolean>,
     label: String,
     trailingIcon: @Composable (() -> Unit)? = null
 ) {
@@ -307,15 +344,7 @@ private fun CustomTextField(
             cursorColor = primaryColor
         ),
         trailingIcon = trailingIcon,
-        isError = false,
     )
-    if (error.value) {
-        Text(
-            text = "errorMessage",
-            color = primaryColor,
-            style = TextStyle(fontSize = 12.sp)
-        )
-    }
 }
 
 

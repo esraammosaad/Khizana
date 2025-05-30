@@ -1,11 +1,15 @@
 package com.example.khizana.presentation.feature.products.viewModel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.UploadRequest
+import com.cloudinary.android.payload.Payload
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.usecase.CreateProductUseCase
@@ -68,6 +72,10 @@ class ProductsViewModel(
             editProductUseCase.editProduct(productId, product)
             getProducts()
         }
+    }
+
+    fun uploadImageToCloudinary(imageUri: Uri): UploadRequest<out Payload<*>>? {
+        return MediaManager.get().upload(imageUri)
     }
 }
 

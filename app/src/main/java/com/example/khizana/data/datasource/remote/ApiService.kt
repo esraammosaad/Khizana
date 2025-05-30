@@ -1,5 +1,9 @@
 package com.example.khizana.data.datasource.remote
 
+import android.net.Uri
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.UploadRequest
+import com.cloudinary.android.payload.Payload
 import com.example.khizana.data.dto.CloudinaryResponse
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.OrdersCount
@@ -23,7 +27,7 @@ interface ApiService {
     suspend fun getProducts(): Product
 
     @POST("products.json")
-    suspend fun createProduct(@Body product: ProductRequest) : ProductRequest
+    suspend fun createProduct(@Body product: ProductRequest): ProductRequest
 
     @GET("orders.json?created_at_min=2025-05-20T00:00:00Z&created_at_max=2025-05-27T23:59:59Z&status=any")
     suspend fun getOrders(): Order
@@ -36,20 +40,17 @@ interface ApiService {
     ): OrdersCount
 
     @DELETE("products/{productId}.json")
-    suspend fun deleteProduct(@Path("productId")  productId : String)
+    suspend fun deleteProduct(@Path("productId") productId: String)
 
     @GET("products/{productId}.json")
-    suspend fun getProductById(@Path("productId")  productId : String): ProductRequest
+    suspend fun getProductById(@Path("productId") productId: String): ProductRequest
 
 
     @PUT("products/{productId}.json")
-    suspend fun editProduct(@Path("productId")  productId : String, @Body product : ProductRequest)
+    suspend fun editProduct(@Path("productId") productId: String, @Body product: ProductRequest)
 
-    @Multipart
-    @POST("v1_1/YOUR_CLOUD_NAME/image/upload")
-    suspend fun uploadImage(
-        @Part file: MultipartBody.Part,
-        @Part("upload_preset") uploadPreset: RequestBody
-    ): CloudinaryResponse
+
+
+
 
 }

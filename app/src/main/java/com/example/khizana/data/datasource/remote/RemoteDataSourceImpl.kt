@@ -37,6 +37,4 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         apiService.editProduct(productId, product)
     }
 
-
-
 }

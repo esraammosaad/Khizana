@@ -111,14 +111,17 @@ fun MainScreen(
                         )
 
                     }
+
                     2 -> {
                         return@Column InventoryScreen()
 
                     }
+
                     3 -> {
                         return@Column PriceRules()
 
                     }
+
                     4 -> {
                         return@Column ProfileScreen()
 
@@ -206,33 +209,30 @@ fun MainScreen(
                         )
                     },
                     icon = {
-//                        Image(
-//                            painter = painterResource(id = R.drawable.user),
-//                            contentDescription = ""
-//                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_discount_24),
+                            contentDescription = ""
+                        )
                     }
                 )
-
                 NavigationBarItem(
                     selected = false,
-                    onClick = { selectedIndex = 3 },
+                    onClick = { selectedIndex = 4 },
                     label = {
-                        if (selectedIndex == 3) HorizontalDivider(
+                        if (selectedIndex == 4) HorizontalDivider(
                             color = Color.Black,
                             thickness = 3.dp,
                             modifier = Modifier.width(30.dp)
                         )
                     },
                     icon = {
-//                        Image(
-//                            painter = painterResource(id = R.drawable.user),
-//                            contentDescription = ""
-//                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_person_24),
+                            contentDescription = ""
+                        )
                     }
                 )
             }
         }
     )
-
-
 }
