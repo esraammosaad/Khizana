@@ -62,26 +62,19 @@ fun ImagesItem.toDto(): ImagesItemEntity? {
 
 fun VariantsItem.toDto(): VariantsItemEntity? {
     return VariantsItemEntity(
-        old_inventory_quantity = old_inventory_quantity,
         title = title,
-        inventory_item_id = inventory_item_id,
         price = price,
-        product_id = product_id,
         option3 = option3,
         option1 = option1,
-        id = id,
         option2 = option2,
-        sku = sku,
         inventory_quantity = inventory_quantity,
-    ) ?: null
+    )
 }
 
 fun OptionsItem.toDto(): OptionsItemEntity? {
     return OptionsItemEntity(
-        product_id = product_id,
         values = values,
         name = name,
-        id = id,
     ) ?: null
 }
 

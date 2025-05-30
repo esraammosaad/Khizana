@@ -92,7 +92,8 @@ fun MainScreen(
             PartialBottomSheet(
                 showBottomSheet = showBottomSheet,
                 productsViewModel = productsViewModel,
-                onAddClicked = {}
+                onAddClicked = {},
+                product = null
             )
             Column(
                 modifier = Modifier

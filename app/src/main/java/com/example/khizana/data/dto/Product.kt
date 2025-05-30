@@ -33,23 +33,16 @@ data class ImagesItemEntity(
 )
 
 data class VariantsItemEntity(
-    val old_inventory_quantity: Int?,
     val title: String?,
-    val inventory_item_id: String?,
     val price: String?,
-    val product_id: String?,
     val option3: String?,
     val option1: String?,
-    val id: String?,
     val option2: String?,
-    val sku: String?,
     val inventory_quantity: Int?,
 )
 
 data class OptionsItemEntity(
-    val product_id: String?,
     val values: List<String?>?,
     val name: String?,
-    val id: String?,
 )
 

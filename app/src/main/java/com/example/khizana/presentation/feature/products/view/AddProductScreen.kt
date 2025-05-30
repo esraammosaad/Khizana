@@ -8,7 +8,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,49 +22,61 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
 import com.example.khizana.R
-import com.example.khizana.domain.model.ImagesItem
-import com.example.khizana.domain.model.ProductRequestDomain
+import com.example.khizana.domain.model.OptionsItem
 import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.domain.model.VariantsItem
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 
 @Composable
-fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: MutableState<Boolean>) {
+fun AddProductScreen(
+    productsViewModel: ProductsViewModel,
+    showBottomSheet: MutableState<Boolean>,
+    product: ProductsItem?
+) {
 
     val productName = remember { mutableStateOf("") }
     val productDescription = remember { mutableStateOf("") }
     val productVendor = remember { mutableStateOf("") }
     val productType = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
+    val variantList = remember { mutableStateOf(emptyList<VariantsItem>()) }
+    val optionList = remember { mutableStateOf(emptyList<OptionsItem>()) }
     val options = listOf("ADIDAS", "NIKE", "TIMBERLAND", "TIMBERLAND", "TIMBERLAND")
     val imageUris = remember {
         mutableStateOf<List<Uri>?>(emptyList())
@@ -74,20 +88,51 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
         contract = ActivityResultContracts.GetMultipleContents(),
         onResult = { uri ->
             uri.let {
-                imageUris.value = it
+                imageUris.value = imageUris.value?.plus(it)
                 imageUri.value = imageUris.value?.firstOrNull()
 
             }
         }
     )
+    val showVariantDialog = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        if (product != null) {
+            productName.value = product.title ?: ""
+            productDescription.value = product.body_html ?: ""
+            productVendor.value = product.vendor ?: ""
+            productType.value = product.product_type ?: ""
+            imageUris.value = product.images?.map { Uri.parse(it?.src) }
+            imageUri.value = imageUris.value?.firstOrNull()
+        }
+    }
 
     LazyColumn(
         Modifier
-            .padding(start = 8.dp, end = 8.dp)
+            .padding(horizontal = 12.dp)
             .background(Color.White)
     ) {
         item {
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "Save",
+                    style = TextStyle(color = primaryColor, fontSize = 16.sp),
+                    modifier = Modifier.clickable {
+                        productsViewModel.uploadProduct(
+                            imageUris.value,
+                            productName.value,
+                            productDescription.value,
+                            productType.value,
+                            productVendor.value,
+                            showBottomSheet
+                        )
+                    })
+            }
+            Spacer(modifier = Modifier.height(25.dp))
             Text(
                 text = stringResource(R.string.add_new_product_now), style = TextStyle(
                     fontSize = 24.sp,
@@ -103,7 +148,42 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                     horizontalArrangement = Arrangement.Start
                 ) {
                     items(imageUris.value?.size ?: 0) {
-                       CustomAsyncImage(imageUris.value?.getOrNull(it) ?: "")
+
+                        Box(
+                            contentAlignment = Alignment.TopEnd
+                        ) {
+                            AsyncImage(
+                                model = imageUris.value?.getOrNull(it) ?: "",
+                                placeholder = painterResource(R.drawable.photo),
+                                error = painterResource(R.drawable.photo),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .border(
+                                        color = primaryColor,
+                                        width = 1.dp,
+                                        shape = RoundedCornerShape(10.dp)
+                                    )
+                                    .size(120.dp)
+                                    .padding(8.dp)
+                                    .clickable {
+
+                                        imageUri.value = imageUris.value?.get(it)
+
+
+                                    },
+                                contentScale = ContentScale.Fit
+                            )
+
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_remove_24),
+                                contentDescription = "",
+                                modifier = Modifier.clickable {
+                                    imageUris.value = imageUris.value?.minus(imageUris.value!![it])
+                                    imageUri.value = imageUris.value?.firstOrNull()
+                                }
+                            )
+
+                        }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
                     item {
@@ -111,12 +191,12 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                             painter = painterResource(R.drawable.photo),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(70.dp)
                                 .border(
                                     color = primaryColor,
                                     width = 1.dp,
                                     shape = RoundedCornerShape(10.dp)
                                 )
+                                .size(120.dp)
                                 .padding(8.dp)
                                 .clickable {
                                     galleryLauncher.launch("image/*")
@@ -161,117 +241,179 @@ fun AddProductScreen(productsViewModel: ProductsViewModel, showBottomSheet: Muta
                     value = productType,
                     label = stringResource(R.string.product_type),
                 )
-                Button(
-                    modifier = Modifier.fillMaxWidth(), onClick = {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 5.dp),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Variants",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Box(
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .size(25.dp)
+                            .background(
+                                color = secondaryColor,
+                                shape = RoundedCornerShape(50)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Add",
+                            tint = primaryColor,
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable {
+                                    showVariantDialog.value = true
 
-                        uploadProduct(
-                            productsViewModel,
-                            imageUri,
-                            productName,
-                            productDescription,
-                            productType,
-                            productVendor,
-                            showBottomSheet
+                                }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                variantList.value.forEach { variant ->
+                    val title = listOfNotNull(
+                        variant.option1,
+                        variant.option2,
+                        variant.option3
+                    ).joinToString(" / ")
+                    Row {
+                        Text(
+                            text = "$title → ${variant.price} EGP | Qty: ${variant.inventory_quantity}",
+                            fontSize = 18.sp
+                        )
+                        Spacer(modifier = Modifier.width(14.dp))
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = "Delete",
+                            tint = primaryColor,
+                            modifier = Modifier.clickable {
+                                variantList.value = variantList.value.minus(variant)
+                            }
                         )
 
-                },
-                    colors = ButtonColors(
-                        containerColor = primaryColor,
-                        contentColor = Color.White,
-                        disabledContainerColor = primaryColor,
-                        disabledContentColor = primaryColor
-                    )
-                    ) {
-
-                    Text(text = stringResource(R.string.add_product), color = Color.White)
+                    }
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
-}
+    InputAlertDialog(showDialog = showVariantDialog) {
 
-private fun uploadProduct(
-    productsViewModel: ProductsViewModel,
-    imageUri: MutableState<Uri?>,
-    productName: MutableState<String>,
-    productDescription: MutableState<String>,
-    productType: MutableState<String>,
-    productVendor: MutableState<String>,
-    showBottomSheet: MutableState<Boolean>
-) {
-    productsViewModel.uploadImageToCloudinary(imageUri.value!!)?.callback(object :
-        UploadCallback {
-        override fun onStart(requestId: String?) {
-        }
-
-        override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {
-        }
-
-        override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-            val imageUrl = resultData?.get("url") as String
-
-            val productItem = ProductsItem(
-                image = com.example.khizana.domain.model.Image(
-                    src = imageUrl,
-                    alt = productName.value,
-                    variant_ids = listOf()
-                ),
-                body_html = productDescription.value,
-                images = listOf(
-                    ImagesItem(
-                        src = imageUrl,
-                        alt = productName.value,
-                        variant_ids = listOf()
-                    )
-                ),
-                created_at = "",
-                variants = listOf(),
-                title = productName.value,
-                product_type = productType.value,
-                updated_at = "",
-                vendor = productVendor.value,
-                options = listOf(),
-                id = "",
-                published_at = "",
-                status = "active"
-            )
-            productsViewModel.createProduct(
-                productRequestDomain = ProductRequestDomain(
-                    product = productItem
-                )
-            )
-            showBottomSheet.value = false
-
-
-        }
-
-        override fun onError(requestId: String?, error: ErrorInfo?) {
-
-        }
-
-        override fun onReschedule(requestId: String?, error: ErrorInfo?) {
-        }
-
+        variantList.value = variantList.value.plus(it)
 
     }
-    )?.dispatch()
 }
 
 @Composable
-private fun CustomAsyncImage(imageUri: Any) {
+fun InputAlertDialog(
+    showDialog: MutableState<Boolean>,
+    onConfirm: (VariantsItem) -> Unit
+) {
+    val variantTitle = remember { mutableStateOf("") }
+    val variantPrice = remember { mutableStateOf("") }
+    val variantQuantity = remember { mutableStateOf("") }
+    val optionOne = remember { mutableStateOf("") }
+    val optionTwo = remember { mutableStateOf("") }
+    val optionThree = remember { mutableStateOf("") }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = variantTitle.value,
+                        onValueChange = { variantTitle.value = it },
+                        label = { Text("Variant Title") },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = variantPrice.value,
+                        onValueChange = { variantPrice.value = it },
+                        label = { Text("Price") },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = variantQuantity.value,
+                        onValueChange = { variantQuantity.value = it },
+                        label = { Text("Quantity") },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = optionOne.value,
+                        onValueChange = { optionOne.value = it },
+                        label = { Text("Option One") },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = optionTwo.value,
+                        onValueChange = { optionTwo.value = it },
+                        label = { Text("Option Two") },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = optionThree.value,
+                        onValueChange = { optionThree.value = it },
+                        label = { Text("Option Three") },
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    val variant = VariantsItem(
+                        title = variantTitle.value,
+                        price = variantPrice.value,
+                        option3 = optionThree.value,
+                        option1 = optionOne.value,
+                        option2 = optionTwo.value,
+                        inventory_quantity = variantQuantity.value.toIntOrNull() ?: 0
+                    )
+                    onConfirm(variant)
+                    showDialog.value = false
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                OutlinedButton(onClick = { showDialog.value = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+}
+
+
+@Composable
+private fun CustomAsyncImage(imageUri: Any, size: Dp = 260.dp) {
     AsyncImage(
         model = imageUri,
         placeholder = painterResource(R.drawable.photo),
         error = painterResource(R.drawable.photo),
         contentDescription = "",
         modifier = Modifier
-            .size(150.dp)
             .border(
                 color = primaryColor,
                 width = 1.dp,
                 shape = RoundedCornerShape(10.dp)
             )
-            .padding(16.dp)
+            .size(size)
+            .padding(8.dp),
+        contentScale = ContentScale.Fit
     )
 }
 
@@ -348,10 +490,3 @@ private fun CustomTextField(
 }
 
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-private fun AddProductScreenPreview() {
-
-   // AddProductScreen(productsViewModel)
-
-}

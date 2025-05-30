@@ -14,6 +14,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 
 
@@ -24,6 +25,7 @@ fun PartialBottomSheet(
     showBottomSheet: MutableState<Boolean>,
     productsViewModel: ProductsViewModel,
     onAddClicked: () -> Unit,
+    product: ProductsItem?
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
@@ -42,7 +44,7 @@ fun PartialBottomSheet(
                 sheetState = sheetState,
                 onDismissRequest = { showBottomSheet.value = false }
             ) {
-               AddProductScreen(productsViewModel = productsViewModel, showBottomSheet = showBottomSheet)
+               AddProductScreen(productsViewModel = productsViewModel, showBottomSheet = showBottomSheet, product = product)
             }
 
         }

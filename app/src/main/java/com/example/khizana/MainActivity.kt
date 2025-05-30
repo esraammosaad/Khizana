@@ -26,7 +26,6 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
-import com.example.khizana.presentation.feature.products.view.AddProductScreen
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
@@ -95,7 +94,7 @@ class MainActivity : ComponentActivity() {
 
                 composable<NavigationRoutes.AddProductScreen> {
 
-                    AddProductScreen(productsViewModel, showBottomSheet)
+                //    AddProductScreen(productsViewModel, showBottomSheet, product)
 
                 }
 
