@@ -26,4 +26,7 @@
     <string name="option_two">Option Two</string>
     <string name="option_three">Option Three</string>
     <string name="save">Save</string>
+    <string name="confirmation">Confirmation!!</string>
+    <string name="are_you_sure_you_want_to_delete_this_product">Are you sure you want to delete this product?</string>
+    <string name="options">Options</string>
 </resources>

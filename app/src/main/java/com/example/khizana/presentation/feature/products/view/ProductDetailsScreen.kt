@@ -228,7 +228,6 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
                         fontSize = 18.sp
                     )
                 }
-
             }
         }
     }

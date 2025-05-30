@@ -20,10 +20,10 @@ fun ConfirmationDialog(
             containerColor = Color.White,
             onDismissRequest = { onDismiss() },
             title = {
-                Text(text = "Delete Product")
+                Text(text = stringResource(R.string.confirmation))
             },
             text = {
-                Text("Are you sure you want to delete this product?")
+                Text(stringResource(R.string.are_you_sure_you_want_to_delete_this_product))
             },
             confirmButton = {
                 TextButton(onClick = {

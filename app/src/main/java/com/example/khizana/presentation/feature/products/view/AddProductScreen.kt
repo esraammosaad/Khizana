@@ -45,6 +45,8 @@ import com.example.khizana.presentation.feature.products.view.components.CustomD
 import com.example.khizana.presentation.feature.products.view.components.CustomImagesRow
 import com.example.khizana.presentation.feature.products.view.components.CustomTextArea
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
+import com.example.khizana.presentation.feature.products.view.components.CustomVariantItem
+import com.example.khizana.presentation.feature.products.view.components.OptionInputDialog
 import com.example.khizana.presentation.feature.products.view.components.VariantInputDialog
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.ui.theme.primaryColor
@@ -72,6 +74,8 @@ fun AddProductScreen(
     }
 
     val showVariantDialog = remember { mutableStateOf(false) }
+    val showOptionDialog = remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         if (product != null) {
@@ -142,77 +146,84 @@ fun AddProductScreen(
                     value = productType,
                     label = stringResource(R.string.product_type),
                 )
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 5.dp),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.variants),
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Box(
-                        modifier = Modifier
-                            .padding(5.dp)
-                            .size(25.dp)
-                            .background(
-                                color = secondaryColor,
-                                shape = RoundedCornerShape(50)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Add",
-                            tint = primaryColor,
-                            modifier = Modifier
-                                .size(18.dp)
-                                .clickable {
-                                    showVariantDialog.value = true
-
-                                }
-                        )
+                CustomOptionsRow(
+                    text = stringResource(R.string.variants),
+                    onClick = {
+                        showVariantDialog.value = true
                     }
-                }
+                )
                 Spacer(modifier = Modifier.height(8.dp))
-                variantList.value.forEach { variant ->
-                    val title = listOfNotNull(
-                        variant.option1,
-                        variant.option2,
-                        variant.option3
-                    ).joinToString(" / ")
+                CustomVariantItem(variantList)
+                Spacer(modifier = Modifier.height(8.dp))
+                CustomOptionsRow(
+                    text = stringResource(R.string.options),
+                    onClick = {
+                        showOptionDialog.value = true
+                    }
+                )
+                optionList.value.forEach { option ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp), horizontalArrangement = Arrangement.Start
                     ) {
                         Text(
-                            text = "$title : ${variant.price} EGP | Qty: ${variant.inventory_quantity}",
+                            text = "${option.name}: ${option.values?.joinToString(", ")}",
                             fontSize = 18.sp
                         )
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = "Delete",
-                            tint = primaryColor,
-                            modifier = Modifier.clickable {
-                                variantList.value = variantList.value.minus(variant)
-                            }
-                        )
-
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
     VariantInputDialog(showDialog = showVariantDialog) {
         variantList.value = variantList.value.plus(it)
     }
+    OptionInputDialog(showDialog = showOptionDialog) {
+        optionList.value = optionList.value.plus(it)
+    }
 }
+
+@Composable
+private fun CustomOptionsRow(text: String, onClick: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Box(
+            modifier = Modifier
+                .padding(5.dp)
+                .size(25.dp)
+                .background(
+                    color = secondaryColor,
+                    shape = RoundedCornerShape(50)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = stringResource(R.string.add),
+                tint = primaryColor,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable {
+                        onClick.invoke()
+
+                    }
+            )
+        }
+    }
+}
+
+
 
 
 
