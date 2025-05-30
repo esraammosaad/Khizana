@@ -14,9 +14,11 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.cloudinary.android.payload.Payload
 import com.example.khizana.domain.model.ImagesItem
+import com.example.khizana.domain.model.OptionsItem
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.domain.model.VariantsItem
 import com.example.khizana.domain.usecase.CreateProductUseCase
 import com.example.khizana.domain.usecase.DeleteProductUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
@@ -85,6 +87,8 @@ class ProductsViewModel(
         productDescription: String,
         productType: String,
         productVendor: String,
+        variantList: List<VariantsItem>,
+        optionList: List<OptionsItem>,
         showBottomSheet: MutableState<Boolean>
     ) {
         val imagesList: MutableList<ImagesItem> = mutableListOf()
@@ -116,12 +120,12 @@ class ProductsViewModel(
                             body_html = productDescription,
                             images = imagesList,
                             created_at = "",
-                            variants = listOf(),
+                            variants = variantList,
                             title = productName,
                             product_type = productType,
                             updated_at = "",
                             vendor = productVendor,
-                            options = listOf(),
+                            options = optionList,
                             id = "",
                             published_at = "",
                             status = "active"

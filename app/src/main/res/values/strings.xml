@@ -17,4 +17,13 @@
     <string name="add_product">Add Product</string>
     <string name="product_vendor">Product Vendor</string>
     <string name="product_title">Product Title</string>
+    <string name="variant_title">Variant Title</string>
+    <string name="variant_price">Variant Price</string>
+    <string name="variant_quantity">Variant Quantity</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="option_one">Option One</string>
+    <string name="option_two">Option Two</string>
+    <string name="option_three">Option Three</string>
+    <string name="save">Save</string>
 </resources>

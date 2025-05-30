@@ -5,6 +5,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.khizana.R
+import com.example.khizana.ui.theme.primaryColor
 
 @Composable
 fun ConfirmationDialog(
@@ -14,6 +17,7 @@ fun ConfirmationDialog(
 ) {
     if (showDialog) {
         AlertDialog(
+            containerColor = Color.White,
             onDismissRequest = { onDismiss() },
             title = {
                 Text(text = "Delete Product")
@@ -26,12 +30,12 @@ fun ConfirmationDialog(
                     onConfirm()
                     onDismiss()
                 }) {
-                    Text("Delete", color = Color.Red)
+                    Text(stringResource(R.string.delete), color = Color.Red)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { onDismiss() }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel), color = primaryColor)
                 }
             }
         )
