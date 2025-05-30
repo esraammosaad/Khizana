@@ -11,4 +11,7 @@ sealed class NavigationRoutes {
     @Serializable
     data class ProductDetailsScreen(val productId : String) : NavigationRoutes()
 
+    @Serializable
+    data object AddProductScreen : NavigationRoutes()
+
 }

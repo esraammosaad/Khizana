@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,6 +26,7 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.products.view.AddProductScreen
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
@@ -36,6 +39,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navigationController = rememberNavController()
+            val showBottomSheet = remember { mutableStateOf(false) }
+
 
 
             val homeFactory =
@@ -76,7 +81,8 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         homeViewModel = homeViewModel,
                         productsViewModel = productsViewModel,
-                        navigationController = navigationController
+                        navigationController = navigationController,
+                        showBottomSheet = showBottomSheet
                     )
 
                 }
@@ -86,10 +92,19 @@ class MainActivity : ComponentActivity() {
                     val id = data.productId
                     ProductDetailsScreen(productId = id, productsViewModel = productsViewModel)
                 }
+
+                composable<NavigationRoutes.AddProductScreen> {
+
+                    AddProductScreen(productsViewModel, showBottomSheet)
+
+                }
+
             }
 
         }
     }
+
+
 }
 
 

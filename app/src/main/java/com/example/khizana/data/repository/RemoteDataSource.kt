@@ -7,7 +7,7 @@ import com.example.khizana.data.dto.ProductRequest
 
 interface RemoteDataSource {
     suspend fun getProducts(): Product
-    suspend fun createProduct(product: ProductRequest)
+    suspend fun createProduct(product: ProductRequest) : ProductRequest
     suspend fun getOrders(): Order
     suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount
     suspend fun deleteProduct(productId: String)

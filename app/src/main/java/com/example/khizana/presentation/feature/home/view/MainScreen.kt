@@ -3,7 +3,6 @@ package com.example.khizana.presentation.feature.home.view
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,8 +39,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.inventory.view.InventoryScreen
+import com.example.khizana.presentation.feature.priceRules.view.PriceRules
+import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
+import com.example.khizana.presentation.feature.profile.view.ProfileScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,10 +52,12 @@ import com.example.khizana.presentation.feature.products.viewModel.ProductsViewM
 fun MainScreen(
     homeViewModel: HomeViewModel,
     productsViewModel: ProductsViewModel,
-    navigationController: NavHostController
+    navigationController: NavHostController,
+    showBottomSheet: MutableState<Boolean>
 ) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+
 
     Scaffold(
         topBar = {
@@ -71,17 +77,23 @@ fun MainScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {
+                        showBottomSheet.value = true
+                    }) {
                         Icon(
-                            Icons.Default.MoreVert,
-                            contentDescription = "More",
-                            modifier = Modifier.clickable {
-                            })
+                            Icons.Default.Add,
+                            contentDescription = "Add",
+                        )
                     }
                 }
             )
         },
         content = {
+            PartialBottomSheet(
+                showBottomSheet = showBottomSheet,
+                productsViewModel = productsViewModel,
+                onAddClicked = {}
+            )
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -99,7 +111,20 @@ fun MainScreen(
                         )
 
                     }
+                    2 -> {
+                        return@Column InventoryScreen()
+
+                    }
+                    3 -> {
+                        return@Column PriceRules()
+
+                    }
+                    4 -> {
+                        return@Column ProfileScreen()
+
+                    }
                 }
+
             }
         },
         bottomBar = {
@@ -170,6 +195,24 @@ fun MainScreen(
                         )
                     }
                 )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { selectedIndex = 3 },
+                    label = {
+                        if (selectedIndex == 3) HorizontalDivider(
+                            color = Color.Black,
+                            thickness = 3.dp,
+                            modifier = Modifier.width(30.dp)
+                        )
+                    },
+                    icon = {
+//                        Image(
+//                            painter = painterResource(id = R.drawable.user),
+//                            contentDescription = ""
+//                        )
+                    }
+                )
+
                 NavigationBarItem(
                     selected = false,
                     onClick = { selectedIndex = 3 },

@@ -14,7 +14,6 @@ fun getShopifyOrderCountDatesForLastSevenDays(): List<String> {
     for (i in 6 downTo 0) {
         val date = LocalDate.now().minusDays(i.toLong())
         val dateString = date.format(formatter)
-
         dates.add(dateString)
     }
 

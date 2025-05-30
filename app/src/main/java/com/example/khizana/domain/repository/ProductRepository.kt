@@ -5,7 +5,7 @@ import com.example.khizana.domain.model.ProductRequestDomain
 
 interface ProductRepository {
     suspend fun getProducts(): ProductDomain
-    suspend fun createProduct(product: ProductRequestDomain)
+    suspend fun createProduct(product: ProductRequestDomain) : ProductRequestDomain
     suspend fun deleteProduct(productId: String)
     suspend fun getProductById(productId: String): ProductRequestDomain
     suspend fun editProduct(productId: String, product: ProductRequestDomain)

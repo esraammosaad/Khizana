@@ -1,6 +1,5 @@
 package com.example.khizana.data.repository
 
-import com.example.khizana.data.dto.OrdersCount
 import com.example.khizana.data.repository.mapper.toDomain
 import com.example.khizana.domain.model.OrderDomain
 import com.example.khizana.domain.model.OrdersCountDomain
@@ -15,6 +14,4 @@ class OrderRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) : 
     override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCountDomain {
         return remoteDataSourceImpl.getOrdersCount(minDate, maxDate).toDomain()
     }
-
-
 }

@@ -13,8 +13,8 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         return apiService.getProducts()
     }
 
-    override suspend fun createProduct(product: ProductRequest)  {
-        apiService.createProduct(product)
+    override suspend fun createProduct(product: ProductRequest) : ProductRequest  {
+       return apiService.createProduct(product)
     }
 
     override suspend fun getOrders() : Order {

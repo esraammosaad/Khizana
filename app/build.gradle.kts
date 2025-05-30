@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "2.1.10"
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -42,6 +43,9 @@ android {
 }
 
 dependencies {
+
+    implementation ("com.cloudinary:cloudinary-android:3.0.2")
+
 
     implementation("androidx.compose.foundation:foundation:1.8.2")
     testImplementation ("androidx.test:core-ktx:1.5.0")

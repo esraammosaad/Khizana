@@ -11,4 +11,6 @@
     <string name="back_icon">Back Icon</string>
     <string name="product_options">Product Options</string>
     <string name="variants">Variants</string>
+    <string name="add_new_product_now">Add New Product Now!</string>
+    <string name="product_description">Product Description</string>
 </resources>

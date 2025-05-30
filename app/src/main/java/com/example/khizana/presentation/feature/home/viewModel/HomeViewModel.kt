@@ -13,6 +13,7 @@ import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
+import com.example.khizana.utilis.Strings
 import com.example.khizana.utilis.getShopifyOrderCountDatesForLastSevenDays
 import kotlinx.coroutines.launch
 
@@ -20,12 +21,6 @@ class HomeViewModel(
     private val getProductsUseCase: GetProductsUseCase,
     private val getOrdersUseCase: GetOrdersUseCase
 ) : ViewModel() {
-
-//    private var _collects : MutableLiveData<GetCollectsResponse> = MutableLiveData()
-//    val collects : LiveData<GetCollectsResponse> = _collects
-//
-//    private var _collectDetails : MutableLiveData<GetCollectByIdResponse> = MutableLiveData()
-//    val collectDetails : LiveData<GetCollectByIdResponse> = _collectDetails
 
     private var _products: MutableLiveData<ProductDomain> = MutableLiveData()
     val products: LiveData<ProductDomain> = _products
@@ -35,27 +30,6 @@ class HomeViewModel(
 
     private var _ordersCount: MutableLiveData<List<OrdersCountDomain>> = MutableLiveData()
     val ordersCount: LiveData<List<OrdersCountDomain>> = _ordersCount
-
-//    fun getCollects(){
-//        viewModelScope.launch {
-//
-//            val response = repository.getCollects()
-//            if(response.isSuccessful){
-//                _collects.postValue(response.body())
-//                Log.i("TAG", "getCollects: ${response.body()}")
-//            }
-//        }
-//    }
-//
-//    fun getCollectById(collectId : Long){
-//        viewModelScope.launch {
-//            val response = repository.getCollectsById(collectId)
-//            if(response.isSuccessful){
-//                _collectDetails.postValue(response.body())
-//                Log.i("TAG", "getCollectById: ${response.body()}")
-//            }
-//        }
-//    }
 
     fun getProducts() {
         viewModelScope.launch {
@@ -83,8 +57,8 @@ class HomeViewModel(
 
             for (i in 0..6) {
                 val response = getOrdersUseCase.getOrdersCount(
-                    minDate = getShopifyOrderCountDatesForLastSevenDays()[i] + "T00:00:00Z",
-                    maxDate = getShopifyOrderCountDatesForLastSevenDays()[i] + "T23:59:59Z"
+                    minDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.START_OF_THE_DAY,
+                    maxDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.END_OF_THE_DAY
                 )
                 list.add(response)
                 Log.i("TAG", "getOrdersCount: $response")

@@ -4,7 +4,7 @@ import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.repository.ProductRepository
 
 class CreateProductUseCase (private val productRepository: ProductRepository) {
-    suspend fun createProduct(productRequestDomain: ProductRequestDomain)  {
-         productRepository.createProduct(productRequestDomain)
+    suspend fun createProduct(productRequestDomain: ProductRequestDomain) : ProductRequestDomain  {
+        return productRepository.createProduct(productRequestDomain)
     }
 }

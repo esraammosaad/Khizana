@@ -41,8 +41,10 @@ class ProductsViewModel(
 
     fun createProduct(productRequestDomain: ProductRequestDomain) {
         viewModelScope.launch {
-            createProductUseCase.createProduct(productRequestDomain)
-            getProducts()
+            val response = createProductUseCase.createProduct(productRequestDomain)
+            if (response.product?.id != null) {
+                getProducts()
+            }
         }
     }
 
