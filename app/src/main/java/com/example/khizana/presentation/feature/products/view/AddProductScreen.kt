@@ -57,7 +57,6 @@ fun AddProductScreen(
     isEditable: Boolean,
     productId: String?
 ) {
-
     val productName = remember { mutableStateOf("") }
     val productDescription = remember { mutableStateOf("") }
     val productVendor = remember { mutableStateOf("") }
@@ -73,7 +72,6 @@ fun AddProductScreen(
     }
     val error = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
-
     val showVariantDialog = remember { mutableStateOf(false) }
     val showOptionDialog = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
@@ -100,7 +98,7 @@ fun AddProductScreen(
         item {
             ConfirmationDialog(
                 showDialog = showConfirmationDialog.value,
-                text = "Are you sure you want to save this product?",
+                text = stringResource(R.string.are_you_sure_you_want_to_save_this_product),
                 onConfirm = {
                     if (!error.value) {
                         productsViewModel.uploadProduct(
@@ -208,37 +206,46 @@ fun AddProductScreen(
                                 error.value = true
                                 errorMessage.value = "Please add at least one image"
                             }
+
                             productName.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please fill product name"
                             }
+
                             productDescription.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please fill product description"
                             }
+
                             productVendor.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please fill product vendor"
                             }
+
                             productType.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please fill product type"
                             }
+
                             variantList.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please add at least one variant"
                             }
+
                             optionList.value.isEmpty() -> {
                                 error.value = true
                                 errorMessage.value = "Please add at least one option"
                             }
+
                             else -> {
                                 error.value = false
                                 showConfirmationDialog.value = true
                             }
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = primaryColor,
                         contentColor = Color.White

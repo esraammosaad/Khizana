@@ -12,20 +12,20 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.khizana.R
-import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.ui.theme.lighterGreyColor
 
 @Composable
 fun CustomAsyncImage(imageUri: Any, size: Dp = 260.dp) {
     AsyncImage(
         model = imageUri,
-        placeholder = painterResource(R.drawable.addimage),
-        error = painterResource(R.drawable.addimage),
         contentDescription = "",
+        placeholder = painterResource(R.drawable.plus),
+        error = painterResource(R.drawable.plus),
         modifier = Modifier
             .border(
-                color = primaryColor,
+                color = lighterGreyColor,
                 width = 1.dp,
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .size(size)
             .padding(8.dp),

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.khizana.R
+import com.example.khizana.ui.theme.lighterGreyColor
 import com.example.khizana.ui.theme.primaryColor
 
 @Composable
@@ -52,16 +52,16 @@ fun CustomImagesRow(
             ) {
                 AsyncImage(
                     model = imageUris.value?.getOrNull(it) ?: "",
-                    placeholder = painterResource(R.drawable.addimage),
-                    error = painterResource(R.drawable.addimage),
+                    placeholder = painterResource(R.drawable.plus),
+                    error = painterResource(R.drawable.plus),
                     contentDescription = "",
                     modifier = Modifier
                         .border(
-                            color = primaryColor,
+                            color = lighterGreyColor,
                             width = 1.dp,
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(8.dp)
                         )
-                        .size(120.dp)
+                        .size(100.dp)
                         .padding(8.dp)
                         .clickable {
 
@@ -71,31 +71,30 @@ fun CustomImagesRow(
                         },
                     contentScale = ContentScale.Fit
                 )
-                IconButton(
-                    onClick = {
-                        imageUris.value = imageUris.value?.minus(imageUris.value?.get(it) ?: "")
-                        imageUri.value = imageUris.value?.firstOrNull()
-                    }
-                ) {
+
                     Icon(
                         painter = painterResource(R.drawable.baseline_remove_24),
                         contentDescription = "",
+                        modifier = Modifier.clickable {
+                            imageUris.value = imageUris.value?.minus(imageUris.value?.get(it) ?: "")
+                            imageUri.value = imageUris.value?.firstOrNull()
+                        }
                     )
-                }
+
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
         item {
             Image(
-                painter = painterResource(R.drawable.addimage),
+                painter = painterResource(R.drawable.plus),
                 contentDescription = "",
                 modifier = Modifier
                     .border(
-                        color = primaryColor,
+                        color = lighterGreyColor,
                         width = 1.dp,
-                        shape = RoundedCornerShape(10.dp)
+                        shape = RoundedCornerShape(8.dp)
                     )
-                    .size(120.dp)
+                    .size(100.dp)
                     .padding(8.dp)
                     .clickable {
                         galleryLauncher.launch("image/*")

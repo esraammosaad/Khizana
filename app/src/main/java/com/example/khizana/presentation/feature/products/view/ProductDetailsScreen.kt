@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +21,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.HorizontalDivider
@@ -44,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
@@ -52,7 +51,11 @@ import kotlinx.coroutines.delay
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel) {
+fun ProductDetailsScreen(
+    productId: String,
+    productsViewModel: ProductsViewModel,
+    navigationController: NavController
+) {
 
     LaunchedEffect(Unit) {
         productsViewModel.getProductById(productId = productId)
@@ -62,8 +65,6 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
         pageCount = { product?.product?.images?.size ?: 0 },
         initialPage = 0,
     )
-
-
     LaunchedEffect(pagerState.currentPage) {
         while (true) {
             delay(3000)
@@ -73,10 +74,7 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
         }
     }
     val showBottomSheet = remember { mutableStateOf(false) }
-
     LazyColumn(Modifier.systemBarsPadding()) {
-
-
         item {
             PartialBottomSheet(
                 showBottomSheet = showBottomSheet,
@@ -93,6 +91,7 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
             ) {
                 IconButton(
                     onClick = {
+                        navigationController.popBackStack()
                     }
                 ) {
                     Icon(
@@ -101,7 +100,6 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
                         tint = Color.Black.copy(0.7f),
                         modifier = Modifier
                             .size(35.dp)
-
                     )
                 }
 
@@ -122,12 +120,6 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
             Box(
                 modifier = Modifier
                     .wrapContentSize()
-                    .clip(
-                        RoundedCornerShape(
-                            bottomStart = 32.dp,
-                            bottomEnd = 32.dp
-                        )
-                    )
                     .background(color = Color.White),
                 contentAlignment = Alignment.TopEnd,
             ) {
