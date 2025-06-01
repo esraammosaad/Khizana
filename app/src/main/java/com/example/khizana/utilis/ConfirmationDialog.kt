@@ -12,6 +12,7 @@ import com.example.khizana.ui.theme.primaryColor
 @Composable
 fun ConfirmationDialog(
     showDialog: Boolean,
+    text : String = stringResource(R.string.are_you_sure_you_want_to_delete_this_product),
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -23,14 +24,14 @@ fun ConfirmationDialog(
                 Text(text = stringResource(R.string.confirmation))
             },
             text = {
-                Text(stringResource(R.string.are_you_sure_you_want_to_delete_this_product))
+                Text(text)
             },
             confirmButton = {
                 TextButton(onClick = {
                     onConfirm()
                     onDismiss()
                 }) {
-                    Text(stringResource(R.string.delete), color = Color.Red)
+                    Text("Yes", color = primaryColor)
                 }
             },
             dismissButton = {

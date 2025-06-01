@@ -102,6 +102,8 @@ fun OptionInputDialog(
                             values = optionValues.value
                         )
                         onConfirm(option)
+                        optionName.value = ""
+                        optionValues.value = emptyList()
                         showDialog.value = false
                     },
                     colors = ButtonDefaults.outlinedButtonColors(

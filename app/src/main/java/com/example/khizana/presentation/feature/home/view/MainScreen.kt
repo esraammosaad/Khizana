@@ -93,7 +93,8 @@ fun MainScreen(
                 showBottomSheet = showBottomSheet,
                 productsViewModel = productsViewModel,
                 onAddClicked = {},
-                product = null
+                product = null,
+                isEditable = false
             )
             Column(
                 modifier = Modifier

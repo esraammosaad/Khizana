@@ -9,10 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cloudinary.android.MediaManager
-import com.cloudinary.android.UploadRequest
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.cloudinary.android.payload.Payload
 import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.OptionsItem
 import com.example.khizana.domain.model.ProductDomain
@@ -77,23 +75,43 @@ class ProductsViewModel(
     fun editProduct(productId: String, product: ProductRequestDomain) {
         viewModelScope.launch {
             editProductUseCase.editProduct(productId, product)
-            getProducts()
+            getProductById(productId)
         }
     }
 
     fun uploadProduct(
-        imageUris: List<Uri>?,
+        imageUris: List<Any>?,
         productName: String,
         productDescription: String,
         productType: String,
         productVendor: String,
         variantList: List<VariantsItem>,
         optionList: List<OptionsItem>,
-        showBottomSheet: MutableState<Boolean>
+        showBottomSheet: MutableState<Boolean>,
+        isEditable: Boolean,
+        productId: String? = null
     ) {
+        val urlList: MutableList<String> = mutableListOf()
+        val uriList: MutableList<String> = mutableListOf()
         val imagesList: MutableList<ImagesItem> = mutableListOf()
         imageUris?.forEach { imageUri ->
-            uploadImageToCloudinary(imageUri)?.callback(object :
+            val uploadRequest = when (imageUri) {
+                is Uri -> {
+                    uriList.add(imageUri.toString())
+                    MediaManager.get().upload(imageUri)
+                }
+
+                is String -> {
+                    urlList.add(imageUri)
+                    Log.i("TAG", "onSuccess: $imageUri")
+                    null
+                }
+
+                else -> {
+                    null
+                }
+            }
+            uploadRequest?.callback(object :
                 UploadCallback {
                 override fun onStart(requestId: String?) {
                 }
@@ -110,7 +128,21 @@ class ProductsViewModel(
                             variant_ids = listOf()
                         )
                     )
-                    if (imagesList.size == imageUris.size) {
+
+                    Log.i("TAG", "onSuccess: ${imageUris.size}")
+                    Log.i("TAG", "onSuccess: ${imagesList.size}")
+                    Log.i("TAG", "onSuccess: ${urlList.size}")
+
+                    if ((imagesList.size + urlList.size) == imageUris.size) {
+                        urlList.forEach { url ->
+                            imagesList.add(
+                                ImagesItem(
+                                    src = url,
+                                    alt = productName,
+                                    variant_ids = listOf()
+                                )
+                            )
+                        }
                         val productItem = ProductsItem(
                             image = com.example.khizana.domain.model.Image(
                                 src = imageUrl,
@@ -130,11 +162,20 @@ class ProductsViewModel(
                             published_at = "",
                             status = "active"
                         )
-                        createProduct(
-                            productRequestDomain = ProductRequestDomain(
-                                product = productItem
+                        if (isEditable) {
+                            editProduct(
+                                productId ?: "",
+                                ProductRequestDomain(
+                                    product = productItem
+                                )
                             )
-                        )
+                        } else {
+                            createProduct(
+                                productRequestDomain = ProductRequestDomain(
+                                    product = productItem
+                                )
+                            )
+                        }
                         showBottomSheet.value = false
                     }
                 }
@@ -147,12 +188,45 @@ class ProductsViewModel(
             }
             )?.dispatch()
         }
-    }
 
-    private fun uploadImageToCloudinary(imageUri: Uri): UploadRequest<out Payload<*>>? {
-        return MediaManager.get().upload(imageUri)
+        if (urlList.isNotEmpty() && uriList.isEmpty() && isEditable) {
+            urlList.forEach { url ->
+                imagesList.add(
+                    ImagesItem(
+                        src = url,
+                        alt = productName,
+                        variant_ids = listOf()
+                    )
+                )
+            }
+            val productItem = ProductsItem(
+                image = com.example.khizana.domain.model.Image(
+                    src = urlList.first(),
+                    alt = productName,
+                    variant_ids = listOf()
+                ),
+                body_html = productDescription,
+                images = imagesList,
+                created_at = "",
+                variants = variantList,
+                title = productName,
+                product_type = productType,
+                updated_at = "",
+                vendor = productVendor,
+                options = optionList,
+                id = "",
+                published_at = "",
+                status = "active"
+            )
+            editProduct(
+                productId ?: "",
+                ProductRequestDomain(
+                    product = productItem
+                )
+            )
+            showBottomSheet.value = false
+        }
     }
-
 }
 
 class ProductsViewModelFactory(

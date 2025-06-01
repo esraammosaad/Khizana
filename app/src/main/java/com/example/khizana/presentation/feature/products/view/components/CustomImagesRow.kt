@@ -1,6 +1,5 @@
 package com.example.khizana.presentation.feature.products.view.components
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -16,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -29,8 +29,8 @@ import com.example.khizana.ui.theme.primaryColor
 
 @Composable
 fun CustomImagesRow(
-    imageUris: MutableState<List<Uri>?>,
-    imageUri: MutableState<Uri?>,
+    imageUris: MutableState<List<Any>?>,
+    imageUri: MutableState<Any?>,
 ) {
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents(),
@@ -71,16 +71,17 @@ fun CustomImagesRow(
                         },
                     contentScale = ContentScale.Fit
                 )
-
-                Icon(
-                    painter = painterResource(R.drawable.baseline_remove_24),
-                    contentDescription = "",
-                    modifier = Modifier.clickable {
-                        imageUris.value = imageUris.value?.minus(imageUris.value!![it])
+                IconButton(
+                    onClick = {
+                        imageUris.value = imageUris.value?.minus(imageUris.value?.get(it) ?: "")
                         imageUri.value = imageUris.value?.firstOrNull()
                     }
-                )
-
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_remove_24),
+                        contentDescription = "",
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(8.dp))
         }

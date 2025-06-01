@@ -25,7 +25,9 @@ fun PartialBottomSheet(
     showBottomSheet: MutableState<Boolean>,
     productsViewModel: ProductsViewModel,
     onAddClicked: () -> Unit,
-    product: ProductsItem?
+    product: ProductsItem?,
+    isEditable: Boolean,
+    productId: String? = null
 ) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = false,
@@ -42,9 +44,9 @@ fun PartialBottomSheet(
                 dragHandle = null,
                 modifier = Modifier.wrapContentSize(),
                 sheetState = sheetState,
-                onDismissRequest = { showBottomSheet.value = false }
+                onDismissRequest = { showBottomSheet.value = false },
             ) {
-               AddProductScreen(productsViewModel = productsViewModel, showBottomSheet = showBottomSheet, product = product)
+               AddProductScreen(productsViewModel = productsViewModel, showBottomSheet = showBottomSheet, product = product, isEditable = isEditable, productId = productId)
             }
 
         }

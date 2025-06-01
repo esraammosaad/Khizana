@@ -30,13 +30,12 @@ fun CustomVariantItem(variantList: MutableState<List<VariantsItem>>) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp), horizontalArrangement = Arrangement.Start
+                .padding(horizontal = 8.dp), horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = "$title : ${variant.price} EGP | Qty: ${variant.inventory_quantity}",
                 fontSize = 18.sp
             )
-            Spacer(modifier = Modifier.width(14.dp))
             Icon(
                 imageVector = Icons.Filled.Clear,
                 contentDescription = "Delete",

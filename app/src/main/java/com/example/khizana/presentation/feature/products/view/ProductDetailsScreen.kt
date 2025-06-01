@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -81,34 +82,42 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
                 showBottomSheet = showBottomSheet,
                 productsViewModel = productsViewModel,
                 onAddClicked = {},
-                product = product?.product
+                product = product?.product,
+                isEditable = true,
+                productId = productId
             )
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = stringResource(R.string.back_icon),
-                    tint = Color.Black.copy(0.7f),
-                    modifier = Modifier
-                        .size(35.dp)
-                        .clickable {
+                IconButton(
+                    onClick = {
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowLeft,
+                        contentDescription = stringResource(R.string.back_icon),
+                        tint = Color.Black.copy(0.7f),
+                        modifier = Modifier
+                            .size(35.dp)
 
-                        }
-                )
+                    )
+                }
 
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.back_icon),
-                    tint = Color.Black.copy(0.7f),
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clickable {
-                            showBottomSheet.value = true
-                        }
-                )
+                IconButton(
+                    onClick = {
+                        showBottomSheet.value = true
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit Icon",
+                        tint = Color.Black.copy(0.7f),
+                        modifier = Modifier
+                            .size(25.dp)
+                    )
+                }
             }
             Box(
                 modifier = Modifier
@@ -198,7 +207,7 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = stringResource(R.string.product_options),
+                    text = stringResource(R.string.options),
                     fontWeight = FontWeight.Bold,
                     fontSize = 22.sp
                 )
@@ -224,7 +233,7 @@ fun ProductDetailsScreen(productId: String, productsViewModel: ProductsViewModel
                         variant?.option3
                     ).joinToString(" / ")
                     Text(
-                        text = "$title → ${variant?.price} EGP | Qty: ${variant?.inventory_quantity}",
+                        text = "$title : ${variant?.price} EGP | Qty: ${variant?.inventory_quantity}",
                         fontSize = 18.sp
                     )
                 }
