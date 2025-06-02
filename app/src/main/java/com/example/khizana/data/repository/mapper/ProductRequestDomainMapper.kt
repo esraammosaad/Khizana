@@ -26,7 +26,7 @@ fun ProductRequestDomain.toDto(): ProductRequest {
     )
 }
 
-fun ProductsItem.toDto(): ProductsItemEntity? {
+fun ProductsItem.toDto(): ProductsItemEntity {
     return ProductsItemEntity(
         image = image?.toDto(),
         body_html = body_html,
@@ -41,26 +41,26 @@ fun ProductsItem.toDto(): ProductsItemEntity? {
         id = id,
         published_at = published_at,
         status = status
-    ) ?: null
+    )
 }
 
-fun Image.toDto(): ImageEntity? {
+fun Image.toDto(): ImageEntity {
     return ImageEntity(
         src = src,
         alt = alt,
         variant_ids = variant_ids,
-    ) ?: null
+    )
 }
 
-fun ImagesItem.toDto(): ImagesItemEntity? {
+fun ImagesItem.toDto(): ImagesItemEntity {
     return ImagesItemEntity(
         src = src,
         alt = alt,
         variant_ids = variant_ids,
-    ) ?: null
+    )
 }
 
-fun VariantsItem.toDto(): VariantsItemEntity? {
+fun VariantsItem.toDto(): VariantsItemEntity {
     return VariantsItemEntity(
         title = title,
         price = price,
@@ -71,10 +71,10 @@ fun VariantsItem.toDto(): VariantsItemEntity? {
     )
 }
 
-fun OptionsItem.toDto(): OptionsItemEntity? {
+fun OptionsItem.toDto(): OptionsItemEntity {
     return OptionsItemEntity(
         values = values,
         name = name,
-    ) ?: null
+    )
 }
 

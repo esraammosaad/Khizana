@@ -147,11 +147,14 @@ fun MainScreen(
                     ),
 
                     label = {
-                        if (selectedIndex == 0) HorizontalDivider(
-                            color = Color.Black,
-                            thickness = 3.dp,
-                            modifier = Modifier.width(30.dp)
-                        )
+                        if (selectedIndex == 0)
+                            Text("Home")
+
+//                            HorizontalDivider(
+//                                color = Color.Black,
+//                                thickness = 3.dp,
+//                                modifier = Modifier.width(30.dp)
+//                            )
                     },
                     selected = false,
                     onClick = {
@@ -167,11 +170,15 @@ fun MainScreen(
                 NavigationBarItem(
                     selected = false,
                     label = {
-                        if (selectedIndex == 1) HorizontalDivider(
-                            color = Color.Black,
-                            thickness = 3.dp,
-                            modifier = Modifier.width(30.dp)
-                        )
+                        if (selectedIndex == 1)
+                            Text("Products")
+
+
+//                            HorizontalDivider(
+//                            color = Color.Black,
+//                            thickness = 3.dp,
+//                            modifier = Modifier.width(30.dp)
+//                        )
                     },
                     onClick = {
                         selectedIndex = 1
@@ -187,11 +194,15 @@ fun MainScreen(
                     selected = false,
                     onClick = { selectedIndex = 2 },
                     label = {
-                        if (selectedIndex == 2) HorizontalDivider(
-                            color = Color.Black,
-                            thickness = 3.dp,
-                            modifier = Modifier.width(30.dp)
-                        )
+                        if (selectedIndex == 2)
+                            Text("Inventory")
+
+
+//                            HorizontalDivider(
+//                            color = Color.Black,
+//                            thickness = 3.dp,
+//                            modifier = Modifier.width(30.dp)
+//                        )
                     },
                     icon = {
                         Image(
@@ -204,11 +215,15 @@ fun MainScreen(
                     selected = false,
                     onClick = { selectedIndex = 3 },
                     label = {
-                        if (selectedIndex == 3) HorizontalDivider(
-                            color = Color.Black,
-                            thickness = 3.dp,
-                            modifier = Modifier.width(30.dp)
-                        )
+                        if (selectedIndex == 3)
+                            Text("Coupons")
+
+
+//                            HorizontalDivider(
+//                            color = Color.Black,
+//                            thickness = 3.dp,
+//                            modifier = Modifier.width(30.dp)
+//                        )
                     },
                     icon = {
                         Image(
@@ -221,11 +236,14 @@ fun MainScreen(
                     selected = false,
                     onClick = { selectedIndex = 4 },
                     label = {
-                        if (selectedIndex == 4) HorizontalDivider(
-                            color = Color.Black,
-                            thickness = 3.dp,
-                            modifier = Modifier.width(30.dp)
-                        )
+                        if (selectedIndex == 4)
+                            Text("Profile")
+
+//                            HorizontalDivider(
+//                            color = Color.Black,
+//                            thickness = 3.dp,
+//                            modifier = Modifier.width(30.dp)
+//                        )
                     },
                     icon = {
                         Image(
