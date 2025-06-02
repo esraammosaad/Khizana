@@ -16,16 +16,20 @@ import androidx.navigation.toRoute
 import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
 import com.example.khizana.data.repository.OrderRepositoryImpl
+import com.example.khizana.data.repository.PriceRuleRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
 import com.example.khizana.domain.usecase.CreateProductUseCase
 import com.example.khizana.domain.usecase.DeleteProductUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
+import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
+import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModelFactory
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
@@ -70,6 +74,9 @@ class MainActivity : ComponentActivity() {
             val productsViewModel =
                 ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
 
+            val priceRuleFactory = PriceRuleViewModelFactory(GetAllPriceRulesUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))))
+            val priceRuleViewModel = ViewModelProvider(this, priceRuleFactory)[PriceRuleViewModel::class.java]
+
             NavHost(
                 navController = navigationController,
                 startDestination = NavigationRoutes.MainScreen
@@ -80,6 +87,7 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         homeViewModel = homeViewModel,
                         productsViewModel = productsViewModel,
+                        priceRuleViewModel = priceRuleViewModel,
                         navigationController = navigationController,
                         showBottomSheet = showBottomSheet
                     )

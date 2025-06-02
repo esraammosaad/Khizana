@@ -41,6 +41,7 @@ import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.presentation.feature.inventory.view.InventoryScreen
 import com.example.khizana.presentation.feature.priceRules.view.PriceRules
+import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
@@ -52,8 +53,10 @@ import com.example.khizana.presentation.feature.profile.view.ProfileScreen
 fun MainScreen(
     homeViewModel: HomeViewModel,
     productsViewModel: ProductsViewModel,
+    priceRuleViewModel: PriceRuleViewModel,
     navigationController: NavHostController,
     showBottomSheet: MutableState<Boolean>
+
 ) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -120,7 +123,7 @@ fun MainScreen(
                     }
 
                     3 -> {
-                        return@Column PriceRules()
+                        return@Column PriceRules(priceRuleViewModel = priceRuleViewModel)
 
                     }
 
