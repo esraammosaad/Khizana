@@ -10,6 +10,7 @@ data class Price_rulesItemEntity(
     val value_type: String,
     val once_per_customer: Boolean,
     val starts_at: String,
+    val ends_at: String,
     val created_at: String,
     val prerequisite_customer_ids: List<String>,
     val title: String,

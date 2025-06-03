@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -46,6 +44,7 @@ import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.profile.view.ProfileScreen
+import com.example.khizana.utilis.NavigationRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -81,7 +80,9 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        showBottomSheet.value = true
+                       // showBottomSheet.value = true
+                        navigationController.navigate(NavigationRoutes.AddPriceRuleScreen)
+
                     }) {
                         Icon(
                             Icons.Default.Add,

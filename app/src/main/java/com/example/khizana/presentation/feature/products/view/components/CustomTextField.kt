@@ -17,7 +17,13 @@ import com.example.khizana.ui.theme.secondaryColor
 fun CustomTextField(
     value: MutableState<String>,
     label: String,
-    trailingIcon: @Composable (() -> Unit)? = null
+    trailingIcon: @Composable (() -> Unit)? = null,
+    onValueChange: (String) -> Unit = {
+
+        value.value = it
+
+
+    }
 ) {
     OutlinedTextField(
         label = {
@@ -31,9 +37,7 @@ fun CustomTextField(
             .fillMaxWidth()
             .padding(bottom = 12.dp),
         value = value.value,
-        onValueChange = {
-            value.value = it
-        },
+        onValueChange = onValueChange,
         shape = RoundedCornerShape(25),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = secondaryColor,

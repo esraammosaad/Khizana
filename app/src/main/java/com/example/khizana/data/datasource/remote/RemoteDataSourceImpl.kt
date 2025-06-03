@@ -65,7 +65,7 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         apiService.updatePriceRules(priceRuleId, priceRule)
     }
 
-    override suspend fun deletePriceRules(priceRuleId : String) {
+    override suspend fun deletePriceRules(priceRuleId : String)  {
         apiService.deletePriceRules(priceRuleId)
     }
 }

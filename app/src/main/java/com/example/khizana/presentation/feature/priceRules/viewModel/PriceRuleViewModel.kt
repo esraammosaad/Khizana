@@ -6,10 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.khizana.domain.model.PriceRuleDomain
+import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
+import com.example.khizana.domain.usecase.DeletePriceRuleUseCase
+import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import kotlinx.coroutines.launch
 
-class PriceRuleViewModel(private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase) :
+class PriceRuleViewModel(
+    private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
+    private val createPriceRuleUseCase: CreatePriceRuleUseCase,
+    private val editPriceRuleUseCase: EditPriceRuleUseCase,
+    private val deletePriceRuleUseCase: DeletePriceRuleUseCase
+) :
     ViewModel() {
 
     private var _priceRules = MutableLiveData<PriceRuleDomain>()
@@ -17,24 +25,51 @@ class PriceRuleViewModel(private val getAllPriceRulesUseCase: GetAllPriceRulesUs
 
 
     fun getAllPriceRules() {
-
         viewModelScope.launch {
-
             _priceRules.postValue(getAllPriceRulesUseCase.getAllPriceRules())
-
         }
-
     }
 
+    fun createPriceRule(priceRule: PriceRuleDomain) {
+        viewModelScope.launch {
+            createPriceRuleUseCase.createPriceRule(priceRule)
+            getAllPriceRules()
+        }
+    }
 
+    fun editPriceRule(priceRuleId: String, priceRule: PriceRuleDomain) {
+        viewModelScope.launch {
+            editPriceRuleUseCase.editPriceRule(priceRuleId, priceRule)
+            getAllPriceRules()
+        }
+    }
+
+    fun deletePriceRule(priceRuleId: String) {
+        viewModelScope.launch {
+            deletePriceRuleUseCase.deletePriceRule(priceRuleId)
+            getAllPriceRules()
+
+
+        }
+    }
 }
 
-class PriceRuleViewModelFactory(private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase) :
+class PriceRuleViewModelFactory(
+    private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
+    private val createPriceRuleUseCase: CreatePriceRuleUseCase,
+    private val editPriceRuleUseCase: EditPriceRuleUseCase,
+    private val deletePriceRuleUseCase: DeletePriceRuleUseCase
+) :
     ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return PriceRuleViewModel(getAllPriceRulesUseCase) as T
+        return PriceRuleViewModel(
+            getAllPriceRulesUseCase,
+            createPriceRuleUseCase,
+            editPriceRuleUseCase,
+            deletePriceRuleUseCase
+        ) as T
     }
 
-
 }
+

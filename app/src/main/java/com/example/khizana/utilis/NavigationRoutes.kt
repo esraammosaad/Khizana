@@ -14,4 +14,7 @@ sealed class NavigationRoutes {
     @Serializable
     data object AddProductScreen : NavigationRoutes()
 
+    @Serializable
+    data object AddPriceRuleScreen : NavigationRoutes()
+
 }

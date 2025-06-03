@@ -1,5 +1,6 @@
 package com.example.khizana
 
+import AddPriceRuleScreen
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,8 +19,11 @@ import com.example.khizana.data.datasource.remote.RetrofitFactory
 import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.PriceRuleRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
+import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
 import com.example.khizana.domain.usecase.CreateProductUseCase
+import com.example.khizana.domain.usecase.DeletePriceRuleUseCase
 import com.example.khizana.domain.usecase.DeleteProductUseCase
+import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
@@ -43,7 +47,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navigationController = rememberNavController()
             val showBottomSheet = remember { mutableStateOf(false) }
-
 
 
             val homeFactory =
@@ -74,8 +77,16 @@ class MainActivity : ComponentActivity() {
             val productsViewModel =
                 ViewModelProvider(this, productsFactory)[ProductsViewModel::class.java]
 
-            val priceRuleFactory = PriceRuleViewModelFactory(GetAllPriceRulesUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))))
-            val priceRuleViewModel = ViewModelProvider(this, priceRuleFactory)[PriceRuleViewModel::class.java]
+            val priceRuleFactory = PriceRuleViewModelFactory(
+                GetAllPriceRulesUseCase(
+                    PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))
+                ),
+                CreatePriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
+                EditPriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
+                DeletePriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService)))
+            )
+            val priceRuleViewModel =
+                ViewModelProvider(this, priceRuleFactory)[PriceRuleViewModel::class.java]
 
             NavHost(
                 navController = navigationController,
@@ -97,13 +108,22 @@ class MainActivity : ComponentActivity() {
                 composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
                     val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
                     val id = data.productId
-                    ProductDetailsScreen(productId = id, productsViewModel = productsViewModel, navigationController = navigationController)
+                    ProductDetailsScreen(
+                        productId = id,
+                        productsViewModel = productsViewModel,
+                        navigationController = navigationController
+                    )
                 }
 
                 composable<NavigationRoutes.AddProductScreen> {
 
-                //    AddProductScreen(productsViewModel, showBottomSheet, product)
+                    //    AddProductScreen(productsViewModel, showBottomSheet, product)
 
+                }
+
+                composable<NavigationRoutes.AddPriceRuleScreen> {
+
+                   AddPriceRuleScreen(priceRuleViewModel = priceRuleViewModel)
                 }
 
             }
