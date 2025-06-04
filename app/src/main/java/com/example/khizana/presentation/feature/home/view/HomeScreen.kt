@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.KhizanaTheme
-import com.example.khizana.ui.theme.primaryColor
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -43,16 +42,12 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
     for (i in 0..6) {
         weeklyActivity.add(ordersCount?.get(i)?.count ?: 0)
     }
-
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 0.dp, start = 20.dp, end = 20.dp),
     ) {
-
         item {
-
             Text(
                 stringResource(R.string.hello_admin),
                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold)
@@ -69,7 +64,6 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     .height(260.dp)
                     .fillMaxWidth()
             ) {
-
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -85,14 +79,9 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                         stringResource(R.string.of_current_week),
                         style = TextStyle(fontSize = 12.sp, color = Color.Gray)
                     )
-
                 }
-
-
             }
-
             Spacer(modifier = Modifier.height(16.dp))
-
             Row(modifier = Modifier.fillMaxWidth()) {
                 CustomBox(
                     modifier = Modifier.weight(1f),
@@ -110,13 +99,8 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     icon = R.drawable.chart
                 )
             }
-
-
         }
-
-
     }
-
 }
 
 @Composable
@@ -152,15 +136,6 @@ private fun CustomBox(
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }
-    }
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun HomeScreenPreview() {
-    KhizanaTheme {
-        //HomeScreen(modifier = Modifier)
     }
 }
 

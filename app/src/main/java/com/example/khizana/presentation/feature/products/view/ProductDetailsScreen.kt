@@ -194,7 +194,7 @@ fun ProductDetailsScreen(
                     text = product?.product?.body_html ?: "",
                     style = TextStyle(
                         fontSize = 18.sp,
-                        color = Color.LightGray
+                        color = Color.Gray
                     ),
                 )
                 Spacer(modifier = Modifier.height(12.dp))
@@ -242,8 +242,7 @@ private fun CustomProductImage(productImage: String?) {
         contentDescription = stringResource(R.string.product_image),
         modifier = Modifier
             .fillMaxWidth()
-            .height(250.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .height(300.dp)
     )
 }
 

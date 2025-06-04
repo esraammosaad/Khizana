@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.domain.model.PriceRuleDomain
+import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
 import com.example.khizana.domain.usecase.DeletePriceRuleUseCase
 import com.example.khizana.domain.usecase.EditPriceRuleUseCase
@@ -30,14 +32,14 @@ class PriceRuleViewModel(
         }
     }
 
-    fun createPriceRule(priceRule: PriceRuleDomain) {
+    fun createPriceRule(priceRule: PriceRuleRequestDomain) {
         viewModelScope.launch {
             createPriceRuleUseCase.createPriceRule(priceRule)
             getAllPriceRules()
         }
     }
 
-    fun editPriceRule(priceRuleId: String, priceRule: PriceRuleDomain) {
+    fun editPriceRule(priceRuleId: String, priceRule: PriceRuleRequestDomain) {
         viewModelScope.launch {
             editPriceRuleUseCase.editPriceRule(priceRuleId, priceRule)
             getAllPriceRules()

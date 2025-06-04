@@ -6,6 +6,7 @@ import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.OrdersCount
 import com.example.khizana.data.dto.PriceRule
+import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import retrofit2.Response
@@ -58,10 +59,10 @@ interface ApiService {
     suspend fun getPriceRules() : PriceRule
 
     @POST("price_rules.json")
-    suspend fun createPriceRules(@Body priceRule : PriceRule)
+    suspend fun createPriceRules(@Body priceRuleRequest : PriceRuleRequest)
 
     @PUT("price_rules/{priceRuleId}.json")
-    suspend fun updatePriceRules(@Path("priceRuleId") priceRuleId : String ,@Body priceRule : PriceRule)
+    suspend fun updatePriceRules(@Path("priceRuleId") priceRuleId : String ,@Body priceRuleRequest : PriceRuleRequest)
 
     @DELETE("price_rules/{priceRuleId}.json")
     suspend fun deletePriceRules(@Path("priceRuleId") priceRuleId : String) : Response<Unit>

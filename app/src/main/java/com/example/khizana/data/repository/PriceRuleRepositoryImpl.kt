@@ -3,6 +3,7 @@ package com.example.khizana.data.repository
 import com.example.khizana.data.repository.mapper.toDomain
 import com.example.khizana.data.repository.mapper.toDto
 import com.example.khizana.domain.model.PriceRuleDomain
+import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.repository.PriceRuleRepository
 
 class PriceRuleRepositoryImpl(private val remoteDataSource: RemoteDataSource) :
@@ -11,12 +12,12 @@ class PriceRuleRepositoryImpl(private val remoteDataSource: RemoteDataSource) :
         return remoteDataSource.getPriceRules().toDomain()
     }
 
-    override suspend fun createPriceRules(priceRule: PriceRuleDomain) {
-        remoteDataSource.createPriceRules(priceRule.toDto())
+    override suspend fun createPriceRules(priceRuleRequestDomain: PriceRuleRequestDomain) {
+        remoteDataSource.createPriceRules(priceRuleRequestDomain.toDto())
     }
 
-    override suspend fun updatePriceRule(priceRuleId: String, priceRule: PriceRuleDomain) {
-        remoteDataSource.updatePriceRules(priceRuleId, priceRule.toDto())
+    override suspend fun updatePriceRule(priceRuleId: String, priceRuleRequestDomain: PriceRuleRequestDomain) {
+        remoteDataSource.updatePriceRules(priceRuleId, priceRuleRequestDomain.toDto())
     }
 
     override suspend fun deletePriceRule(priceRuleId: String) {

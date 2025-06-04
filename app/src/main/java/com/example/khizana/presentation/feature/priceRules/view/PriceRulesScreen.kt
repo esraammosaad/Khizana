@@ -24,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,19 +57,7 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
     LazyColumn(
         Modifier
             .fillMaxSize()
-            .background(color = Color.White)
     ) {
-        item {
-            ConfirmationDialog(
-                showDialog = showDialog.value,
-                onConfirm = {
-                    priceRuleViewModel.deletePriceRule(selectedPriceRule.value)
-                },
-                onDismiss = {
-                    showDialog.value = false
-                }
-            )
-        }
         items(
             priceRules?.price_rules?.size ?: 0,
             key = { priceRules?.price_rules?.get(it)?.id ?: "" }) {
@@ -80,12 +67,23 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
                 barcode = priceRules?.price_rules?.get(it)?.id ?: "",
                 startAt = priceRules?.price_rules?.get(it)?.starts_at ?: "",
                 endAt = priceRules?.price_rules?.get(it)?.ends_at ?: "",
-                showDialog,
-                selectedPriceRule,
-                modifier = Modifier.animateItem()
+                modifier = Modifier.animateItem(),
+                onDeleteIconClicked = {
+                    selectedPriceRule.value = priceRules?.price_rules?.get(it)?.id ?: ""
+                    showDialog.value = true
+                }
             )
         }
     }
+    ConfirmationDialog(
+        showDialog = showDialog.value,
+        onConfirm = {
+            priceRuleViewModel.deletePriceRule(selectedPriceRule.value)
+        },
+        onDismiss = {
+            showDialog.value = false
+        }
+    )
 
 }
 
@@ -97,9 +95,8 @@ fun DiscountCard(
     barcode: String,
     startAt: String,
     endAt: String,
-    showDialog: MutableState<Boolean>,
-    selectedPriceRule: MutableState<String>,
-    modifier: Modifier
+    modifier: Modifier,
+    onDeleteIconClicked: () -> Unit
 ) {
 
     Box(contentAlignment = Alignment.TopStart, modifier = modifier) {
@@ -121,8 +118,7 @@ fun DiscountCard(
                 modifier = Modifier
                     .size(15.dp)
                     .clickable {
-                        showDialog.value = true
-                        selectedPriceRule.value = barcode
+                       onDeleteIconClicked.invoke()
                     }
             )
         }
@@ -148,7 +144,9 @@ fun CustomDiscountCard(
                 .height(230.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(
-                    Brush.horizontalGradient(listOf(Color(0xFFFFD1DC), Color(0xFFFFC1CC)))
+                    Brush.horizontalGradient(
+                        listOf(Color(0xFFBBDEFB), Color(0xFF64B5F6))
+                    )
                 )
         ) {
             Row(

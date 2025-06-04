@@ -60,10 +60,8 @@ fun MainScreen(
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
-
     Scaffold(
         topBar = {
-
             TopAppBar(
                 title = {
                     Box(
@@ -80,14 +78,19 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                       // showBottomSheet.value = true
-                        navigationController.navigate(NavigationRoutes.AddPriceRuleScreen)
+                        if (selectedIndex == 1) {
+                            showBottomSheet.value = true
+                        } else if (selectedIndex == 3) {
+                            navigationController.navigate(NavigationRoutes.AddPriceRuleScreen)
+                        }
 
                     }) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Add",
-                        )
+                        if (selectedIndex != 0) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Add",
+                            )
+                        }
                     }
                 }
             )

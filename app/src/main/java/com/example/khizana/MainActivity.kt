@@ -123,7 +123,7 @@ class MainActivity : ComponentActivity() {
 
                 composable<NavigationRoutes.AddPriceRuleScreen> {
 
-                   AddPriceRuleScreen(priceRuleViewModel = priceRuleViewModel)
+                   AddPriceRuleScreen(priceRuleViewModel = priceRuleViewModel, navController = navigationController)
                 }
 
             }

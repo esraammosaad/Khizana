@@ -77,7 +77,7 @@ fun ProductsScreen(
             showDialog.value = false
         }
     )
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         LazyColumn {
             items(
                 items = products.value?.products.orEmpty(),
@@ -85,7 +85,7 @@ fun ProductsScreen(
                 Box(
                     modifier = Modifier
                         .animateItem()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 8.dp)
                         .height(250.dp)
                         .clickable {
                             navigationController.navigate(
@@ -202,7 +202,7 @@ private fun CustomProductCard(
                 contentDescription = stringResource(R.string.product_image),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .width(120.dp)
+                    .width(160.dp)
                     .padding(horizontal = 6.dp)
             )
             Column(

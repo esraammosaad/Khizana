@@ -7,6 +7,7 @@ import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.OrdersCount
 import com.example.khizana.data.dto.PriceRule
+import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import com.example.khizana.data.repository.RemoteDataSource
@@ -57,12 +58,12 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         return apiService.getPriceRules()
     }
 
-    override suspend fun createPriceRules(priceRule : PriceRule) {
-        apiService.createPriceRules(priceRule)
+    override suspend fun createPriceRules(priceRuleRequest : PriceRuleRequest) {
+        apiService.createPriceRules(priceRuleRequest)
     }
 
-    override suspend fun updatePriceRules(priceRuleId : String ,priceRule : PriceRule) {
-        apiService.updatePriceRules(priceRuleId, priceRule)
+    override suspend fun updatePriceRules(priceRuleId : String ,priceRuleRequest : PriceRuleRequest) {
+        apiService.updatePriceRules(priceRuleId, priceRuleRequest)
     }
 
     override suspend fun deletePriceRules(priceRuleId : String)  {

@@ -15,8 +15,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.khizana.R
-import com.example.khizana.domain.model.PriceRuleDomain
+import com.example.khizana.domain.model.Prerequisite_to_entitlement_quantity_ratio
+import com.example.khizana.domain.model.PriceRuleRequestDomain
+import com.example.khizana.domain.model.PriceRule
 import com.example.khizana.presentation.feature.priceRules.view.CustomDiscountCard
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
@@ -25,7 +28,7 @@ import com.example.khizana.ui.theme.secondaryColor
 import java.util.*
 
 @Composable
-fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceRuleViewModel) {
+fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceRuleViewModel, navController: NavController) {
     val discount = remember { mutableStateOf("discount%") }
     val title = remember { mutableStateOf("coupon title") }
     val barcode = remember { mutableStateOf("coupon Serial Number") }
@@ -40,16 +43,23 @@ fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceR
 
     val calendar = Calendar.getInstance()
 
-    val discountType = remember { mutableStateOf("Percentage") }
-    val discountOptions = listOf("Percentage", "Fixed Price")
+    val discountType = remember { mutableStateOf("percentage") }
+    val discountOptions = listOf("percentage", "fixed_amount")
 
     LazyColumn(modifier = modifier.padding(top = 64.dp)) {
         item {
+            Text("Add New Coupon Now!", style = TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+                modifier = Modifier.padding(12.dp)
+            )
+            Spacer(modifier = Modifier.height(18.dp))
             CustomDiscountCard(
                 discount = discount.value,
                 title = title.value,
-                startAt = startDate.value + "               ",
-                endAt = endDate.value + "                 ",
+                startAt = startDate.value + "         ",
+                endAt = endDate.value + "             ",
                 barcode = barcode.value,
             )
 
@@ -60,10 +70,10 @@ fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceR
                     onValueChange = {
                         discountValue.value = it
                         discount.value = it
-                        if (discountType.value == "Percentage") {
-                            discount.value = "$it%"
+                        if (discountType.value == "percentage") {
+                            discount.value = "${it}%"
                         } else {
-                            discount.value = it + "EGP"
+                            discount.value = "${it}EGP"
                         }
                     }
                 )
@@ -90,6 +100,7 @@ fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceR
                                 calendar.get(Calendar.MONTH),
                                 calendar.get(Calendar.DAY_OF_MONTH)
                             )
+                            datePicker.datePicker.minDate = System.currentTimeMillis()
                             datePicker.show()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -170,7 +181,29 @@ fun AddPriceRuleScreen(modifier: Modifier = Modifier, priceRuleViewModel: PriceR
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
-
+                        priceRuleViewModel.createPriceRule(
+                            priceRule = PriceRuleRequestDomain(
+                                price_rule = PriceRule(
+                                    allocation_method = "each",
+                                    prerequisite_to_entitlement_quantity_ratio = Prerequisite_to_entitlement_quantity_ratio(
+                                        prerequisite_quantity = 2,
+                                        entitled_quantity = 1
+                                    ),
+                                    value_type = discountType.value,
+                                    starts_at = startDate.value,
+                                    allocation_limit = 3,
+                                    target_type = "line_item",
+                                    entitled_product_ids = listOf("7379132088433"),
+                                    title = titleValue.value,
+                                    customer_selection = "all",
+                                    target_selection = "entitled",
+                                    ends_at = endDate.value,
+                                    value = discountValue.value,
+                                    prerequisite_collection_ids = listOf("288621756529")
+                                ),
+                            )
+                        )
+                        navController.popBackStack()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
