@@ -5,7 +5,7 @@ import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.Price_rulesItemEntity
 import com.example.khizana.domain.model.PrerequisiteToEntitlementQuantityRatioItem
 import com.example.khizana.domain.model.PriceRuleDomain
-import com.example.khizana.domain.model.Price_rulesItem
+import com.example.khizana.domain.model.PriceRuleItem
 
 fun PriceRule.toDomain(): PriceRuleDomain {
     return PriceRuleDomain(
@@ -20,7 +20,7 @@ fun PriceRuleDomain.toDto(): PriceRule {
     )
 }
 
-fun Price_rulesItem.toDto(): Price_rulesItemEntity {
+fun PriceRuleItem.toDto(): Price_rulesItemEntity {
     return Price_rulesItemEntity(
         value_type = value_type,
         once_per_customer = once_per_customer,
@@ -63,8 +63,8 @@ fun PrerequisiteToEntitlementQuantityRatioItem.toDto(): PrerequisiteToEntitlemen
 
 
 
-fun Price_rulesItemEntity.toDomain(): Price_rulesItem {
-    return Price_rulesItem(
+fun Price_rulesItemEntity.toDomain(): PriceRuleItem {
+    return PriceRuleItem(
         value_type = value_type,
         once_per_customer = once_per_customer,
         starts_at = starts_at,

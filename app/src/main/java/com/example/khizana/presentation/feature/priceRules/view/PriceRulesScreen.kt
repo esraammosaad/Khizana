@@ -39,13 +39,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.utilis.ConfirmationDialog
+import com.example.khizana.utilis.NavigationRoutes
 
 @Composable
-fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
+fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavController) {
 
     LaunchedEffect(Unit) {
         priceRuleViewModel.getAllPriceRules()
@@ -61,6 +63,10 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
         items(
             priceRules?.price_rules?.size ?: 0,
             key = { priceRules?.price_rules?.get(it)?.id ?: "" }) {
+            Box(
+                modifier = Modifier.clickable {
+                }
+            ){
             DiscountCard(
                 title = priceRules?.price_rules?.get(it)?.title ?: "",
                 discount = priceRules?.price_rules?.get(it)?.value.toString() + "%",
@@ -72,7 +78,7 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
                     selectedPriceRule.value = priceRules?.price_rules?.get(it)?.id ?: ""
                     showDialog.value = true
                 }
-            )
+            )}
         }
     }
     ConfirmationDialog(

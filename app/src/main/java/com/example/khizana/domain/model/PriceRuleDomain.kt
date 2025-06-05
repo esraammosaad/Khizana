@@ -1,10 +1,14 @@
 package com.example.khizana.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class PriceRuleDomain(
-    val price_rules: List<Price_rulesItem>
+    val price_rules: List<PriceRuleItem>
 )
 
-data class Price_rulesItem(
+@Serializable
+data class PriceRuleItem(
     val value_type: String,
     val once_per_customer: Boolean,
     val starts_at: String,
@@ -29,6 +33,7 @@ data class Price_rulesItem(
 
 )
 
+@Serializable
 data class PrerequisiteToEntitlementQuantityRatioItem(
     val prerequisite_quantity: Int,
     val entitled_quantity: Int

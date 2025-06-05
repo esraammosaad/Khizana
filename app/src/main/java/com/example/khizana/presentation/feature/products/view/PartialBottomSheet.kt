@@ -24,7 +24,6 @@ import com.example.khizana.presentation.feature.products.viewModel.ProductsViewM
 fun PartialBottomSheet(
     showBottomSheet: MutableState<Boolean>,
     productsViewModel: ProductsViewModel,
-    onAddClicked: () -> Unit,
     product: ProductsItem?,
     isEditable: Boolean,
     productId: String? = null

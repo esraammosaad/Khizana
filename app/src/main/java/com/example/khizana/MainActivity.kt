@@ -32,6 +32,9 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.presentation.feature.landing.OnBoardingScreen
+import com.example.khizana.presentation.feature.landing.SplashScreen
+import com.example.khizana.presentation.feature.login.LoginScreen
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModelFactory
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
@@ -90,8 +93,22 @@ class MainActivity : ComponentActivity() {
 
             NavHost(
                 navController = navigationController,
-                startDestination = NavigationRoutes.MainScreen
+                startDestination = NavigationRoutes.SplashScreen
             ) {
+
+                composable<NavigationRoutes.SplashScreen> {
+                    SplashScreen {
+                        navigationController.navigate(NavigationRoutes.OnBoardingScreen)
+                    }
+                }
+
+                composable<NavigationRoutes.OnBoardingScreen> {
+                    OnBoardingScreen(navController = navigationController)
+                }
+
+                composable<NavigationRoutes.LoginScreen> {
+                    LoginScreen(navController = navigationController)
+                }
 
                 composable<NavigationRoutes.MainScreen> {
 
@@ -123,7 +140,10 @@ class MainActivity : ComponentActivity() {
 
                 composable<NavigationRoutes.AddPriceRuleScreen> {
 
-                   AddPriceRuleScreen(priceRuleViewModel = priceRuleViewModel, navController = navigationController)
+                    AddPriceRuleScreen(
+                        priceRuleViewModel = priceRuleViewModel,
+                        navController = navigationController,
+                    )
                 }
 
             }

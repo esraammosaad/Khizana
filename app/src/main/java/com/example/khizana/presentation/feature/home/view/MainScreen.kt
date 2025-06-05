@@ -99,7 +99,6 @@ fun MainScreen(
             PartialBottomSheet(
                 showBottomSheet = showBottomSheet,
                 productsViewModel = productsViewModel,
-                onAddClicked = {},
                 product = null,
                 isEditable = false
             )
@@ -127,7 +126,10 @@ fun MainScreen(
                     }
 
                     3 -> {
-                        return@Column PriceRules(priceRuleViewModel = priceRuleViewModel)
+                        return@Column PriceRules(
+                            priceRuleViewModel = priceRuleViewModel,
+                            navController = navigationController
+                        )
 
                     }
 
