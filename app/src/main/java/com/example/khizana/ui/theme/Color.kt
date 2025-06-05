@@ -14,4 +14,5 @@ val primaryColor = Color(0xFF295bbe)
 val secondaryColor = Color(0xFFE2EDFC)
 val lightGreyColor = Color(0xffEDEDED)
 val lighterGreyColor = Color(0xffC2C2C2)
+val offWhiteColor = Color(0xffF8F8F8)
 

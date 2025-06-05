@@ -79,20 +79,26 @@ fun OnBoardingScreen(navController: NavController) {
                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    navController.navigate(NavigationRoutes.LoginScreen)
-
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = primaryColor,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp)
-            ) {
-                Text("Log in", style = TextStyle(fontSize = 18.sp))
-            }
+            CustomButton(onClick = {
+                navController.navigate(NavigationRoutes.LoginScreen)
+            }, text = "Log in")
         }
+    }
+}
+
+@Composable
+fun CustomButton(onClick: () -> Unit, text : String) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = primaryColor,
+            contentColor = Color.White
+        ),
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 5.dp)
+    ) {
+        Text(text, style = TextStyle(fontSize = 18.sp))
     }
 }

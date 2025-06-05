@@ -9,9 +9,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
+import java.lang.Error
 
 @Composable
 fun CustomTextField(
@@ -19,11 +21,10 @@ fun CustomTextField(
     label: String,
     trailingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {
-
         value.value = it
-
-
-    }
+    },
+    error: Boolean = false,
+    errorMessage: String = ""
 ) {
     OutlinedTextField(
         label = {
@@ -43,12 +44,20 @@ fun CustomTextField(
             focusedBorderColor = secondaryColor,
             disabledBorderColor = secondaryColor,
             unfocusedBorderColor = secondaryColor,
-            errorBorderColor = primaryColor,
-            errorTextColor = primaryColor,
-            errorCursorColor = primaryColor,
-            errorPlaceholderColor = primaryColor,
+            errorBorderColor = Color.Red,
+            errorTextColor = Color.Red,
+            errorCursorColor = Color.Red,
+            errorPlaceholderColor = Color.Red,
             cursorColor = primaryColor
         ),
         trailingIcon = trailingIcon,
+        isError = error,
+        supportingText = {
+            if (error) {
+                Text(
+                    text = errorMessage,
+                )
+            }
+        }
     )
 }
