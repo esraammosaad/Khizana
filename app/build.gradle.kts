@@ -45,6 +45,9 @@ android {
 dependencies {
 
     implementation ("com.cloudinary:cloudinary-android:3.0.2")
+    implementation("com.google.firebase:firebase-auth")
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+
 
 
     implementation("androidx.compose.foundation:foundation:1.8.2")

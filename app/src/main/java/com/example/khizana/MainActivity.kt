@@ -14,8 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.khizana.data.datasource.remote.AuthService
 import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
+import com.example.khizana.data.repository.AuthRepositoryImpl
 import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.PriceRuleRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
@@ -29,18 +31,22 @@ import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
+import com.example.khizana.domain.usecase.LoginUseCase
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModelFactory
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.presentation.feature.landing.OnBoardingScreen
 import com.example.khizana.presentation.feature.landing.SplashScreen
-import com.example.khizana.presentation.feature.login.LoginScreen
+import com.example.khizana.presentation.feature.login.view.LoginScreen
+import com.example.khizana.presentation.feature.login.viewModel.LoginViewModel
+import com.example.khizana.presentation.feature.login.viewModel.LoginViewModelFactory
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModelFactory
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModelFactory
 import com.example.khizana.utilis.NavigationRoutes
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -50,8 +56,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navigationController = rememberNavController()
             val showBottomSheet = remember { mutableStateOf(false) }
-
-
             val homeFactory =
                 HomeViewModelFactory(
                     GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
@@ -90,28 +94,36 @@ class MainActivity : ComponentActivity() {
             )
             val priceRuleViewModel =
                 ViewModelProvider(this, priceRuleFactory)[PriceRuleViewModel::class.java]
-
+            val loginFactory = LoginViewModelFactory(
+                LoginUseCase(
+                    AuthRepositoryImpl(
+                        RemoteDataSourceImpl(RetrofitFactory.apiService, AuthService())
+                    )
+                )
+            )
+            val loginViewModel = ViewModelProvider(this, loginFactory)[LoginViewModel::class.java]
             NavHost(
                 navController = navigationController,
                 startDestination = NavigationRoutes.SplashScreen
             ) {
-
                 composable<NavigationRoutes.SplashScreen> {
                     SplashScreen {
-                        navigationController.navigate(NavigationRoutes.OnBoardingScreen)
+                        if (FirebaseAuth.getInstance().currentUser != null)
+                            navigationController.navigate(NavigationRoutes.MainScreen)
+                        else
+                            navigationController.navigate(NavigationRoutes.OnBoardingScreen)
                     }
                 }
-
                 composable<NavigationRoutes.OnBoardingScreen> {
                     OnBoardingScreen(navController = navigationController)
                 }
-
                 composable<NavigationRoutes.LoginScreen> {
-                    LoginScreen(navController = navigationController)
+                    LoginScreen(
+                        navController = navigationController,
+                        loginViewModel = loginViewModel
+                    )
                 }
-
                 composable<NavigationRoutes.MainScreen> {
-
                     MainScreen(
                         homeViewModel = homeViewModel,
                         productsViewModel = productsViewModel,
@@ -119,9 +131,7 @@ class MainActivity : ComponentActivity() {
                         navigationController = navigationController,
                         showBottomSheet = showBottomSheet
                     )
-
                 }
-
                 composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
                     val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
                     val id = data.productId
@@ -131,27 +141,18 @@ class MainActivity : ComponentActivity() {
                         navigationController = navigationController
                     )
                 }
-
                 composable<NavigationRoutes.AddProductScreen> {
-
                     //    AddProductScreen(productsViewModel, showBottomSheet, product)
-
                 }
-
                 composable<NavigationRoutes.AddPriceRuleScreen> {
-
                     AddPriceRuleScreen(
                         priceRuleViewModel = priceRuleViewModel,
                         navController = navigationController,
                     )
                 }
-
             }
-
         }
     }
-
-
 }
 
 

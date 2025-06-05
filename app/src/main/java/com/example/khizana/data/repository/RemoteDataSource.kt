@@ -11,6 +11,7 @@ import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 
 interface RemoteDataSource {
+    suspend fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
     suspend fun getProducts(): Product
     suspend fun createProduct(product: ProductRequest) : ProductRequest
     suspend fun getOrders(): Order

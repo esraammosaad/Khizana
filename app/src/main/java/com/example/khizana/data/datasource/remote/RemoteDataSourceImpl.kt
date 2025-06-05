@@ -12,41 +12,51 @@ import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import com.example.khizana.data.repository.RemoteDataSource
 
-class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSource{
+class RemoteDataSourceImpl(private val apiService: ApiService = RetrofitFactory.apiService, private val auth: AuthService = AuthService()) :
+    RemoteDataSource {
 
-    override suspend fun getProducts() : Product {
+   override suspend fun login(
+        email: String,
+        password: String,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit) {
+        auth.login(email, password, onSuccess, onFailure)
+    }
+
+
+    override suspend fun getProducts(): Product {
         return apiService.getProducts()
     }
 
-    override suspend fun createProduct(product: ProductRequest) : ProductRequest  {
-       return apiService.createProduct(product)
+    override suspend fun createProduct(product: ProductRequest): ProductRequest {
+        return apiService.createProduct(product)
     }
 
-    override suspend fun getOrders() : Order {
+    override suspend fun getOrders(): Order {
         return apiService.getOrders()
     }
 
-    override suspend fun getOrdersCount(minDate: String, maxDate: String) : OrdersCount {
+    override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount {
         return apiService.getOrdersCountToday(minDate, maxDate)
     }
 
-    override suspend fun deleteProduct(productId : String) {
+    override suspend fun deleteProduct(productId: String) {
         apiService.deleteProduct(productId)
     }
 
-    override suspend fun getProductById(productId : String) : ProductRequest {
+    override suspend fun getProductById(productId: String): ProductRequest {
         return apiService.getProductById(productId)
     }
 
-    override suspend fun editProduct(productId : String, product : ProductRequest) {
+    override suspend fun editProduct(productId: String, product: ProductRequest) {
         apiService.editProduct(productId, product)
     }
 
-    override suspend fun getAllInventoryLocations() : Location {
+    override suspend fun getAllInventoryLocations(): Location {
         return apiService.getAllInventoryLocations()
     }
 
-    override suspend fun getInventoryLevels(locationId : String) : InventoryLevel {
+    override suspend fun getInventoryLevels(locationId: String): InventoryLevel {
         return apiService.getInventoryLevels(locationId)
     }
 
@@ -54,19 +64,19 @@ class RemoteDataSourceImpl(private val apiService: ApiService) : RemoteDataSourc
         apiService.adjustInventory(inventoryLevelRequest)
     }
 
-    override suspend fun getPriceRules() : PriceRule {
+    override suspend fun getPriceRules(): PriceRule {
         return apiService.getPriceRules()
     }
 
-    override suspend fun createPriceRules(priceRuleRequest : PriceRuleRequest) {
+    override suspend fun createPriceRules(priceRuleRequest: PriceRuleRequest) {
         apiService.createPriceRules(priceRuleRequest)
     }
 
-    override suspend fun updatePriceRules(priceRuleId : String ,priceRuleRequest : PriceRuleRequest) {
+    override suspend fun updatePriceRules(priceRuleId: String, priceRuleRequest: PriceRuleRequest) {
         apiService.updatePriceRules(priceRuleId, priceRuleRequest)
     }
 
-    override suspend fun deletePriceRules(priceRuleId : String)  {
+    override suspend fun deletePriceRules(priceRuleId: String) {
         apiService.deletePriceRules(priceRuleId)
     }
 }

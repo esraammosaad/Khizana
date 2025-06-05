@@ -36,7 +36,7 @@ fun CustomTextField(
         enabled = true,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp),
+            .padding(bottom = 8.dp),
         value = value.value,
         onValueChange = onValueChange,
         shape = RoundedCornerShape(25),
