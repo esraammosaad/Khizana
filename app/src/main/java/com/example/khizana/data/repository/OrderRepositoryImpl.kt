@@ -7,8 +7,8 @@ import com.example.khizana.domain.repository.OrderRepository
 
 class OrderRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) : OrderRepository {
 
-    override suspend fun getOrders(): OrderDomain {
-        return remoteDataSourceImpl.getOrders().toDomain()
+    override suspend fun getOrders(minDate: String, maxDate: String): OrderDomain {
+        return remoteDataSourceImpl.getOrders(minDate, maxDate).toDomain()
     }
 
     override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCountDomain {

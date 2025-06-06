@@ -28,6 +28,9 @@ class HomeViewModel(
     private var _orders: MutableLiveData<OrderDomain> = MutableLiveData()
     val orders: LiveData<OrderDomain> = _orders
 
+    private var _totalOrdersPrice: MutableLiveData<Float> = MutableLiveData()
+    val totalOrdersPrice: LiveData<Float> = _totalOrdersPrice
+
     private var _ordersCount: MutableLiveData<List<OrdersCountDomain>> = MutableLiveData()
     val ordersCount: LiveData<List<OrdersCountDomain>> = _ordersCount
 
@@ -40,21 +43,34 @@ class HomeViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getOrders() {
         viewModelScope.launch {
-            val response = getOrdersUseCase.getOrders()
-            _orders.postValue(response)
-            Log.i("TAG", "getOrders: $response")
+            val list = mutableListOf<Float>()
+            val response = getOrdersUseCase.getOrders(getShopifyOrderCountDatesForLastSevenDays()[0]+Strings.START_OF_THE_DAY, getShopifyOrderCountDatesForLastSevenDays()[6]+Strings.END_OF_THE_DAY)
 
+            response.orders?.forEach { order ->
+                val amount = order?.current_total_price_set?.shop_money?.amount?.toFloatOrNull() ?: 0f
+                val currency = order?.current_total_price_set?.shop_money?.currency_code
+
+                if (currency == "EUR") {
+                    list.add(amount * 50f)
+                } else {
+                    list.add(amount)
+                }
+            }
+
+            _orders.postValue(response)
+            _totalOrdersPrice.postValue(list.sum())
+            Log.i("TAG", "getOrders: $response")
         }
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getOrdersCount() {
         viewModelScope.launch {
-
             val list = mutableListOf<OrdersCountDomain>()
-
             for (i in 0..6) {
                 val response = getOrdersUseCase.getOrdersCount(
                     minDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.START_OF_THE_DAY,
@@ -64,7 +80,6 @@ class HomeViewModel(
                 Log.i("TAG", "getOrdersCount: $response")
             }
             _ordersCount.postValue(list)
-
         }
     }
 }

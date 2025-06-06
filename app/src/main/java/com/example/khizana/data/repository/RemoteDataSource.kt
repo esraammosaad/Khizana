@@ -14,7 +14,7 @@ interface RemoteDataSource {
     suspend fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
     suspend fun getProducts(): Product
     suspend fun createProduct(product: ProductRequest) : ProductRequest
-    suspend fun getOrders(): Order
+    suspend fun getOrders(minDate: String, maxDate: String): Order
     suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount
     suspend fun deleteProduct(productId: String)
     suspend fun getProductById(productId: String): ProductRequest

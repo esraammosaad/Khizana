@@ -166,10 +166,10 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                                             email = email.value,
                                             password = password.value,
                                             onSuccess = {
-                                                isLoading.value = false
                                                 coroutineScope.launch {
                                                     snackbarHostState.showSnackbar("Login successful")
                                                 }
+                                                isLoading.value = false
                                                 navController.navigate(NavigationRoutes.MainScreen) {
                                                     popUpTo(NavigationRoutes.SplashScreen) {
                                                         inclusive = true

@@ -32,8 +32,8 @@ class RemoteDataSourceImpl(private val apiService: ApiService = RetrofitFactory.
         return apiService.createProduct(product)
     }
 
-    override suspend fun getOrders(): Order {
-        return apiService.getOrders()
+    override suspend fun getOrders(minDate: String, maxDate: String): Order {
+        return apiService.getOrders(minDate, maxDate)
     }
 
     override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount {

@@ -1,5 +1,7 @@
 package com.example.khizana.presentation.feature.priceRules.view
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -43,9 +45,12 @@ import androidx.navigation.NavController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.ui.theme.lightGreyColor
+import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.NavigationRoutes
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavController) {
 
@@ -55,7 +60,15 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavControl
     val showDialog = remember { mutableStateOf(false) }
     val priceRules = priceRuleViewModel.priceRules.observeAsState().value
     val selectedPriceRule = remember { mutableStateOf("") }
+    val showBottomSheet = remember { mutableStateOf(false) }
+    val priceRule = remember { mutableStateOf(priceRules?.price_rules?.first()) }
 
+    PartialPriceRuleBottomSheet(
+        showBottomSheet = showBottomSheet,
+        priceRuleViewModel = priceRuleViewModel,
+        priceRule = priceRule.value,
+        isEditable = true
+    )
     LazyColumn(
         Modifier
             .fillMaxSize()
@@ -66,19 +79,40 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavControl
             Box(
                 modifier = Modifier.clickable {
                 }
-            ){
-            DiscountCard(
-                title = priceRules?.price_rules?.get(it)?.title ?: "",
-                discount = priceRules?.price_rules?.get(it)?.value.toString() + "%",
-                barcode = priceRules?.price_rules?.get(it)?.id ?: "",
-                startAt = priceRules?.price_rules?.get(it)?.starts_at ?: "",
-                endAt = priceRules?.price_rules?.get(it)?.ends_at ?: "",
-                modifier = Modifier.animateItem(),
-                onDeleteIconClicked = {
-                    selectedPriceRule.value = priceRules?.price_rules?.get(it)?.id ?: ""
-                    showDialog.value = true
+            ) {
+
+
+                Box(contentAlignment = Alignment.TopEnd) {
+                    DiscountCard(
+                        title = priceRules?.price_rules?.get(it)?.title ?: "",
+                        discount = priceRules?.price_rules?.get(it)?.value.toString() + if (priceRules?.price_rules?.get(
+                                it
+                            )?.value_type == "percentage"
+                        ) "%" else "EGP",
+                        barcode = priceRules?.price_rules?.get(it)?.id ?: "",
+                        startAt = priceRules?.price_rules?.get(it)?.starts_at ?: "",
+                        endAt = priceRules?.price_rules?.get(it)?.ends_at ?: "",
+                        modifier = Modifier.animateItem(),
+                        onDeleteIconClicked = {
+                            selectedPriceRule.value = priceRules?.price_rules?.get(it)?.id ?: ""
+                            showDialog.value = true
+                        }
+                    )
+                    Text(
+                        "Edit",
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(end = 32.dp, top = 16.dp)
+                            .clickable {
+
+                                priceRule.value = priceRules?.price_rules?.get(it)
+                                showBottomSheet.value = true
+
+                            },
+                        fontSize = 16.sp
+                    )
                 }
-            )}
+            }
         }
     }
     ConfirmationDialog(
@@ -124,7 +158,7 @@ fun DiscountCard(
                 modifier = Modifier
                     .size(15.dp)
                     .clickable {
-                       onDeleteIconClicked.invoke()
+                        onDeleteIconClicked.invoke()
                     }
             )
         }
@@ -151,7 +185,10 @@ fun CustomDiscountCard(
                 .clip(RoundedCornerShape(16.dp))
                 .background(
                     Brush.horizontalGradient(
-                        listOf(Color(0xFFBBDEFB), Color(0xFF64B5F6))
+                        listOf(
+                            Color(0xFF295BBE),
+                            Color(0xFF5A7FD4)
+                        )
                     )
                 )
         ) {

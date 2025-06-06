@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,13 +39,13 @@ import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.presentation.feature.inventory.view.InventoryScreen
+import com.example.khizana.presentation.feature.priceRules.view.PartialPriceRuleBottomSheet
 import com.example.khizana.presentation.feature.priceRules.view.PriceRules
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.profile.view.ProfileScreen
-import com.example.khizana.utilis.NavigationRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -54,11 +55,11 @@ fun MainScreen(
     productsViewModel: ProductsViewModel,
     priceRuleViewModel: PriceRuleViewModel,
     navigationController: NavHostController,
-    showBottomSheet: MutableState<Boolean>
-
 ) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
+    val showBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val showPriceRuleBottomSheet = rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -81,7 +82,7 @@ fun MainScreen(
                         if (selectedIndex == 1) {
                             showBottomSheet.value = true
                         } else if (selectedIndex == 3) {
-                            navigationController.navigate(NavigationRoutes.AddPriceRuleScreen)
+                            showPriceRuleBottomSheet.value = true
                         }
 
                     }) {
@@ -100,6 +101,12 @@ fun MainScreen(
                 showBottomSheet = showBottomSheet,
                 productsViewModel = productsViewModel,
                 product = null,
+                isEditable = false
+            )
+            PartialPriceRuleBottomSheet(
+                showBottomSheet = showPriceRuleBottomSheet,
+                priceRuleViewModel = priceRuleViewModel,
+                priceRule = null,
                 isEditable = false
             )
             Column(

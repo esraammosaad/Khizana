@@ -26,8 +26,12 @@ interface ApiService {
     @POST("products.json")
     suspend fun createProduct(@Body product: ProductRequest): ProductRequest
 
-    @GET("orders.json?created_at_min=2025-05-20T00:00:00Z&created_at_max=2025-05-27T23:59:59Z&status=any")
-    suspend fun getOrders(): Order
+    @GET("orders.json")
+    suspend fun getOrders(
+        @Query("created_at_min") minDate: String,
+        @Query("created_at_max") maxDate: String,
+        @Query("status") status: String = "any"
+    ): Order
 
     @GET("orders/count.json")
     suspend fun getOrdersCountToday(

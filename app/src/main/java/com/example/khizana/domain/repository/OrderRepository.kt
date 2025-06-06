@@ -5,6 +5,6 @@ import com.example.khizana.domain.model.OrdersCountDomain
 
 interface OrderRepository {
 
-    suspend fun getOrders() : OrderDomain
+    suspend fun getOrders(minDate: String, maxDate: String) : OrderDomain
     suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCountDomain
 }

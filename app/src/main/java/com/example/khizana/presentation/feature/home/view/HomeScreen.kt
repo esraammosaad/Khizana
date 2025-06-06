@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,19 +27,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
-import com.example.khizana.ui.theme.KhizanaTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel) {
-    homeViewModel.getOrdersCount()
+    LaunchedEffect(Unit) {
+       // homeViewModel.getOrdersCount()
+        homeViewModel.getOrders()
+    }
     val ordersCount = homeViewModel.ordersCount.observeAsState().value
-    val weeklyActivity : MutableList<Int> = mutableListOf()
+    val totalOrdersPrice = homeViewModel.totalOrdersPrice.observeAsState().value
+    val weeklyActivity: MutableList<Int> = mutableListOf()
     for (i in 0..6) {
         weeklyActivity.add(ordersCount?.get(i)?.count ?: 0)
     }
@@ -87,7 +90,25 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFf8ede7),
                     textOne = "Sales Last Week",
+                    textTwo = String.format("%.2f", totalOrdersPrice) + " EGP",
+                    icon = R.drawable.discount
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFece9f2),
+                    textOne = "Revenue Last Week",
                     textTwo = "280.99 EGP",
+                    icon = R.drawable.chart
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth()) {
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFf8ede7),
+                    textOne = "Sales Last Week",
+                    textTwo = String.format("%.2f", totalOrdersPrice) + " EGP",
                     icon = R.drawable.discount
                 )
                 Spacer(modifier = Modifier.width(8.dp))

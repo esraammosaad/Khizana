@@ -71,7 +71,6 @@ fun OrdersItemEntity.toDomain(): OrdersItem {
         number = number,
         checkout_id = checkout_id,
         checkout_token = checkout_token,
-        tax_lines = tax_lines,
         current_total_discounts = current_total_discounts,
         merchant_of_record_app_id = merchant_of_record_app_id,
         customer_locale = customer_locale,

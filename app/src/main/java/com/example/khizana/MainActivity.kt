@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navigationController = rememberNavController()
-            val showBottomSheet = remember { mutableStateOf(false) }
             val homeFactory =
                 HomeViewModelFactory(
                     GetProductsUseCase(ProductRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
@@ -129,7 +128,6 @@ class MainActivity : ComponentActivity() {
                         productsViewModel = productsViewModel,
                         priceRuleViewModel = priceRuleViewModel,
                         navigationController = navigationController,
-                        showBottomSheet = showBottomSheet
                     )
                 }
                 composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
@@ -139,15 +137,6 @@ class MainActivity : ComponentActivity() {
                         productId = id,
                         productsViewModel = productsViewModel,
                         navigationController = navigationController
-                    )
-                }
-                composable<NavigationRoutes.AddProductScreen> {
-                    //    AddProductScreen(productsViewModel, showBottomSheet, product)
-                }
-                composable<NavigationRoutes.AddPriceRuleScreen> {
-                    AddPriceRuleScreen(
-                        priceRuleViewModel = priceRuleViewModel,
-                        navController = navigationController,
                     )
                 }
             }
