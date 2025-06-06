@@ -11,61 +11,67 @@ import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import com.example.khizana.data.repository.RemoteDataSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-class RemoteDataSourceImpl(private val apiService: ApiService = RetrofitFactory.apiService, private val auth: AuthService = AuthService()) :
+class RemoteDataSourceImpl(
+    private val apiService: ApiService = RetrofitFactory.apiService,
+    private val auth: AuthService = AuthService()
+) :
     RemoteDataSource {
 
-   override suspend fun login(
+    override suspend fun login(
         email: String,
         password: String,
         onSuccess: () -> Unit,
-        onFailure: (Exception) -> Unit) {
+        onFailure: (Exception) -> Unit
+    ) {
         auth.login(email, password, onSuccess, onFailure)
     }
 
 
-    override suspend fun getProducts(): Product {
-        return apiService.getProducts()
+    override suspend fun getProducts(): Flow<Product> {
+        return flowOf(apiService.getProducts())
     }
 
-    override suspend fun createProduct(product: ProductRequest): ProductRequest {
-        return apiService.createProduct(product)
+    override suspend fun createProduct(product: ProductRequest): Flow<ProductRequest> {
+        return flowOf(apiService.createProduct(product))
     }
 
-    override suspend fun getOrders(minDate: String, maxDate: String): Order {
-        return apiService.getOrders(minDate, maxDate)
+    override suspend fun getOrders(minDate: String, maxDate: String): Flow<Order> {
+        return flowOf(apiService.getOrders(minDate, maxDate))
     }
 
-    override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount {
-        return apiService.getOrdersCountToday(minDate, maxDate)
+    override suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<OrdersCount> {
+        return flowOf(apiService.getOrdersCountToday(minDate, maxDate))
     }
 
     override suspend fun deleteProduct(productId: String) {
         apiService.deleteProduct(productId)
     }
 
-    override suspend fun getProductById(productId: String): ProductRequest {
-        return apiService.getProductById(productId)
+    override suspend fun getProductById(productId: String): Flow<ProductRequest> {
+        return flowOf(apiService.getProductById(productId))
     }
 
     override suspend fun editProduct(productId: String, product: ProductRequest) {
         apiService.editProduct(productId, product)
     }
 
-    override suspend fun getAllInventoryLocations(): Location {
-        return apiService.getAllInventoryLocations()
+    override suspend fun getAllInventoryLocations(): Flow<Location> {
+        return flowOf(apiService.getAllInventoryLocations())
     }
 
-    override suspend fun getInventoryLevels(locationId: String): InventoryLevel {
-        return apiService.getInventoryLevels(locationId)
+    override suspend fun getInventoryLevels(locationId: String): Flow<InventoryLevel> {
+        return flowOf(apiService.getInventoryLevels(locationId))
     }
 
     override suspend fun adjustInventory(inventoryLevelRequest: InventoryLevelRequest) {
         apiService.adjustInventory(inventoryLevelRequest)
     }
 
-    override suspend fun getPriceRules(): PriceRule {
-        return apiService.getPriceRules()
+    override suspend fun getPriceRules(): Flow<PriceRule> {
+        return flowOf(apiService.getPriceRules())
     }
 
     override suspend fun createPriceRules(priceRuleRequest: PriceRuleRequest) {

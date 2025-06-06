@@ -4,14 +4,16 @@ import com.example.khizana.data.repository.mapper.toDomain
 import com.example.khizana.domain.model.OrderDomain
 import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.domain.repository.OrderRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class OrderRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) : OrderRepository {
 
-    override suspend fun getOrders(minDate: String, maxDate: String): OrderDomain {
-        return remoteDataSourceImpl.getOrders(minDate, maxDate).toDomain()
+    override suspend fun getOrders(minDate: String, maxDate: String): Flow<OrderDomain> {
+        return remoteDataSourceImpl.getOrders(minDate, maxDate).map { it.toDomain() }
     }
 
-    override suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCountDomain {
-        return remoteDataSourceImpl.getOrdersCount(minDate, maxDate).toDomain()
+    override suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<OrdersCountDomain> {
+        return remoteDataSourceImpl.getOrdersCount(minDate, maxDate).map { it.toDomain() }
     }
 }

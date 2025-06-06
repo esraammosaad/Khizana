@@ -1,6 +1,5 @@
 package com.example.khizana.data.repository
 
-import com.example.khizana.data.datasource.remote.AuthService
 import com.example.khizana.domain.repository.AuthRepository
 
 class AuthRepositoryImpl(private val remoteDataSource: RemoteDataSource) : AuthRepository {

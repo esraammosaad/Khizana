@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.domain.model.PriceRuleDomain
 import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
@@ -28,7 +27,10 @@ class PriceRuleViewModel(
 
     fun getAllPriceRules() {
         viewModelScope.launch {
-            _priceRules.postValue(getAllPriceRulesUseCase.getAllPriceRules())
+            val response = getAllPriceRulesUseCase.getAllPriceRules()
+            response.collect {
+                _priceRules.postValue(it)
+            }
         }
     }
 
@@ -72,6 +74,5 @@ class PriceRuleViewModelFactory(
             deletePriceRuleUseCase
         ) as T
     }
-
 }
 

@@ -42,17 +42,20 @@ class ProductsViewModel(
     fun getProducts() {
         viewModelScope.launch {
             val response = getProductsUseCase.getProducts()
-            _products.postValue(response)
-            Log.i("TAG", "getProducts: $response")
-
+            response.collect {
+                _products.postValue(it)
+                Log.i("TAG", "getProducts: $it")
+            }
         }
     }
 
     fun createProduct(productRequestDomain: ProductRequestDomain) {
         viewModelScope.launch {
             val response = createProductUseCase.createProduct(productRequestDomain)
-            if (response.product?.id != null) {
-                getProducts()
+            response.collect {
+                if(it.product?.id != null){
+                    getProducts()
+                }
             }
         }
     }
@@ -67,8 +70,10 @@ class ProductsViewModel(
     fun getProductById(productId: String) {
         viewModelScope.launch {
             val response = getProductByIdUseCase.getProductById(productId)
-            _product.postValue(response)
-            Log.i("TAG", "getProductById: $response")
+            response.collect {
+                _product.postValue(it)
+                Log.i("TAG", "getProductById: $it")
+            }
         }
     }
 

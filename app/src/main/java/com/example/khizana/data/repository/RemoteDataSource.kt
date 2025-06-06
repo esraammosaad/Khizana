@@ -9,20 +9,21 @@ import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
+import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
     suspend fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
-    suspend fun getProducts(): Product
-    suspend fun createProduct(product: ProductRequest) : ProductRequest
-    suspend fun getOrders(minDate: String, maxDate: String): Order
-    suspend fun getOrdersCount(minDate: String, maxDate: String): OrdersCount
+    suspend fun getProducts(): Flow<Product>
+    suspend fun createProduct(product: ProductRequest) : Flow<ProductRequest>
+    suspend fun getOrders(minDate: String, maxDate: String): Flow<Order>
+    suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<OrdersCount>
     suspend fun deleteProduct(productId: String)
-    suspend fun getProductById(productId: String): ProductRequest
+    suspend fun getProductById(productId: String): Flow<ProductRequest>
     suspend fun editProduct(productId: String, product: ProductRequest)
-    suspend fun getAllInventoryLocations() : Location
-    suspend fun getInventoryLevels(locationId : String) : InventoryLevel
+    suspend fun getAllInventoryLocations() : Flow<Location>
+    suspend fun getInventoryLevels(locationId : String) : Flow<InventoryLevel>
     suspend fun adjustInventory(inventoryLevelRequest: InventoryLevelRequest)
-    suspend fun getPriceRules() : PriceRule
+    suspend fun getPriceRules() : Flow<PriceRule>
     suspend fun createPriceRules(priceRuleRequest : PriceRuleRequest)
     suspend fun updatePriceRules(priceRuleId : String ,priceRuleRequest : PriceRuleRequest)
     suspend fun deletePriceRules(priceRuleId : String)

@@ -37,8 +37,10 @@ class HomeViewModel(
     fun getProducts() {
         viewModelScope.launch {
             val response = getProductsUseCase.getProducts()
-            _products.postValue(response)
-            Log.i("TAG", "getProducts: $response")
+            response.collect {
+                _products.postValue(it)
+                Log.i("TAG", "getProducts: $response")
+            }
 
         }
     }
@@ -47,22 +49,28 @@ class HomeViewModel(
     fun getOrders() {
         viewModelScope.launch {
             val list = mutableListOf<Float>()
-            val response = getOrdersUseCase.getOrders(getShopifyOrderCountDatesForLastSevenDays()[0]+Strings.START_OF_THE_DAY, getShopifyOrderCountDatesForLastSevenDays()[6]+Strings.END_OF_THE_DAY)
+            val response = getOrdersUseCase.getOrders(
+                getShopifyOrderCountDatesForLastSevenDays()[0] + Strings.START_OF_THE_DAY,
+                getShopifyOrderCountDatesForLastSevenDays()[6] + Strings.END_OF_THE_DAY
+            )
 
-            response.orders?.forEach { order ->
-                val amount = order?.current_total_price_set?.shop_money?.amount?.toFloatOrNull() ?: 0f
-                val currency = order?.current_total_price_set?.shop_money?.currency_code
+            response.collect {
+                it.orders?.forEach { order ->
+                    val amount =
+                        order?.current_total_price_set?.shop_money?.amount?.toFloatOrNull() ?: 0f
+                    val currency = order?.current_total_price_set?.shop_money?.currency_code
 
-                if (currency == "EUR") {
-                    list.add(amount * 50f)
-                } else {
-                    list.add(amount)
+                    if (currency == "EUR") {
+                        list.add(amount * 50f)
+                    } else {
+                        list.add(amount)
+                    }
                 }
-            }
 
-            _orders.postValue(response)
-            _totalOrdersPrice.postValue(list.sum())
-            Log.i("TAG", "getOrders: $response")
+                _orders.postValue(it)
+                _totalOrdersPrice.postValue(list.sum())
+                Log.i("TAG", "getOrders: $response")
+            }
         }
     }
 
@@ -76,8 +84,10 @@ class HomeViewModel(
                     minDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.START_OF_THE_DAY,
                     maxDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.END_OF_THE_DAY
                 )
-                list.add(response)
-                Log.i("TAG", "getOrdersCount: $response")
+                response.collect {
+                    list.add(it)
+                    Log.i("TAG", "getOrdersCount: $response")
+                }
             }
             _ordersCount.postValue(list)
         }

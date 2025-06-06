@@ -5,11 +5,13 @@ import com.example.khizana.data.repository.mapper.toDto
 import com.example.khizana.domain.model.PriceRuleDomain
 import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.repository.PriceRuleRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PriceRuleRepositoryImpl(private val remoteDataSource: RemoteDataSource) :
     PriceRuleRepository {
-    override suspend fun getPriceRules(): PriceRuleDomain {
-        return remoteDataSource.getPriceRules().toDomain()
+    override suspend fun getPriceRules(): Flow<PriceRuleDomain> {
+        return remoteDataSource.getPriceRules().map { it.toDomain() }
     }
 
     override suspend fun createPriceRules(priceRuleRequestDomain: PriceRuleRequestDomain) {
