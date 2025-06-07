@@ -30,7 +30,7 @@ fun CustomTextField(
         label = {
             Text(
                 text = label,
-                color = primaryColor,
+                color = Color.Black,
             )
         },
         enabled = true,

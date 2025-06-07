@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.khizana.R
@@ -24,7 +25,7 @@ fun CustomTextArea(
         label = {
             Text(
                 text = stringResource(R.string.product_description),
-                color = primaryColor,
+                color = Color.Black,
             )
         },
         enabled = true,
