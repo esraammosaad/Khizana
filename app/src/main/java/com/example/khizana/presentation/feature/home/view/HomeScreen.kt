@@ -16,10 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,22 +29,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.khizana.R
+import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
+import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.utilis.Response
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreen(homeViewModel: HomeViewModel) {
     LaunchedEffect(Unit) {
-       // homeViewModel.getOrdersCount()
+        homeViewModel.getOrdersCount()
         homeViewModel.getOrders()
     }
-    val ordersCount = homeViewModel.ordersCount.observeAsState().value
-    val totalOrdersPrice = homeViewModel.totalOrdersPrice.observeAsState().value
+    val ordersCount = homeViewModel.ordersCount.collectAsStateWithLifecycle().value
+    val totalOrdersPrice = homeViewModel.totalOrdersPrice.collectAsStateWithLifecycle().value
     val weeklyActivity: MutableList<Int> = mutableListOf()
-    for (i in 0..6) {
-        weeklyActivity.add(ordersCount?.get(i)?.count ?: 0)
-    }
+
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -72,7 +75,24 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    ActivityChart(data = weeklyActivity)
+                    when (ordersCount) {
+                        is Response.Success<*> -> {
+                            ordersCount as Response.Success<List<OrdersCountDomain>>
+                            weeklyActivity.clear()
+                            for (i in 0..6) {
+                                weeklyActivity.add(ordersCount.result?.get(i)?.count ?: 0)
+                            }
+                            ActivityChart(data = weeklyActivity)
+                        }
+
+                        is Response.Failure -> {
+                            Text(ordersCount.exception)
+                        }
+
+                        is Response.Loading -> {
+                            CircularProgressIndicator(color = primaryColor)
+                        }
+                    }
                     Text(
                         stringResource(R.string.activity),
                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -90,7 +110,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFf8ede7),
                     textOne = "Sales Last Week",
-                    textTwo = String.format("%.2f", totalOrdersPrice) + " EGP",
+                    textTwo = totalOrdersPrice,
                     icon = R.drawable.discount
                 )
                 Spacer(modifier = Modifier.width(8.dp))
@@ -98,28 +118,29 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFece9f2),
                     textOne = "Revenue Last Week",
-                    textTwo = "280.99 EGP",
+                    textTwo = totalOrdersPrice,
                     icon = R.drawable.chart
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                CustomBox(
-                    modifier = Modifier.weight(1f),
-                    color = Color(0xFFf8ede7),
-                    textOne = "Sales Last Week",
-                    textTwo = String.format("%.2f", totalOrdersPrice) + " EGP",
-                    icon = R.drawable.discount
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                CustomBox(
-                    modifier = Modifier.weight(1f),
-                    color = Color(0xFFece9f2),
-                    textOne = "Revenue Last Week",
-                    textTwo = "280.99 EGP",
-                    icon = R.drawable.chart
-                )
-            }
+//            Row(modifier = Modifier.fillMaxWidth()) {
+//                CustomBox(
+//                    modifier = Modifier.weight(1f),
+//                    color = Color(0xFFf8ede7),
+//                    textOne = "Sales Last Week",
+//                    textTwo = totalOrdersPrice,
+//                    //String.format("%.2f", totalOrdersPrice) + " EGP",
+//                    icon = R.drawable.discount
+//                )
+//                Spacer(modifier = Modifier.width(8.dp))
+//                CustomBox(
+//                    modifier = Modifier.weight(1f),
+//                    color = Color(0xFFece9f2),
+//                    textOne = "Revenue Last Week",
+//                    textTwo = totalOrdersPrice,
+//                    icon = R.drawable.chart
+//                )
+//            }
         }
     }
 }
@@ -129,9 +150,10 @@ private fun CustomBox(
     modifier: Modifier = Modifier,
     color: Color,
     textOne: String,
-    textTwo: String,
+    textTwo: Response,
     icon: Int
 ) {
+
     Box(
         modifier = modifier
             .background(color, shape = RoundedCornerShape(12))
@@ -152,10 +174,21 @@ private fun CustomBox(
                 style = TextStyle(fontSize = 16.sp, color = Color.Gray)
             )
             Spacer(modifier = Modifier.height(5.dp))
-            Text(
-                textTwo,
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            )
+            when (textTwo) {
+                is Response.Success<*> -> {
+                    textTwo as Response.Success<Double>
+                    Text(
+                        String.format("%.2f", textTwo.result) + " EGP",
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+                is Response.Failure -> {
+                    Text(textTwo.exception)
+                }
+                is Response.Loading -> {
+                    CircularProgressIndicator(color = primaryColor)
+                }
+            }
         }
     }
 }
