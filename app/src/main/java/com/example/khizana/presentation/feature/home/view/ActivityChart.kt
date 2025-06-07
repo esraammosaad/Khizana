@@ -18,6 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.khizana.ui.theme.lighterPrimaryColor
+import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.ui.theme.secondaryColor
 
 @Composable
 fun ActivityChart(
@@ -28,7 +31,6 @@ fun ActivityChart(
     val barWidth = 35.dp
     val spacing = 12.dp
     val chartHeight = 105.dp
-
     Row(
         modifier = modifier
             .padding(16.dp)
@@ -38,7 +40,6 @@ fun ActivityChart(
     ) {
         data.forEach { value ->
             val heightRatio = value.toFloat() / maxValue
-
             Column(
                 modifier = Modifier.height(chartHeight + 30.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,7 +49,7 @@ fun ActivityChart(
                     modifier = Modifier
                         .width(barWidth)
                         .height(if (value == 0) 8.dp else chartHeight * heightRatio)
-                        .background(Color(0xFF90c4bf), shape = RoundedCornerShape(4.dp))
+                        .background(lighterPrimaryColor, shape = RoundedCornerShape(4.dp))
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(

@@ -3,8 +3,6 @@ package com.example.khizana.presentation.feature.products.viewModel
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -13,7 +11,6 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.OptionsItem
-import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.domain.model.VariantsItem
@@ -22,6 +19,12 @@ import com.example.khizana.domain.usecase.DeleteProductUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
+import com.example.khizana.utilis.Response
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class ProductsViewModel(
@@ -32,55 +35,92 @@ class ProductsViewModel(
     private val editProductUseCase: EditProductUseCase
 ) : ViewModel() {
 
-    private var _products: MutableLiveData<ProductDomain> = MutableLiveData()
-    val products: LiveData<ProductDomain> = _products
+    private var _products = MutableStateFlow<Response>(Response.Loading)
+    val products = _products.asStateFlow()
 
-    private var _product: MutableLiveData<ProductRequestDomain> = MutableLiveData()
-    val product: LiveData<ProductRequestDomain> = _product
+    private var _product = MutableStateFlow<Response>(Response.Loading)
+    val product = _product.asStateFlow()
+
+    private var _message = MutableSharedFlow<String>()
+    val message = _message.asSharedFlow()
 
 
     fun getProducts() {
         viewModelScope.launch {
-            val response = getProductsUseCase.getProducts()
-            response.collect {
-                _products.postValue(it)
-                Log.i("TAG", "getProducts: $it")
+            try {
+                val response = getProductsUseCase.getProducts()
+                response.catch {
+                    _products.emit(Response.Failure(it.message.toString()))
+                    _message.emit(it.message.toString())
+                }
+                    .collect {
+                        _products.emit(Response.Success(it))
+                        Log.i("TAG", "getProducts: $it")
+                    }
+            } catch (e: Exception) {
+                _products.emit(Response.Failure(e.message.toString()))
+                _message.emit(e.message.toString())
             }
         }
     }
 
     fun createProduct(productRequestDomain: ProductRequestDomain) {
         viewModelScope.launch {
-            val response = createProductUseCase.createProduct(productRequestDomain)
-            response.collect {
-                if(it.product?.id != null){
-                    getProducts()
+            try {
+                val response = createProductUseCase.createProduct(productRequestDomain)
+                response.catch {
+                    _message.emit(it.message.toString())
+                }.collect {
+                    if (it.product?.id != null) {
+                        getProducts()
+                    }
+                    _message.emit("Product created successfully")
                 }
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
             }
         }
     }
 
     fun deleteProduct(productId: String) {
         viewModelScope.launch {
-            deleteProductUseCase.deleteProduct(productId)
-            getProducts()
+            try {
+                deleteProductUseCase.deleteProduct(productId)
+                getProducts()
+                _message.emit("Product deleted successfully")
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
+            }
         }
     }
 
     fun getProductById(productId: String) {
         viewModelScope.launch {
-            val response = getProductByIdUseCase.getProductById(productId)
-            response.collect {
-                _product.postValue(it)
-                Log.i("TAG", "getProductById: $it")
+            try {
+                val response = getProductByIdUseCase.getProductById(productId)
+                response.catch {
+                    _product.emit(Response.Failure(it.message.toString()))
+                    _message.emit(it.message.toString())
+                }.collect {
+                    _product.emit(Response.Success(it))
+                    Log.i("TAG", "getProductById: $it")
+                }
+            } catch (e: Exception) {
+                _product.emit(Response.Failure(e.message.toString()))
+                _message.emit(e.message.toString())
             }
         }
     }
 
     fun editProduct(productId: String, product: ProductRequestDomain) {
         viewModelScope.launch {
-            editProductUseCase.editProduct(productId, product)
-            getProductById(productId)
+            try {
+                editProductUseCase.editProduct(productId, product)
+                getProductById(productId)
+                _message.emit("Product edited successfully")
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
+            }
         }
     }
 
@@ -108,7 +148,6 @@ class ProductsViewModel(
 
                 is String -> {
                     urlList.add(imageUri)
-                    Log.i("TAG", "onSuccess: $imageUri")
                     null
                 }
 
@@ -133,11 +172,6 @@ class ProductsViewModel(
                             variant_ids = listOf()
                         )
                     )
-
-                    Log.i("TAG", "onSuccess: ${imageUris.size}")
-                    Log.i("TAG", "onSuccess: ${imagesList.size}")
-                    Log.i("TAG", "onSuccess: ${urlList.size}")
-
                     if ((imagesList.size + urlList.size) == imageUris.size) {
                         urlList.forEach { url ->
                             imagesList.add(
@@ -186,6 +220,9 @@ class ProductsViewModel(
                 }
 
                 override fun onError(requestId: String?, error: ErrorInfo?) {
+                    viewModelScope.launch {
+                        _message.emit(error?.description.toString())
+                    }
                 }
 
                 override fun onReschedule(requestId: String?, error: ErrorInfo?) {
@@ -193,7 +230,6 @@ class ProductsViewModel(
             }
             )?.dispatch()
         }
-
         if (urlList.isNotEmpty() && uriList.isEmpty() && isEditable) {
             urlList.forEach { url ->
                 imagesList.add(

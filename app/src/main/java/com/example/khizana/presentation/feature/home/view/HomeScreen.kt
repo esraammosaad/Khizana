@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import com.example.khizana.R
 import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.Response
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -66,7 +68,7 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
             Box(
                 modifier = Modifier
-                    .background(Color(0xffd3e7e5), shape = RoundedCornerShape(12))
+                    .background(secondaryColor, shape = RoundedCornerShape(12))
                     .height(260.dp)
                     .fillMaxWidth()
             ) {
@@ -90,7 +92,10 @@ fun HomeScreen(homeViewModel: HomeViewModel) {
                         }
 
                         is Response.Loading -> {
-                            CircularProgressIndicator(color = primaryColor)
+                            CircularProgressIndicator(
+                                color = primaryColor,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     }
                     Text(
@@ -182,11 +187,15 @@ private fun CustomBox(
                         style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     )
                 }
+
                 is Response.Failure -> {
                     Text(textTwo.exception)
                 }
                 is Response.Loading -> {
-                    CircularProgressIndicator(color = primaryColor)
+                    CircularProgressIndicator(
+                        color = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
                 }
             }
         }
