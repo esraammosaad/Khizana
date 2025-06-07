@@ -1,6 +1,8 @@
 package com.example.khizana.data.datasource.remote
 
 
+import com.example.khizana.data.dto.DiscountCode
+import com.example.khizana.data.dto.DiscountCodeRequest
 import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
@@ -84,5 +86,25 @@ class RemoteDataSourceImpl(
 
     override suspend fun deletePriceRules(priceRuleId: String) {
         apiService.deletePriceRules(priceRuleId)
+    }
+
+    override suspend fun getDiscountCodes(priceRuleId: String): Flow<DiscountCode> {
+        return flowOf(apiService.getDiscountCodes(priceRuleId))
+    }
+
+    override suspend fun createDiscountCodes(priceRuleId: String,discountCodeRequest: DiscountCodeRequest) {
+        apiService.createDiscountCodes(priceRuleId,discountCodeRequest)
+    }
+
+    override suspend fun deleteDiscountCodes(priceRuleId: String, discountCodeId: String) {
+        apiService.deleteDiscountCodes(priceRuleId, discountCodeId)
+    }
+
+    override suspend fun updateDiscountCodes(
+        priceRuleId: String,
+        discountCodeId: String,
+        discountCodeRequest: DiscountCodeRequest
+    ) {
+        apiService.updateDiscountCodes(priceRuleId, discountCodeId, discountCodeRequest)
     }
 }

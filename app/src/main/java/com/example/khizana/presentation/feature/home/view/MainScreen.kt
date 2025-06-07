@@ -133,7 +133,8 @@ fun MainScreen(
 
                     3 -> {
                         return@Column PriceRules(
-                            priceRuleViewModel = priceRuleViewModel
+                            priceRuleViewModel = priceRuleViewModel,
+                            navigationController = navigationController
                         )
 
                     }

@@ -1,6 +1,5 @@
 package com.example.khizana.data.dto
 
-import com.example.khizana.domain.model.PrerequisiteToEntitlementQuantityRatioItem
 
 data class PriceRule(
     val price_rules: List<Price_rulesItemEntity>

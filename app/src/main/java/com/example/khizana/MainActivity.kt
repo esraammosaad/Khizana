@@ -1,14 +1,11 @@
 package com.example.khizana
 
-import AddPriceRuleScreen
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -18,16 +15,21 @@ import com.example.khizana.data.datasource.remote.AuthService
 import com.example.khizana.data.datasource.remote.RemoteDataSourceImpl
 import com.example.khizana.data.datasource.remote.RetrofitFactory
 import com.example.khizana.data.repository.AuthRepositoryImpl
+import com.example.khizana.data.repository.DiscountCodeRepositoryImpl
 import com.example.khizana.data.repository.OrderRepositoryImpl
 import com.example.khizana.data.repository.PriceRuleRepositoryImpl
 import com.example.khizana.data.repository.ProductRepositoryImpl
+import com.example.khizana.domain.usecase.CreateDiscountCodeUseCase
 import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
 import com.example.khizana.domain.usecase.CreateProductUseCase
+import com.example.khizana.domain.usecase.DeleteDiscountCodeUseCase
 import com.example.khizana.domain.usecase.DeletePriceRuleUseCase
 import com.example.khizana.domain.usecase.DeleteProductUseCase
+import com.example.khizana.domain.usecase.EditDiscountCodeUseCase
 import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
+import com.example.khizana.domain.usecase.GetDiscountCodeUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
@@ -40,6 +42,7 @@ import com.example.khizana.presentation.feature.landing.SplashScreen
 import com.example.khizana.presentation.feature.login.view.LoginScreen
 import com.example.khizana.presentation.feature.login.viewModel.LoginViewModel
 import com.example.khizana.presentation.feature.login.viewModel.LoginViewModelFactory
+import com.example.khizana.presentation.feature.priceRules.view.DiscountCodeScreen
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModelFactory
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
@@ -89,7 +92,35 @@ class MainActivity : ComponentActivity() {
                 ),
                 CreatePriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
                 EditPriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
-                DeletePriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService)))
+                DeletePriceRuleUseCase(PriceRuleRepositoryImpl(RemoteDataSourceImpl(RetrofitFactory.apiService))),
+                GetDiscountCodeUseCase(
+                    DiscountCodeRepositoryImpl(
+                        RemoteDataSourceImpl(
+                            RetrofitFactory.apiService
+                        )
+                    )
+                ),
+                CreateDiscountCodeUseCase(
+                    DiscountCodeRepositoryImpl(
+                        RemoteDataSourceImpl(
+                            RetrofitFactory.apiService
+                        )
+                    )
+                ),
+                DeleteDiscountCodeUseCase(
+                    DiscountCodeRepositoryImpl(
+                        RemoteDataSourceImpl(
+                            RetrofitFactory.apiService
+                        )
+                    )
+                ),
+                EditDiscountCodeUseCase(
+                    DiscountCodeRepositoryImpl(
+                        RemoteDataSourceImpl(
+                            RetrofitFactory.apiService
+                        )
+                    )
+                )
             )
             val priceRuleViewModel =
                 ViewModelProvider(this, priceRuleFactory)[PriceRuleViewModel::class.java]
@@ -138,6 +169,11 @@ class MainActivity : ComponentActivity() {
                         productsViewModel = productsViewModel,
                         navigationController = navigationController
                     )
+                }
+                composable<NavigationRoutes.DiscountCodesScreen> { backStackEntry ->
+                    val data = backStackEntry.toRoute<NavigationRoutes.DiscountCodesScreen>()
+                    val id = data.priceRuleId
+                    DiscountCodeScreen(priceRuleViewModel = priceRuleViewModel, priceRuleId = id)
                 }
             }
         }

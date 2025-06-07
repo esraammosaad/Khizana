@@ -3,11 +3,16 @@ package com.example.khizana.presentation.feature.priceRules.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.khizana.domain.model.DiscountCodeRequestDomain
 import com.example.khizana.domain.model.PriceRuleRequestDomain
+import com.example.khizana.domain.usecase.CreateDiscountCodeUseCase
 import com.example.khizana.domain.usecase.CreatePriceRuleUseCase
+import com.example.khizana.domain.usecase.DeleteDiscountCodeUseCase
 import com.example.khizana.domain.usecase.DeletePriceRuleUseCase
+import com.example.khizana.domain.usecase.EditDiscountCodeUseCase
 import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
+import com.example.khizana.domain.usecase.GetDiscountCodeUseCase
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +25,19 @@ class PriceRuleViewModel(
     private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
     private val createPriceRuleUseCase: CreatePriceRuleUseCase,
     private val editPriceRuleUseCase: EditPriceRuleUseCase,
-    private val deletePriceRuleUseCase: DeletePriceRuleUseCase
+    private val deletePriceRuleUseCase: DeletePriceRuleUseCase,
+    private val getDiscountCodeUseCase: GetDiscountCodeUseCase,
+    private val createDiscountCodeUseCase: CreateDiscountCodeUseCase,
+    private val deleteDiscountCodeUseCase: DeleteDiscountCodeUseCase,
+    private val editDiscountCodeUseCase: EditDiscountCodeUseCase
 ) :
     ViewModel() {
 
     private var _priceRules = MutableStateFlow<Response>(Response.Loading)
     val priceRules = _priceRules.asStateFlow()
+
+    private var _discountCodes = MutableStateFlow<Response>(Response.Loading)
+    val discountCodes = _discountCodes.asStateFlow()
 
     private var _message = MutableSharedFlow<String>()
     val message = _message.asSharedFlow()
@@ -81,8 +93,70 @@ class PriceRuleViewModel(
             } catch (e: Exception) {
                 _message.emit(e.message.toString())
             }
+        }
+    }
 
+    fun getDiscountCodes(priceRuleId: String) {
+        viewModelScope.launch {
+            try {
+                val response = getDiscountCodeUseCase.getDiscountCode(priceRuleId)
+                response.catch {
+                    _discountCodes.emit(Response.Failure(it.message.toString()))
+                    _message.emit(it.message.toString())
+                }.collect {
+                    _discountCodes.emit(Response.Success(it))
+                }
+            } catch (e: Exception) {
+                _discountCodes.emit(Response.Failure(e.message.toString()))
+                _message.emit(e.message.toString())
+            }
+        }
+    }
 
+    fun deleteDiscountCode(priceRuleId: String, discountCodeId: String) {
+        viewModelScope.launch {
+            try {
+                deleteDiscountCodeUseCase.deleteDiscountCode(priceRuleId, discountCodeId)
+                getDiscountCodes(priceRuleId)
+                _message.emit("Discount code deleted successfully")
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
+            }
+        }
+    }
+
+    fun createDiscountCode(priceRuleId: String, discountCodeRequest: DiscountCodeRequestDomain) {
+        viewModelScope.launch {
+            try {
+                createDiscountCodeUseCase.createDiscountCode(
+                    priceRuleId,
+                    discountCodeRequest
+                )
+                getDiscountCodes(priceRuleId)
+                _message.emit("Discount code created successfully")
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
+            }
+        }
+    }
+
+    fun editDiscountCode(
+        priceRuleId: String,
+        discountCodeId: String,
+        discountCodeRequest: DiscountCodeRequestDomain
+    ) {
+        viewModelScope.launch {
+            try {
+                editDiscountCodeUseCase.editDiscountCode(
+                    priceRuleId,
+                    discountCodeId,
+                    discountCodeRequest
+                )
+                getDiscountCodes(priceRuleId)
+                _message.emit("Discount code edited successfully")
+            } catch (e: Exception) {
+                _message.emit(e.message.toString())
+            }
         }
     }
 }
@@ -91,7 +165,11 @@ class PriceRuleViewModelFactory(
     private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
     private val createPriceRuleUseCase: CreatePriceRuleUseCase,
     private val editPriceRuleUseCase: EditPriceRuleUseCase,
-    private val deletePriceRuleUseCase: DeletePriceRuleUseCase
+    private val deletePriceRuleUseCase: DeletePriceRuleUseCase,
+    private val getDiscountCodeUseCase: GetDiscountCodeUseCase,
+    private val createDiscountCodeUseCase: CreateDiscountCodeUseCase,
+    private val deleteDiscountCodeUseCase: DeleteDiscountCodeUseCase,
+    private val editDiscountCodeUseCase: EditDiscountCodeUseCase
 ) :
     ViewModelProvider.Factory {
 
@@ -100,7 +178,11 @@ class PriceRuleViewModelFactory(
             getAllPriceRulesUseCase,
             createPriceRuleUseCase,
             editPriceRuleUseCase,
-            deletePriceRuleUseCase
+            deletePriceRuleUseCase,
+            getDiscountCodeUseCase,
+            createDiscountCodeUseCase,
+            deleteDiscountCodeUseCase,
+            editDiscountCodeUseCase
         ) as T
     }
 }

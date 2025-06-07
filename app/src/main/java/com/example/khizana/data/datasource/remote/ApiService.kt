@@ -1,5 +1,7 @@
 package com.example.khizana.data.datasource.remote
 
+import com.example.khizana.data.dto.DiscountCode
+import com.example.khizana.data.dto.DiscountCodeRequest
 import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
@@ -51,24 +53,48 @@ interface ApiService {
     suspend fun editProduct(@Path("productId") productId: String, @Body product: ProductRequest)
 
     @GET("locations.json")
-    suspend fun getAllInventoryLocations() : Location
+    suspend fun getAllInventoryLocations(): Location
 
     @GET("inventory_levels.json?location_ids={locationId}")
-    suspend fun getInventoryLevels(@Path("locationId") locationId: String) : InventoryLevel
+    suspend fun getInventoryLevels(@Path("locationId") locationId: String): InventoryLevel
 
     @POST("inventory_levels/adjust.json")
     suspend fun adjustInventory(@Body inventoryLevelRequest: InventoryLevelRequest)
 
     @GET("price_rules.json")
-    suspend fun getPriceRules() : PriceRule
+    suspend fun getPriceRules(): PriceRule
 
     @POST("price_rules.json")
-    suspend fun createPriceRules(@Body priceRuleRequest : PriceRuleRequest)
+    suspend fun createPriceRules(@Body priceRuleRequest: PriceRuleRequest)
 
     @PUT("price_rules/{priceRuleId}.json")
-    suspend fun updatePriceRules(@Path("priceRuleId") priceRuleId : String ,@Body priceRuleRequest : PriceRuleRequest)
+    suspend fun updatePriceRules(
+        @Path("priceRuleId") priceRuleId: String,
+        @Body priceRuleRequest: PriceRuleRequest
+    )
 
     @DELETE("price_rules/{priceRuleId}.json")
-    suspend fun deletePriceRules(@Path("priceRuleId") priceRuleId : String) : Response<Unit>
+    suspend fun deletePriceRules(@Path("priceRuleId") priceRuleId: String)
 
+    @GET("price_rules/{priceRuleId}/discount_codes.json")
+    suspend fun getDiscountCodes(@Path("priceRuleId") priceRuleId: String): DiscountCode
+
+    @POST("price_rules/{priceRuleId}/discount_codes.json")
+    suspend fun createDiscountCodes(
+        @Path("priceRuleId") priceRuleId: String,
+        @Body discountCode: DiscountCodeRequest
+    )
+
+    @DELETE("price_rules/{priceRuleId}/discount_codes/{discountCodeId}.json")
+    suspend fun deleteDiscountCodes(
+        @Path("priceRuleId") priceRuleId: String,
+        @Path("discountCodeId") discountCodeId: String
+    )
+
+    @PUT("price_rules/{priceRuleId}/discount_codes/{discountCodeId}.json")
+    suspend fun updateDiscountCodes(
+        @Path("priceRuleId") priceRuleId: String,
+        @Path("discountCodeId") discountCodeId: String,
+        @Body discountCode: DiscountCodeRequest
+    )
 }

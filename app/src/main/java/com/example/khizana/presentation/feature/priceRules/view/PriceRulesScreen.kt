@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.domain.model.PriceRuleDomain
 import com.example.khizana.domain.model.PriceRuleItem
@@ -51,11 +52,12 @@ import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleVi
 import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.CustomLoadingIndicator
+import com.example.khizana.utilis.NavigationRoutes
 import com.example.khizana.utilis.Response
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
+fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navigationController: NavHostController) {
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -88,6 +90,11 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
                     key = { priceRules.result?.price_rules?.get(it)?.id ?: "" }) {
                     Box(
                         modifier = Modifier.clickable {
+                            navigationController.navigate(
+                                NavigationRoutes.DiscountCodesScreen(
+                                    priceRules.result?.price_rules?.get(it)?.id ?: ""
+                                )
+                            )
                         }
                     ) {
                         Box(contentAlignment = Alignment.TopEnd) {
@@ -122,6 +129,7 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
                     }
                 }
             }
+
             is Response.Failure -> {
                 item {
                     Box(

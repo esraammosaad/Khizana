@@ -1,5 +1,7 @@
 package com.example.khizana.data.repository
 
+import com.example.khizana.data.dto.DiscountCode
+import com.example.khizana.data.dto.DiscountCodeRequest
 import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
@@ -27,5 +29,8 @@ interface RemoteDataSource {
     suspend fun createPriceRules(priceRuleRequest : PriceRuleRequest)
     suspend fun updatePriceRules(priceRuleId : String ,priceRuleRequest : PriceRuleRequest)
     suspend fun deletePriceRules(priceRuleId : String)
-
+    suspend fun getDiscountCodes(priceRuleId : String) : Flow<DiscountCode>
+    suspend fun createDiscountCodes(priceRuleId : String ,discountCodeRequest : DiscountCodeRequest)
+    suspend fun deleteDiscountCodes(priceRuleId : String ,discountCodeId : String)
+    suspend fun updateDiscountCodes(priceRuleId : String ,discountCodeId : String ,discountCodeRequest : DiscountCodeRequest)
 }
