@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -134,8 +133,7 @@ fun MainScreen(
 
                     3 -> {
                         return@Column PriceRules(
-                            priceRuleViewModel = priceRuleViewModel,
-                            navController = navigationController
+                            priceRuleViewModel = priceRuleViewModel
                         )
 
                     }

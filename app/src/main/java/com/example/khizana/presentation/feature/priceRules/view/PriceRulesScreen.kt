@@ -1,6 +1,7 @@
 package com.example.khizana.presentation.feature.priceRules.view
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,33 +36,39 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.khizana.R
+import com.example.khizana.domain.model.PriceRuleDomain
+import com.example.khizana.domain.model.PriceRuleItem
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.ui.theme.lightGreyColor
-import com.example.khizana.ui.theme.primaryColor
-import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.ConfirmationDialog
-import com.example.khizana.utilis.NavigationRoutes
+import com.example.khizana.utilis.CustomLoadingIndicator
+import com.example.khizana.utilis.Response
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavController) {
+fun PriceRules(priceRuleViewModel: PriceRuleViewModel) {
 
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         priceRuleViewModel.getAllPriceRules()
+        priceRuleViewModel.message.collect {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
     }
     val showDialog = remember { mutableStateOf(false) }
-    val priceRules = priceRuleViewModel.priceRules.observeAsState().value
+    val priceRules = priceRuleViewModel.priceRules.collectAsStateWithLifecycle().value
     val selectedPriceRule = remember { mutableStateOf("") }
     val showBottomSheet = remember { mutableStateOf(false) }
-    val priceRule = remember { mutableStateOf(priceRules?.price_rules?.first()) }
+    val priceRule: MutableState<PriceRuleItem?> = remember { mutableStateOf(null) }
 
     PartialPriceRuleBottomSheet(
         showBottomSheet = showBottomSheet,
@@ -73,44 +80,62 @@ fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navController: NavControl
         Modifier
             .fillMaxSize()
     ) {
-        items(
-            priceRules?.price_rules?.size ?: 0,
-            key = { priceRules?.price_rules?.get(it)?.id ?: "" }) {
-            Box(
-                modifier = Modifier.clickable {
-                }
-            ) {
-
-
-                Box(contentAlignment = Alignment.TopEnd) {
-                    DiscountCard(
-                        title = priceRules?.price_rules?.get(it)?.title ?: "",
-                        discount = priceRules?.price_rules?.get(it)?.value.toString() + if (priceRules?.price_rules?.get(
-                                it
-                            )?.value_type == "percentage"
-                        ) "%" else "EGP",
-                        barcode = priceRules?.price_rules?.get(it)?.id ?: "",
-                        startAt = priceRules?.price_rules?.get(it)?.starts_at ?: "",
-                        endAt = priceRules?.price_rules?.get(it)?.ends_at ?: "",
-                        modifier = Modifier.animateItem(),
-                        onDeleteIconClicked = {
-                            selectedPriceRule.value = priceRules?.price_rules?.get(it)?.id ?: ""
-                            showDialog.value = true
+        when (priceRules) {
+            is Response.Success<*> -> {
+                priceRules as Response.Success<PriceRuleDomain>
+                items(
+                    priceRules.result?.price_rules?.size ?: 0,
+                    key = { priceRules.result?.price_rules?.get(it)?.id ?: "" }) {
+                    Box(
+                        modifier = Modifier.clickable {
                         }
-                    )
-                    Text(
-                        "Edit",
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(end = 32.dp, top = 16.dp)
-                            .clickable {
+                    ) {
+                        Box(contentAlignment = Alignment.TopEnd) {
+                            DiscountCard(
+                                title = priceRules.result?.price_rules?.get(it)?.title ?: "",
+                                discount = priceRules.result?.price_rules?.get(it)?.value.toString() + if (priceRules.result?.price_rules?.get(
+                                        it
+                                    )?.value_type == "percentage"
+                                ) "%" else "EGP",
+                                barcode = priceRules.result?.price_rules?.get(it)?.id ?: "",
+                                startAt = priceRules.result?.price_rules?.get(it)?.starts_at ?: "",
+                                endAt = priceRules.result?.price_rules?.get(it)?.ends_at ?: "",
+                                modifier = Modifier.animateItem(),
+                                onDeleteIconClicked = {
+                                    selectedPriceRule.value =
+                                        priceRules.result?.price_rules?.get(it)?.id ?: ""
+                                    showDialog.value = true
+                                }
+                            )
+                            Text(
+                                "Edit",
+                                color = Color.White,
+                                modifier = Modifier
+                                    .padding(end = 32.dp, top = 16.dp)
+                                    .clickable {
+                                        priceRule.value = priceRules.result?.price_rules?.get(it)
+                                        showBottomSheet.value = true
+                                    },
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+            }
+            is Response.Failure -> {
+                item {
+                    Box(
+                        modifier = Modifier.fillParentMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = priceRules.exception)
+                    }
+                }
+            }
 
-                                priceRule.value = priceRules?.price_rules?.get(it)
-                                showBottomSheet.value = true
-
-                            },
-                        fontSize = 16.sp
-                    )
+            Response.Loading -> {
+                item {
+                    CustomLoadingIndicator(modifier = Modifier.fillParentMaxSize())
                 }
             }
         }

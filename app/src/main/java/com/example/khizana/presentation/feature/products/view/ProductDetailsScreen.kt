@@ -1,6 +1,7 @@
 package com.example.khizana.presentation.feature.products.view
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,7 +23,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -59,15 +60,15 @@ fun ProductDetailsScreen(
     productsViewModel: ProductsViewModel,
     navigationController: NavController
 ) {
-
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         productsViewModel.getProductById(productId = productId)
+        productsViewModel.message.collect {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
     }
     val product = productsViewModel.product.collectAsStateWithLifecycle().value
     val productImagesListSize = remember { mutableIntStateOf(0) }
-
-
-
     val pagerState = rememberPagerState(
         pageCount = { productImagesListSize.intValue ?: 0 },
         initialPage = 0,
@@ -138,7 +139,11 @@ fun ProductDetailsScreen(
                                 state = pagerState,
                                 modifier = Modifier.wrapContentSize()
                             ) { index ->
-                                CustomProductImage(productImage = product.result?.product?.images?.get(index)?.src ?: "")
+                                CustomProductImage(
+                                    productImage = product.result?.product?.images?.get(
+                                        index
+                                    )?.src ?: ""
+                                )
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -172,7 +177,8 @@ fun ProductDetailsScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "EGP ${product.result?.product?.variants?.get(0)?.price}", style = TextStyle(
+                            "EGP ${product.result?.product?.variants?.get(0)?.price}",
+                            style = TextStyle(
                                 fontSize = 22.sp,
                                 color = primaryColor,
                                 fontWeight = FontWeight.Bold
@@ -244,13 +250,12 @@ fun ProductDetailsScreen(
 
             }
 
-            is Response.Failure -> item{Text(product.exception)}
-            Response.Loading -> item{
+            is Response.Failure -> item { Text(product.exception) }
+            Response.Loading -> item {
                 CustomLoadingIndicator(modifier = Modifier.fillParentMaxSize())
             }
         }
     }
-
 }
 
 @Composable

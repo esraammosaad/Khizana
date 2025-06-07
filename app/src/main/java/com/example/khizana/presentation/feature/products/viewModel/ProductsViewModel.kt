@@ -43,8 +43,6 @@ class ProductsViewModel(
 
     private var _message = MutableSharedFlow<String>()
     val message = _message.asSharedFlow()
-
-
     fun getProducts() {
         viewModelScope.launch {
             try {
