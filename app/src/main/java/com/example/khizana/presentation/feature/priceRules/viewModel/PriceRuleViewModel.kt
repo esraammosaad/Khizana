@@ -1,5 +1,6 @@
 package com.example.khizana.presentation.feature.priceRules.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -120,6 +121,7 @@ class PriceRuleViewModel(
                 getDiscountCodes(priceRuleId)
                 _message.emit("Discount code deleted successfully")
             } catch (e: Exception) {
+                Log.i("TAG", "deleteDiscountCode: ${e.message.toString()}")
                 _message.emit(e.message.toString())
             }
         }

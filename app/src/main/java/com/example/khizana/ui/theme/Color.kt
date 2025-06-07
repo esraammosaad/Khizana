@@ -12,7 +12,7 @@ val Pink40 = Color(0xFF7D5260)
 
 val primaryColor = Color(0xFF295bbe)
 val lighterPrimaryColor = Color(0xFF4B7DDD)
-//val lighterPrimaryColor = Color(0xFF3A6CCD)
+val lightPrimaryColor = Color(0xFF3A6CCD)
 val secondaryColor = Color(0xFFE2EDFC)
 val lightGreyColor = Color(0xffEDEDED)
 val lighterGreyColor = Color(0xffC2C2C2)

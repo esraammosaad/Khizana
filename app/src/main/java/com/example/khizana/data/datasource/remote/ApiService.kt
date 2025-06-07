@@ -43,7 +43,7 @@ interface ApiService {
     ): OrdersCount
 
     @DELETE("products/{productId}.json")
-    suspend fun deleteProduct(@Path("productId") productId: String)
+    suspend fun deleteProduct(@Path("productId") productId: String): Response<Unit>
 
     @GET("products/{productId}.json")
     suspend fun getProductById(@Path("productId") productId: String): ProductRequest
@@ -74,7 +74,7 @@ interface ApiService {
     )
 
     @DELETE("price_rules/{priceRuleId}.json")
-    suspend fun deletePriceRules(@Path("priceRuleId") priceRuleId: String)
+    suspend fun deletePriceRules(@Path("priceRuleId") priceRuleId: String): Response<Unit>
 
     @GET("price_rules/{priceRuleId}/discount_codes.json")
     suspend fun getDiscountCodes(@Path("priceRuleId") priceRuleId: String): DiscountCode
@@ -89,7 +89,7 @@ interface ApiService {
     suspend fun deleteDiscountCodes(
         @Path("priceRuleId") priceRuleId: String,
         @Path("discountCodeId") discountCodeId: String
-    )
+    ): Response<Unit>
 
     @PUT("price_rules/{priceRuleId}/discount_codes/{discountCodeId}.json")
     suspend fun updateDiscountCodes(

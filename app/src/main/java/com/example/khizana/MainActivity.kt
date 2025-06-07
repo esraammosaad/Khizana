@@ -139,9 +139,22 @@ class MainActivity : ComponentActivity() {
                 composable<NavigationRoutes.SplashScreen> {
                     SplashScreen {
                         if (FirebaseAuth.getInstance().currentUser != null)
-                            navigationController.navigate(NavigationRoutes.MainScreen)
+                            navigationController.navigate(
+                                NavigationRoutes.MainScreen,
+                                builder = {
+                                    popUpTo(NavigationRoutes.SplashScreen) {
+                                        inclusive = true
+                                    }
+                                }
+                            )
                         else
-                            navigationController.navigate(NavigationRoutes.OnBoardingScreen)
+                            navigationController.navigate(NavigationRoutes.OnBoardingScreen,
+                                builder = {
+                                    popUpTo(NavigationRoutes.SplashScreen) {
+                                        inclusive = true
+                                    }
+                                }
+                            )
                     }
                 }
                 composable<NavigationRoutes.OnBoardingScreen> {
@@ -173,7 +186,11 @@ class MainActivity : ComponentActivity() {
                 composable<NavigationRoutes.DiscountCodesScreen> { backStackEntry ->
                     val data = backStackEntry.toRoute<NavigationRoutes.DiscountCodesScreen>()
                     val id = data.priceRuleId
-                    DiscountCodeScreen(priceRuleViewModel = priceRuleViewModel, priceRuleId = id)
+                    DiscountCodeScreen(
+                        priceRuleViewModel = priceRuleViewModel,
+                        priceRuleId = id,
+                        navigationController = navigationController
+                    )
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.example.khizana.presentation.feature.priceRules.view
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,14 +12,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -44,6 +45,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.domain.model.DiscountCodeDomain
 import com.example.khizana.presentation.feature.priceRules.view.components.DiscountCodeInputDialog
@@ -54,11 +56,17 @@ import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 
 @Composable
-fun DiscountCodeScreen(priceRuleViewModel: PriceRuleViewModel, priceRuleId: String) {
+fun DiscountCodeScreen(
+    priceRuleViewModel: PriceRuleViewModel,
+    priceRuleId: String,
+    navigationController: NavHostController
+) {
 
     val discountCodes = priceRuleViewModel.discountCodes.collectAsStateWithLifecycle().value
     val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
+    val code = remember { mutableStateOf("") }
+    val codeId = remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
         priceRuleViewModel.getDiscountCodes(priceRuleId)
         priceRuleViewModel.message.collect {
@@ -67,41 +75,37 @@ fun DiscountCodeScreen(priceRuleViewModel: PriceRuleViewModel, priceRuleId: Stri
     }
     LazyColumn(
         Modifier
-            .systemBarsPadding()
-            .padding(horizontal = 16.dp)
+            .padding(top = 64.dp)
     ) {
         item {
-            Spacer(modifier = Modifier.height(16.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-
-                Icon(
-                    Icons.Default.KeyboardArrowLeft,
-                    contentDescription = stringResource(R.string.back_icon),
-                    tint = Color.Black.copy(0.7f),
-                    modifier = Modifier
-                        .clickable {
-
-                        }
-                )
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "Add",
-                    modifier = Modifier.clickable {
-
-                        showDialog.value = true
-
-                    }
-                )
-
+                IconButton(onClick = {
+                    navigationController.popBackStack()
+                }) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(R.string.back_icon),
+                        tint = Color.Black.copy(0.7f),
+                    )
+                }
+                IconButton(onClick = {
+                    showDialog.value = true
+                }) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Add",
+                    )
+                }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = "Discount Codes",
                 fontWeight = FontWeight.Bold,
-                fontSize = 28.sp
+                fontSize = 28.sp,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -113,7 +117,20 @@ fun DiscountCodeScreen(priceRuleViewModel: PriceRuleViewModel, priceRuleId: Stri
                     DiscountCodeCard(
                         code = discountCodes.result?.discount_codes?.get(it)?.code ?: "",
                         usageCount = discountCodes.result?.discount_codes?.get(it)?.usage_count
-                            ?: 0
+                            ?: 0,
+                        onDeleteClick = {
+                            priceRuleViewModel.deleteDiscountCode(
+                                priceRuleId = priceRuleId,
+                                discountCodeId = discountCodes.result?.discount_codes?.get(it)?.id
+                                    ?: ""
+                            )
+                        },
+                        onEditClick = {
+                            code.value = discountCodes.result?.discount_codes?.get(it)?.code ?: ""
+                            codeId.value = discountCodes.result?.discount_codes?.get(it)?.id ?: ""
+                            showDialog.value = true
+                            Log.i("TAG", "DiscountCodeScreen: ${code.value}")
+                        }
                     )
                 }
             }
@@ -135,19 +152,27 @@ fun DiscountCodeScreen(priceRuleViewModel: PriceRuleViewModel, priceRuleId: Stri
     DiscountCodeInputDialog(
         showDialog = showDialog,
         onConfirm = {
-            priceRuleViewModel.createDiscountCode(priceRuleId, it)
-        }
+            if (code.value.isEmpty()) {
+                priceRuleViewModel.createDiscountCode(priceRuleId, it)
+            } else {
+                priceRuleViewModel.editDiscountCode(priceRuleId, codeId.value, it)
+            }
+        },
+        code = code.value
     )
 }
 
 @Composable
 fun DiscountCodeCard(
-    code: String = "SAVE20",
-    usageCount: Int = 15
-) {
+    code: String,
+    usageCount: Int,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit,
+
+    ) {
     Column(
         modifier = Modifier
-            .padding(bottom = 12.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(lightGreyColor)
             .padding(16.dp),
@@ -176,20 +201,44 @@ fun DiscountCodeCard(
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Usage Count:",
-                fontSize = 16.sp,
-                color = Color.Gray
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = usageCount.toString(),
-                fontSize = 16.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Medium
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Usage Count:",
+                    fontSize = 16.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = usageCount.toString(),
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            Row {
+                Icon(
+                    Icons.Default.Edit,
+                    contentDescription = "edit icon",
+                    tint = Color.Gray,
+                    modifier = Modifier.clickable {
+                        onEditClick.invoke()
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = "delete icon",
+                    tint = Color.Gray,
+                    modifier = Modifier.clickable {
+                        onDeleteClick.invoke()
+                    }
+                )
+
+            }
         }
     }
 }

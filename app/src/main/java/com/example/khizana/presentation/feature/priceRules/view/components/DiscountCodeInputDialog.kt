@@ -1,5 +1,6 @@
 package com.example.khizana.presentation.feature.priceRules.view.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,17 +42,18 @@ import com.example.khizana.ui.theme.secondaryColor
 fun DiscountCodeInputDialog(
     showDialog: MutableState<Boolean>,
     onConfirm: (DiscountCodeRequestDomain) -> Unit,
-    code: String = "",
+    code: String,
 ) {
     val discountCode = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
     val errorText = remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
-        if (code.isNotEmpty()) {
-            discountCode.value = code
-        }
+
+    Log.i("TAG", "DiscountCodeInputDialog: $code")
+    if (code.isNotEmpty()) {
+        discountCode.value = code
     }
+
 
     if (showDialog.value) {
         AlertDialog(
@@ -104,7 +106,7 @@ fun DiscountCodeInputDialog(
                     )
                 ) {
                     Text(
-                        stringResource(R.string.add)
+                        "Save"
                     )
                 }
             },

@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +51,9 @@ import com.example.khizana.domain.model.PriceRuleDomain
 import com.example.khizana.domain.model.PriceRuleItem
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.ui.theme.lightGreyColor
+import com.example.khizana.ui.theme.lightPrimaryColor
+import com.example.khizana.ui.theme.lighterPrimaryColor
+import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.NavigationRoutes
@@ -195,7 +199,6 @@ fun DiscountCard(
                     }
             )
         }
-
     }
 }
 
@@ -219,8 +222,9 @@ fun CustomDiscountCard(
                 .background(
                     Brush.horizontalGradient(
                         listOf(
-                            Color(0xFF295BBE),
-                            Color(0xFF5A7FD4)
+                            primaryColor,
+                            lightPrimaryColor,
+                            lighterPrimaryColor
                         )
                     )
                 )
