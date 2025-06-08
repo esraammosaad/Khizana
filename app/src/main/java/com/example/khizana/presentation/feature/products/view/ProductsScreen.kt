@@ -57,12 +57,14 @@ import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.NavigationRoutes
 import com.example.khizana.utilis.Response
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    productsViewModel: ProductsViewModel,
+    productsViewModel: ProductsViewModel = hiltViewModel(),
     navigationController: NavHostController
 ) {
 

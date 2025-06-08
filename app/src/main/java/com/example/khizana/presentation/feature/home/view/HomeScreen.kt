@@ -37,10 +37,12 @@ import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.Response
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(homeViewModel: HomeViewModel) {
+fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         homeViewModel.getOrdersCount()
         homeViewModel.getOrders()

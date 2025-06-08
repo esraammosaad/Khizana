@@ -8,8 +8,9 @@ import com.example.khizana.domain.model.DiscountCodeRequestDomain
 import com.example.khizana.domain.repository.DiscountCodeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class DiscountCodeRepositoryImpl(private val remoteDataSource: RemoteDataSource) :
+class DiscountCodeRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) :
     DiscountCodeRepository {
 
     override suspend fun getDiscountCodes(priceRuleId: String): Flow<DiscountCodeDomain> {

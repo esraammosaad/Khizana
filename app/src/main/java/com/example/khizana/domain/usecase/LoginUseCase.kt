@@ -1,8 +1,9 @@
 package com.example.khizana.domain.usecase
 
 import com.example.khizana.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class LoginUseCase(private val authRepository: AuthRepository) {
+class LoginUseCase @Inject constructor(private val authRepository: AuthRepository) {
     suspend fun login(
         email: String,
         password: String,

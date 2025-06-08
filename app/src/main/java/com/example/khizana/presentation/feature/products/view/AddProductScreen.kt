@@ -51,10 +51,12 @@ import com.example.khizana.presentation.feature.products.viewModel.ProductsViewM
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.ConfirmationDialog
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @Composable
 fun AddProductScreen(
-    productsViewModel: ProductsViewModel,
+    productsViewModel: ProductsViewModel = hiltViewModel(),
     showBottomSheet: MutableState<Boolean>,
     product: ProductsItem?,
     isEditable: Boolean,

@@ -8,8 +8,9 @@ import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class ProductRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) :
+class ProductRepositoryImpl @Inject constructor(private val remoteDataSourceImpl: RemoteDataSource) :
     ProductRepository {
 
     override suspend fun getProducts(): Flow<ProductDomain> {

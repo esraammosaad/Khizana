@@ -4,7 +4,6 @@ import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
@@ -20,14 +19,18 @@ import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.utilis.Response
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProductsViewModel(
+
+@HiltViewModel
+class ProductsViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
     private val createProductUseCase: CreateProductUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
@@ -265,24 +268,5 @@ class ProductsViewModel(
             )
             showBottomSheet.value = false
         }
-    }
-}
-
-class ProductsViewModelFactory(
-    private val getProductsUseCase: GetProductsUseCase,
-    private val createProductUseCase: CreateProductUseCase,
-    private val deleteProductUseCase: DeleteProductUseCase,
-    private val getProductByIdUseCase: GetProductByIdUseCase,
-    private val editProductUseCase: EditProductUseCase
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return ProductsViewModel(
-            getProductsUseCase,
-            createProductUseCase,
-            deleteProductUseCase,
-            getProductByIdUseCase,
-            editProductUseCase
-        ) as T
     }
 }

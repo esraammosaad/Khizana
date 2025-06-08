@@ -6,8 +6,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 
-object RetrofitFactory {
+class RetrofitFactory @Inject constructor() {
     private val retrofit: Retrofit = Retrofit.Builder()
         .baseUrl(Strings.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())

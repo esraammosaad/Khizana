@@ -15,10 +15,11 @@ import com.example.khizana.data.dto.ProductRequest
 import com.example.khizana.data.repository.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import javax.inject.Inject
 
-class RemoteDataSourceImpl(
-    private val apiService: ApiService = RetrofitFactory.apiService,
-    private val auth: AuthService = AuthService()
+class RemoteDataSourceImpl @Inject constructor(
+    private val apiService: ApiService,
+    private val auth: AuthService
 ) :
     RemoteDataSource {
 

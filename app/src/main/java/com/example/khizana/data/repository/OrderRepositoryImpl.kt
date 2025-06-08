@@ -6,8 +6,9 @@ import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.domain.repository.OrderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class OrderRepositoryImpl(private val remoteDataSourceImpl: RemoteDataSource) : OrderRepository {
+class OrderRepositoryImpl @Inject constructor(private val remoteDataSourceImpl: RemoteDataSource) : OrderRepository {
 
     override suspend fun getOrders(minDate: String, maxDate: String): Flow<OrderDomain> {
         return remoteDataSourceImpl.getOrders(minDate, maxDate).map { it.toDomain() }

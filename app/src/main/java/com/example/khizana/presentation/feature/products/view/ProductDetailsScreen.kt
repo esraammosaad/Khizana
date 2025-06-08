@@ -34,7 +34,6 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,12 +61,14 @@ import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.delay
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProductDetailsScreen(
     productId: String,
-    productsViewModel: ProductsViewModel,
+    productsViewModel: ProductsViewModel = hiltViewModel(),
     navigationController: NavController
 ) {
     val context = LocalContext.current

@@ -8,8 +8,9 @@ import com.example.khizana.domain.model.LocationDomain
 import com.example.khizana.domain.repository.InventoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class InventoryRepositoryImpl(private val remoteDataSource: RemoteDataSource) : InventoryRepository {
+class InventoryRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) : InventoryRepository {
     override suspend fun getInventoryLevels(locationId: String): Flow<InventoryLevelDomain> {
         return remoteDataSource.getInventoryLevels(locationId).map { it.toDomain() }
     }

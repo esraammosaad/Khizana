@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.khizana.domain.model.PriceRuleItem
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -26,7 +27,7 @@ import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleVi
 @Composable
 fun PartialPriceRuleBottomSheet(
     showBottomSheet: MutableState<Boolean>,
-    priceRuleViewModel: PriceRuleViewModel,
+    priceRuleViewModel: PriceRuleViewModel = hiltViewModel(),
     priceRule: PriceRuleItem?,
     isEditable: Boolean
 ) {

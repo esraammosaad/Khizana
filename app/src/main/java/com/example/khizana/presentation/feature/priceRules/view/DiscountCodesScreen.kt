@@ -54,10 +54,12 @@ import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @Composable
 fun DiscountCodeScreen(
-    priceRuleViewModel: PriceRuleViewModel,
+    priceRuleViewModel: PriceRuleViewModel = hiltViewModel(),
     priceRuleId: String,
     navigationController: NavHostController
 ) {
@@ -158,7 +160,7 @@ fun DiscountCodeScreen(
                 priceRuleViewModel.editDiscountCode(priceRuleId, codeId.value, it)
             }
         },
-        code = code.value
+        code = code
     )
 }
 

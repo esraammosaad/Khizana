@@ -4,7 +4,6 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.khizana.domain.model.OrdersCountDomain
 import com.example.khizana.domain.usecase.GetOrdersUseCase
@@ -12,12 +11,15 @@ import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.utilis.Response
 import com.example.khizana.utilis.Strings
 import com.example.khizana.utilis.getShopifyOrderCountDatesForLastSevenDays
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel(
+@HiltViewModel
+class HomeViewModel @Inject constructor(
     private val getProductsUseCase: GetProductsUseCase,
     private val getOrdersUseCase: GetOrdersUseCase
 ) : ViewModel() {
@@ -112,12 +114,3 @@ class HomeViewModel(
     }
 }
 
-class HomeViewModelFactory(
-    private val getProductsUseCase: GetProductsUseCase,
-    private val getOrdersUseCase: GetOrdersUseCase
-) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return HomeViewModel(getProductsUseCase, getOrdersUseCase) as T
-    }
-}

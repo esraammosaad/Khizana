@@ -2,7 +2,6 @@ package com.example.khizana.presentation.feature.priceRules.viewModel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.khizana.domain.model.DiscountCodeRequestDomain
 import com.example.khizana.domain.model.PriceRuleRequestDomain
@@ -15,14 +14,18 @@ import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import com.example.khizana.domain.usecase.GetDiscountCodeUseCase
 import com.example.khizana.utilis.Response
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PriceRuleViewModel(
+
+@HiltViewModel
+class PriceRuleViewModel @Inject constructor(
     private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
     private val createPriceRuleUseCase: CreatePriceRuleUseCase,
     private val editPriceRuleUseCase: EditPriceRuleUseCase,
@@ -163,29 +166,4 @@ class PriceRuleViewModel(
     }
 }
 
-class PriceRuleViewModelFactory(
-    private val getAllPriceRulesUseCase: GetAllPriceRulesUseCase,
-    private val createPriceRuleUseCase: CreatePriceRuleUseCase,
-    private val editPriceRuleUseCase: EditPriceRuleUseCase,
-    private val deletePriceRuleUseCase: DeletePriceRuleUseCase,
-    private val getDiscountCodeUseCase: GetDiscountCodeUseCase,
-    private val createDiscountCodeUseCase: CreateDiscountCodeUseCase,
-    private val deleteDiscountCodeUseCase: DeleteDiscountCodeUseCase,
-    private val editDiscountCodeUseCase: EditDiscountCodeUseCase
-) :
-    ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return PriceRuleViewModel(
-            getAllPriceRulesUseCase,
-            createPriceRuleUseCase,
-            editPriceRuleUseCase,
-            deletePriceRuleUseCase,
-            getDiscountCodeUseCase,
-            createDiscountCodeUseCase,
-            deleteDiscountCodeUseCase,
-            editDiscountCodeUseCase
-        ) as T
-    }
-}
 

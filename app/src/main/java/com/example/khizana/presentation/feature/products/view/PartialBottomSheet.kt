@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -23,7 +25,7 @@ import com.example.khizana.presentation.feature.products.viewModel.ProductsViewM
 @Composable
 fun PartialBottomSheet(
     showBottomSheet: MutableState<Boolean>,
-    productsViewModel: ProductsViewModel,
+    productsViewModel: ProductsViewModel = hiltViewModel(),
     product: ProductsItem?,
     isEditable: Boolean,
     productId: String? = null

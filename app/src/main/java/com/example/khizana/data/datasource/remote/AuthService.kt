@@ -4,8 +4,9 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import javax.inject.Inject
 
-class AuthService {
+class AuthService @Inject constructor() {
 
     private var auth: FirebaseAuth = Firebase.auth
     private var currentUser : FirebaseUser? = null

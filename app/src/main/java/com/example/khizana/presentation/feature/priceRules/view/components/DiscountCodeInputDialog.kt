@@ -42,16 +42,16 @@ import com.example.khizana.ui.theme.secondaryColor
 fun DiscountCodeInputDialog(
     showDialog: MutableState<Boolean>,
     onConfirm: (DiscountCodeRequestDomain) -> Unit,
-    code: String,
+    code: MutableState<String>,
 ) {
     val discountCode = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
     val errorText = remember { mutableStateOf("") }
 
-
-    Log.i("TAG", "DiscountCodeInputDialog: $code")
-    if (code.isNotEmpty()) {
-        discountCode.value = code
+    LaunchedEffect(code.value) {
+        if (code.value.isNotEmpty()) {
+            discountCode.value = code.value
+        }
     }
 
 
@@ -98,6 +98,7 @@ fun DiscountCodeInputDialog(
                             )
                             showDialog.value = false
                             discountCode.value = ""
+                            code.value = ""
                         }
                     },
                     colors = ButtonDefaults.outlinedButtonColors(

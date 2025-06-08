@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,10 +57,12 @@ import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.NavigationRoutes
 import com.example.khizana.utilis.Response
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PriceRules(priceRuleViewModel: PriceRuleViewModel, navigationController: NavHostController) {
+fun PriceRules(priceRuleViewModel: PriceRuleViewModel = hiltViewModel(), navigationController: NavHostController) {
 
     val context = LocalContext.current
     LaunchedEffect(Unit) {

@@ -50,9 +50,6 @@ import com.example.khizana.presentation.feature.profile.view.ProfileScreen
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen(
-    homeViewModel: HomeViewModel,
-    productsViewModel: ProductsViewModel,
-    priceRuleViewModel: PriceRuleViewModel,
     navigationController: NavHostController,
 ) {
 
@@ -98,13 +95,11 @@ fun MainScreen(
         content = {
             PartialBottomSheet(
                 showBottomSheet = showBottomSheet,
-                productsViewModel = productsViewModel,
                 product = null,
                 isEditable = false
             )
             PartialPriceRuleBottomSheet(
                 showBottomSheet = showPriceRuleBottomSheet,
-                priceRuleViewModel = priceRuleViewModel,
                 priceRule = null,
                 isEditable = false
             )
@@ -115,12 +110,11 @@ fun MainScreen(
             ) {
                 when (selectedIndex) {
                     0 -> {
-                        return@Column HomeScreen(homeViewModel = homeViewModel)
+                        return@Column HomeScreen()
                     }
 
                     1 -> {
                         return@Column ProductsScreen(
-                            productsViewModel = productsViewModel,
                             navigationController = navigationController
                         )
 
@@ -133,7 +127,6 @@ fun MainScreen(
 
                     3 -> {
                         return@Column PriceRules(
-                            priceRuleViewModel = priceRuleViewModel,
                             navigationController = navigationController
                         )
 
