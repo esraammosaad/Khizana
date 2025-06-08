@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">Khizana</string>
+    <string name="hello_admin">Hello, Admin</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="activity">Activity</string>
+    <string name="of_current_week">of Current Week</string>
+    <string name="product_image">product image</string>
+    <string name="quantity">Quantity: %1$s</string>
+    <string name="delete">Delete</string>
+    <string name="id">ID: #%1$s</string>
+    <string name="back_icon">Back Icon</string>
+    <string name="product_options">Product Options</string>
+    <string name="variants">Variants</string>
+    <string name="add_new_product_now">Add New Product Now!</string>
+    <string name="product_description">Product Description</string>
+    <string name="product_type">Product Type</string>
+    <string name="add_product">Add Product</string>
+    <string name="product_vendor">Product Vendor</string>
+    <string name="product_title">Product Title</string>
+    <string name="variant_title">Variant Title</string>
+    <string name="variant_price">Variant Price</string>
+    <string name="variant_quantity">Variant Quantity</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="option_one">Option One</string>
+    <string name="option_two">Option Two</string>
+    <string name="option_three">Option Three</string>
+    <string name="save">Save</string>
+    <string name="confirmation">Confirmation!!</string>
+    <string name="are_you_sure_you_want_to_delete_this_product">Are you sure you want to delete this product?</string>
+    <string name="options">Options</string>
+    <string name="edit_your_product">Edit Your Product</string>
+    <string name="are_you_sure_you_want_to_save_this_product">Are you sure you want to save this product?</string>
 </resources>
