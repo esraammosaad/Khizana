@@ -1,28 +1,86 @@
 package com.example.khizana
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.khizana.ui.theme.KhizanaTheme
+import androidx.annotation.RequiresApi
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.example.khizana.presentation.feature.home.view.MainScreen
+import com.example.khizana.presentation.feature.landing.OnBoardingScreen
+import com.example.khizana.presentation.feature.landing.SplashScreen
+import com.example.khizana.presentation.feature.login.view.LoginScreen
+import com.example.khizana.presentation.feature.priceRules.view.DiscountCodeScreen
+import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
+import com.example.khizana.utilis.NavigationRoutes
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KhizanaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+
+            val navigationController = rememberNavController()
+            NavHost(
+                navController = navigationController,
+                startDestination = NavigationRoutes.SplashScreen
+            ) {
+                composable<NavigationRoutes.SplashScreen> {
+                    SplashScreen {
+                        if (FirebaseAuth.getInstance().currentUser != null)
+                            navigationController.navigate(
+                                NavigationRoutes.MainScreen,
+                                builder = {
+                                    popUpTo(NavigationRoutes.SplashScreen) {
+                                        inclusive = true
+                                    }
+                                }
+                            )
+                        else
+                            navigationController.navigate(NavigationRoutes.OnBoardingScreen,
+                                builder = {
+                                    popUpTo(NavigationRoutes.SplashScreen) {
+                                        inclusive = true
+                                    }
+                                }
+                            )
+                    }
+                }
+                composable<NavigationRoutes.OnBoardingScreen> {
+                    OnBoardingScreen(navController = navigationController)
+                }
+                composable<NavigationRoutes.LoginScreen> {
+                    LoginScreen(
+                        navController = navigationController,
+                    )
+                }
+                composable<NavigationRoutes.MainScreen> {
+                    MainScreen(
+                        navigationController = navigationController,
+                    )
+                }
+                composable<NavigationRoutes.ProductDetailsScreen> { backStackEntry ->
+                    val data = backStackEntry.toRoute<NavigationRoutes.ProductDetailsScreen>()
+                    val id = data.productId
+                    ProductDetailsScreen(
+                        productId = id,
+                        navigationController = navigationController
+                    )
+                }
+                composable<NavigationRoutes.DiscountCodesScreen> { backStackEntry ->
+                    val data = backStackEntry.toRoute<NavigationRoutes.DiscountCodesScreen>()
+                    val id = data.priceRuleId
+                    DiscountCodeScreen(
+                        priceRuleId = id,
+                        navigationController = navigationController
                     )
                 }
             }
@@ -30,18 +88,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    KhizanaTheme {
-        Greeting("Android")
-    }
-}
