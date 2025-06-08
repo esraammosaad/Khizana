@@ -1,6 +1,6 @@
 package com.example.khizana.data.dto
 
-data class OrdersCount(
+data class Count(
     val count: Int
 )
 

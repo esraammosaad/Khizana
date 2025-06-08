@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.khizana.R
-import com.example.khizana.domain.model.OrdersCountDomain
+import com.example.khizana.domain.model.CountDomain
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
@@ -45,10 +45,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         homeViewModel.getOrdersCount()
-        homeViewModel.getOrders()
+        homeViewModel.getTotalOrdersPrice()
+        homeViewModel.getTotalRevenue()
+        homeViewModel.getProductsCount()
+        homeViewModel.getInventoryLocationsCount()
     }
     val ordersCount = homeViewModel.ordersCount.collectAsStateWithLifecycle().value
     val totalOrdersPrice = homeViewModel.totalOrdersPrice.collectAsStateWithLifecycle().value
+    val totalRevenue = homeViewModel.revenue.collectAsStateWithLifecycle().value
+    val productsCount = homeViewModel.productsCount.collectAsStateWithLifecycle().value
+    val inventoryLocationsCount =
+        homeViewModel.inventoryLocationsCount.collectAsStateWithLifecycle().value
     val weeklyActivity: MutableList<Int> = mutableListOf()
 
 
@@ -81,7 +88,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 ) {
                     when (ordersCount) {
                         is Response.Success<*> -> {
-                            ordersCount as Response.Success<List<OrdersCountDomain>>
+                            ordersCount as Response.Success<List<CountDomain>>
                             weeklyActivity.clear()
                             for (i in 0..6) {
                                 weeklyActivity.add(ordersCount.result?.get(i)?.count ?: 0)
@@ -125,29 +132,30 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFece9f2),
                     textOne = "Revenue Last Week",
-                    textTwo = totalOrdersPrice,
+                    textTwo = totalRevenue,
                     icon = R.drawable.chart
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-//            Row(modifier = Modifier.fillMaxWidth()) {
-//                CustomBox(
-//                    modifier = Modifier.weight(1f),
-//                    color = Color(0xFFf8ede7),
-//                    textOne = "Sales Last Week",
-//                    textTwo = totalOrdersPrice,
-//                    //String.format("%.2f", totalOrdersPrice) + " EGP",
-//                    icon = R.drawable.discount
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                CustomBox(
-//                    modifier = Modifier.weight(1f),
-//                    color = Color(0xFFece9f2),
-//                    textOne = "Revenue Last Week",
-//                    textTwo = totalOrdersPrice,
-//                    icon = R.drawable.chart
-//                )
-//            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                CustomCountBox(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFece9f2),
+                    textOne = "Products Count",
+                    textTwo = productsCount,
+                    icon = R.drawable.instock,
+                    text = "Products"
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                CustomCountBox(
+                    modifier = Modifier.weight(1f),
+                    color = Color(0xFFf8ede7),
+                    textOne = "Inventory Locations Count",
+                    textTwo = inventoryLocationsCount,
+                    icon = R.drawable.location,
+                    text = "Locations"
+                )
+            }
         }
     }
 }
@@ -160,7 +168,6 @@ private fun CustomBox(
     textTwo: Response,
     icon: Int
 ) {
-
     Box(
         modifier = modifier
             .background(color, shape = RoundedCornerShape(12))
@@ -193,6 +200,60 @@ private fun CustomBox(
                 is Response.Failure -> {
                     Text(textTwo.exception)
                 }
+
+                is Response.Loading -> {
+                    CircularProgressIndicator(
+                        color = primaryColor,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CustomCountBox(
+    modifier: Modifier = Modifier,
+    color: Color,
+    text: String,
+    textOne: String,
+    textTwo: Response,
+    icon: Int
+) {
+    Box(
+        modifier = modifier
+            .background(color, shape = RoundedCornerShape(12))
+            .height(120.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.Start,
+
+            ) {
+            Image(painter = painterResource(icon), contentDescription = "")
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                textOne,
+                style = TextStyle(fontSize = 16.sp, color = Color.Gray)
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            when (textTwo) {
+                is Response.Success<*> -> {
+                    textTwo as Response.Success<Int>
+                    Text(
+                        "${textTwo.result.toString()} $text",
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    )
+                }
+
+                is Response.Failure -> {
+                    Text(textTwo.exception)
+                }
+
                 is Response.Loading -> {
                     CircularProgressIndicator(
                         color = primaryColor,

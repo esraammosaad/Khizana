@@ -1,13 +1,13 @@
 package com.example.khizana.presentation.feature.home.viewModel
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.khizana.domain.model.OrdersCountDomain
+import com.example.khizana.domain.model.CountDomain
+import com.example.khizana.domain.usecase.GetInventoryLocationsUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
-import com.example.khizana.domain.usecase.GetProductsUseCase
+import com.example.khizana.domain.usecase.GetProductsCountUseCase
 import com.example.khizana.utilis.Response
 import com.example.khizana.utilis.Strings
 import com.example.khizana.utilis.getShopifyOrderCountDatesForLastSevenDays
@@ -20,8 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getProductsUseCase: GetProductsUseCase,
-    private val getOrdersUseCase: GetOrdersUseCase
+    private val getOrdersUseCase: GetOrdersUseCase,
+    private val getProductsCountUseCase: GetProductsCountUseCase,
+    private val getInventoryLocationsUseCase: GetInventoryLocationsUseCase
 ) : ViewModel() {
 
     private var _products = MutableStateFlow<Response>(Response.Loading)
@@ -33,26 +34,21 @@ class HomeViewModel @Inject constructor(
     private var _totalOrdersPrice = MutableStateFlow<Response>(Response.Loading)
     val totalOrdersPrice = _totalOrdersPrice.asStateFlow()
 
+    private var _revenue = MutableStateFlow<Response>(Response.Loading)
+    val revenue = _revenue.asStateFlow()
+
     private var _ordersCount = MutableStateFlow<Response>(Response.Loading)
     val ordersCount = _ordersCount.asStateFlow()
 
-    fun getProducts() {
-        viewModelScope.launch {
-            try {
-                val response = getProductsUseCase.getProducts()
-                response.catch {
-                    _products.emit(Response.Failure(it.message.toString()))
-                }.collect {
-                    _products.emit(Response.Success(it))
-                }
-            } catch (e: Exception) {
-                _products.emit(Response.Failure(e.message.toString()))
-            }
-        }
-    }
+    private var _productsCount = MutableStateFlow<Response>(Response.Loading)
+    val productsCount = _productsCount.asStateFlow()
+
+    private var _inventoryLocationsCount = MutableStateFlow<Response>(Response.Loading)
+    val inventoryLocationsCount = _inventoryLocationsCount.asStateFlow()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getOrders() {
+    fun getTotalOrdersPrice() {
         viewModelScope.launch {
             try {
                 val list = mutableListOf<Float>()
@@ -77,11 +73,45 @@ class HomeViewModel @Inject constructor(
                     }
                     _orders.emit(Response.Success(it))
                     _totalOrdersPrice.emit(Response.Success(list.sum()))
-                    Log.i("TAG", "getOrders: $response")
                 }
             } catch (e: Exception) {
                 _orders.emit(Response.Failure(e.message.toString()))
                 _totalOrdersPrice.emit(Response.Failure(e.message.toString()))
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getTotalRevenue() {
+        viewModelScope.launch {
+            try {
+                val revenueList = mutableListOf<Double>()
+                val response = getOrdersUseCase.getOrders(
+                    getShopifyOrderCountDatesForLastSevenDays()[0] + Strings.START_OF_THE_DAY,
+                    getShopifyOrderCountDatesForLastSevenDays()[6] + Strings.END_OF_THE_DAY,
+                )
+                response
+                    .catch {
+                        _revenue.emit(Response.Failure(it.message.toString()))
+                    }
+                    .collect {
+                        it.orders?.forEach { order ->
+                            val subtotal = order?.subtotal_price?.toDoubleOrNull() ?: 0.0
+                            val discounts = order?.total_discounts?.toDoubleOrNull() ?: 0.0
+
+                            val revenuePerOrder = subtotal - discounts
+                            val currency = order?.currency
+                            if (currency == "EUR") {
+                                revenueList.add(revenuePerOrder * 50.0)
+                            } else {
+                                revenueList.add(revenuePerOrder)
+                            }
+                        }
+                        _revenue.emit(Response.Success(revenueList.sum()))
+                    }
+
+            } catch (e: Exception) {
+                _revenue.emit(Response.Failure(e.message.toString()))
             }
         }
     }
@@ -91,7 +121,7 @@ class HomeViewModel @Inject constructor(
     fun getOrdersCount() {
         viewModelScope.launch {
             try {
-                val list = mutableListOf<OrdersCountDomain>()
+                val list = mutableListOf<CountDomain>()
                 for (i in 0..6) {
                     val response = getOrdersUseCase.getOrdersCount(
                         minDate = getShopifyOrderCountDatesForLastSevenDays()[i] + Strings.START_OF_THE_DAY,
@@ -101,16 +131,44 @@ class HomeViewModel @Inject constructor(
                         _ordersCount.emit(Response.Failure(it.message.toString()))
                     }.collect {
                         list.add(it)
-                        Log.i("TAG", "getOrdersCount: $response")
                     }
                 }
                 _ordersCount.emit(Response.Success(list))
             } catch (e: Exception) {
                 _ordersCount.emit(Response.Failure(e.message.toString()))
+            }
+        }
+    }
+
+    fun getProductsCount() {
+        viewModelScope.launch {
+            try {
+                val response = getProductsCountUseCase.getProductsCount()
+                response.catch {
+                    _productsCount.emit(Response.Failure(it.message.toString()))
+                }.collect {
+                    _productsCount.emit(Response.Success(it.count))
+                }
+            } catch (e: Exception) {
+                _productsCount.emit(Response.Failure(e.message.toString()))
 
             }
         }
+    }
 
+    fun getInventoryLocationsCount() {
+        viewModelScope.launch {
+            try {
+                val response = getInventoryLocationsUseCase.getAllInventoryLocations()
+                response.catch {
+                    _inventoryLocationsCount.emit(Response.Failure(it.message.toString()))
+                }.collect {
+                    _inventoryLocationsCount.emit(Response.Success(it.locations.size))
+                }
+            } catch (e: Exception) {
+                _inventoryLocationsCount.emit(Response.Failure(e.message.toString()))
+            }
+        }
     }
 }
 

@@ -53,8 +53,6 @@ fun DiscountCodeInputDialog(
             discountCode.value = code.value
         }
     }
-
-
     if (showDialog.value) {
         AlertDialog(
             containerColor = Color.White,

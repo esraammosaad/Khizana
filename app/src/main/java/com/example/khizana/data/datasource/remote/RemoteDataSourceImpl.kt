@@ -7,7 +7,7 @@ import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
-import com.example.khizana.data.dto.OrdersCount
+import com.example.khizana.data.dto.Count
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
@@ -45,12 +45,16 @@ class RemoteDataSourceImpl @Inject constructor(
         return flowOf(apiService.getOrders(minDate, maxDate))
     }
 
-    override suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<OrdersCount> {
+    override suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<Count> {
         return flowOf(apiService.getOrdersCountToday(minDate, maxDate))
     }
 
     override suspend fun deleteProduct(productId: String) {
         apiService.deleteProduct(productId)
+    }
+
+    override suspend fun getProductsCount(): Flow<Count> {
+        return flowOf(apiService.getProductsCount())
     }
 
     override suspend fun getProductById(productId: String): Flow<ProductRequest> {
@@ -93,8 +97,11 @@ class RemoteDataSourceImpl @Inject constructor(
         return flowOf(apiService.getDiscountCodes(priceRuleId))
     }
 
-    override suspend fun createDiscountCodes(priceRuleId: String,discountCodeRequest: DiscountCodeRequest) {
-        apiService.createDiscountCodes(priceRuleId,discountCodeRequest)
+    override suspend fun createDiscountCodes(
+        priceRuleId: String,
+        discountCodeRequest: DiscountCodeRequest
+    ) {
+        apiService.createDiscountCodes(priceRuleId, discountCodeRequest)
     }
 
     override suspend fun deleteDiscountCodes(priceRuleId: String, discountCodeId: String) {

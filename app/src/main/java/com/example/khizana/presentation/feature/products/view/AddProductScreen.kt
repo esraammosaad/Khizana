@@ -92,6 +92,7 @@ fun AddProductScreen(
             imageUri.value = imageUris.value?.firstOrNull()
             variantList.value = (product.variants ?: emptyList()) as List<VariantsItem>
             optionList.value = (product.options ?: emptyList()) as List<OptionsItem>
+            productStatus.value = product.status ?: ""
         }
     }
 
@@ -112,6 +113,7 @@ fun AddProductScreen(
                             productDescription.value,
                             productType.value,
                             productVendor.value,
+                            productStatus.value,
                             variantList.value,
                             optionList.value,
                             showBottomSheet,
@@ -337,7 +339,7 @@ private fun CustomTextFieldAndMenuColumn(
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        CustomTextFieldWithDropDownMenu(expandedType, productTypes, value)
+        CustomTextFieldWithDropDownMenu(expandedType, productTypes, value, text)
     }
 }
 
@@ -346,7 +348,8 @@ private fun CustomTextFieldAndMenuColumn(
 private fun CustomTextFieldWithDropDownMenu(
     expandedVendor: MutableState<Boolean>,
     vendors: List<String>,
-    value: MutableState<String>
+    value: MutableState<String>,
+    text: String
 ) {
     ExposedDropdownMenuBox(
         expanded = expandedVendor.value,
@@ -361,7 +364,7 @@ private fun CustomTextFieldWithDropDownMenu(
                 value.value = it
             },
             readOnly = true,
-            placeholder = { Text("Select vendor") },
+            placeholder = { Text("Select $text") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedVendor.value) },
             modifier = Modifier
                 .menuAnchor()

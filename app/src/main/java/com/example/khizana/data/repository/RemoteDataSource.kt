@@ -6,7 +6,7 @@ import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
-import com.example.khizana.data.dto.OrdersCount
+import com.example.khizana.data.dto.Count
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
@@ -18,8 +18,9 @@ interface RemoteDataSource {
     suspend fun getProducts(): Flow<Product>
     suspend fun createProduct(product: ProductRequest) : Flow<ProductRequest>
     suspend fun getOrders(minDate: String, maxDate: String): Flow<Order>
-    suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<OrdersCount>
+    suspend fun getOrdersCount(minDate: String, maxDate: String): Flow<Count>
     suspend fun deleteProduct(productId: String)
+    suspend fun getProductsCount(): Flow<Count>
     suspend fun getProductById(productId: String): Flow<ProductRequest>
     suspend fun editProduct(productId: String, product: ProductRequest)
     suspend fun getAllInventoryLocations() : Flow<Location>

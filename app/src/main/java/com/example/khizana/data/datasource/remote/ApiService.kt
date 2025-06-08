@@ -6,7 +6,7 @@ import com.example.khizana.data.dto.InventoryLevel
 import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
-import com.example.khizana.data.dto.OrdersCount
+import com.example.khizana.data.dto.Count
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
@@ -32,7 +32,8 @@ interface ApiService {
     suspend fun getOrders(
         @Query("created_at_min") minDate: String,
         @Query("created_at_max") maxDate: String,
-        @Query("status") status: String = "any"
+        @Query("status") status: String = "any",
+        @Query("financial_status") financialStatus: String = "paid",
     ): Order
 
     @GET("orders/count.json")
@@ -40,7 +41,7 @@ interface ApiService {
         @Query("created_at_min") minDate: String,
         @Query("created_at_max") maxDate: String,
         @Query("status") status: String = "any"
-    ): OrdersCount
+    ): Count
 
     @DELETE("products/{productId}.json")
     suspend fun deleteProduct(@Path("productId") productId: String): Response<Unit>
@@ -48,6 +49,8 @@ interface ApiService {
     @GET("products/{productId}.json")
     suspend fun getProductById(@Path("productId") productId: String): ProductRequest
 
+    @GET("products/count.json")
+    suspend fun getProductsCount(): Count
 
     @PUT("products/{productId}.json")
     suspend fun editProduct(@Path("productId") productId: String, @Body product: ProductRequest)

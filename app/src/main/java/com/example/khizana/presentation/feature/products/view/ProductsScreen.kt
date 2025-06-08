@@ -60,7 +60,6 @@ import com.example.khizana.utilis.Response
 import androidx.hilt.navigation.compose.hiltViewModel
 
 
-
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
@@ -124,13 +123,14 @@ fun ProductsScreen(
                             )
                         }
                     }
-
                 }
+
                 is Response.Failure -> {
                     item {
                         Text(text = products.exception)
                     }
                 }
+
                 is Response.Loading -> {
                     item {
                         CustomLoadingIndicator(modifier = Modifier.fillParentMaxSize())
@@ -180,7 +180,7 @@ fun CustomStatusBox(modifier: Modifier, it: ProductsItem?) {
             .height(25.dp)
             .width(75.dp)
             .background(
-                Color(if (it?.status.equals("active")) 0xffe1f7e6 else 0xfffff7d9),
+                Color(if (it?.status.equals("active")) 0xffe1f7e6 else if (it?.status.equals("draft")) 0xfffff7d9 else 0xffFDDCDC),
                 shape = RoundedCornerShape(20)
             )
             .padding(horizontal = 10.dp),
@@ -191,7 +191,12 @@ fun CustomStatusBox(modifier: Modifier, it: ProductsItem?) {
             it?.status ?: "",
             style = TextStyle(
                 fontWeight = FontWeight.Bold,
-                color = Color(if (it?.status.equals("active")) 0xff68d583 else 0xffffd946)
+                color = Color(
+                    if (it?.status.equals("active")) 0xff68d583 else if (it?.status.equals(
+                            "draft"
+                        )
+                    ) 0xffffd946 else 0xffB52A2A
+                )
             )
         )
 

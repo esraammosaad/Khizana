@@ -25,6 +25,7 @@ import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleVi
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
+import com.example.khizana.utilis.ConfirmationDialog
 import java.util.*
 
 @Composable
@@ -58,6 +59,7 @@ fun AddPriceRuleScreen(
     val discountErrorMessage = remember { mutableStateOf("") }
     val errorMessage = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
+    val showConfirmationDialog = remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -77,8 +79,49 @@ fun AddPriceRuleScreen(
         }
     }
 
-    LazyColumn(modifier = modifier.padding(top = 64.dp)) {
+    LazyColumn(modifier = modifier.padding(top = 16.dp)) {
         item {
+            ConfirmationDialog(
+                showDialog = showConfirmationDialog.value,
+                text = "Are you sure you want to save this coupon?",
+                onConfirm = {
+                    val rule = PriceRuleRequestDomain(
+                        price_rule = PriceRule(
+                            allocation_method = "each",
+                            prerequisite_to_entitlement_quantity_ratio = Prerequisite_to_entitlement_quantity_ratio(
+                                prerequisite_quantity = 2,
+                                entitled_quantity = 1
+                            ),
+                            value_type = discountType.value,
+                            starts_at = startDate.value,
+                            allocation_limit = 3,
+                            target_type = "line_item",
+                            entitled_product_ids = listOf("7379132088433"),
+                            title = titleValue.value,
+                            customer_selection = "all",
+                            target_selection = "entitled",
+                            ends_at = endDate.value,
+                            value = discountValue.value,
+                            prerequisite_collection_ids = listOf("288621756529")
+                        ),
+                    )
+                    if (!isEditable) {
+                        priceRuleViewModel.createPriceRule(
+                            priceRule = rule
+                        )
+                    } else {
+                        priceRuleViewModel.editPriceRule(
+                            priceRule = rule,
+                            priceRuleId = barcode.value
+                        )
+                    }
+                    showBottomSheet.value = false
+
+                },
+                onDismiss = {
+                    showConfirmationDialog.value = false
+                }
+            )
             Text(
                 "Add New Coupon Now!", style = TextStyle(
                     fontSize = 24.sp,
@@ -86,7 +129,7 @@ fun AddPriceRuleScreen(
                 ),
                 modifier = Modifier.padding(12.dp)
             )
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             CustomDiscountCard(
                 discount = discount.value,
                 title = title.value,
@@ -236,6 +279,15 @@ fun AddPriceRuleScreen(
                             discountErrorMessage.value = ""
                         }
 
+                        if (discountValue.value.toDouble() >= 0.0) {
+                            discountError.value = true
+                            discountErrorMessage.value = "Discount must be negative"
+
+                        } else {
+                            discountError.value = false
+                            discountErrorMessage.value = ""
+                        }
+
                         if (startDate.value == "Start Date" || endDate.value == "End Date") {
                             error.value = true
                             errorMessage.value = "Please select a date"
@@ -245,37 +297,9 @@ fun AddPriceRuleScreen(
                         }
 
                         if (!error.value && !titleError.value && !discountError.value) {
-                            val rule = PriceRuleRequestDomain(
-                                price_rule = PriceRule(
-                                    allocation_method = "each",
-                                    prerequisite_to_entitlement_quantity_ratio = Prerequisite_to_entitlement_quantity_ratio(
-                                        prerequisite_quantity = 2,
-                                        entitled_quantity = 1
-                                    ),
-                                    value_type = discountType.value,
-                                    starts_at = startDate.value,
-                                    allocation_limit = 3,
-                                    target_type = "line_item",
-                                    entitled_product_ids = listOf("7379132088433"),
-                                    title = titleValue.value,
-                                    customer_selection = "all",
-                                    target_selection = "entitled",
-                                    ends_at = endDate.value,
-                                    value = discountValue.value,
-                                    prerequisite_collection_ids = listOf("288621756529")
-                                ),
-                            )
-                            if (!isEditable) {
-                                priceRuleViewModel.createPriceRule(
-                                    priceRule = rule
-                                )
-                            } else {
-                                priceRuleViewModel.editPriceRule(
-                                    priceRule = rule,
-                                    priceRuleId = barcode.value
-                                )
-                            }
-                            showBottomSheet.value = false
+
+                            showConfirmationDialog.value = true
+
                         }
                     },
                     modifier = Modifier

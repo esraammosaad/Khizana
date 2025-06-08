@@ -1,6 +1,6 @@
 package com.example.khizana.domain.model
 
-data class OrdersCountDomain(
+data class CountDomain(
     val count: Int
 )
 
