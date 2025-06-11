@@ -109,7 +109,7 @@ fun ProductDetailsScreen(
                         )
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
                         ) {
                             IconButton(
                                 onClick = {
