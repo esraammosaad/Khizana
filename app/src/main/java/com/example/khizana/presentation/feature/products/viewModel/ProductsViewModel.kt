@@ -10,6 +10,7 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.OptionsItem
+import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.domain.model.VariantsItem
@@ -46,6 +47,10 @@ class ProductsViewModel @Inject constructor(
 
     private var _message = MutableSharedFlow<String>()
     val message = _message.asSharedFlow()
+
+    private val _searchResults = MutableSharedFlow<List<ProductsItem>>(replay = 1)
+    val searchResults = _searchResults.asSharedFlow()
+
     fun getProducts() {
         viewModelScope.launch {
             try {
@@ -124,6 +129,48 @@ class ProductsViewModel @Inject constructor(
             }
         }
     }
+
+    fun performSearch(query: String) {
+        viewModelScope.launch {
+            val productResponse = _products.value
+            if (productResponse is Response.Success<*>) {
+                val items = productResponse.result as ProductDomain
+
+                val results = items.products
+                    ?.mapNotNull { product ->
+                        product?.title?.let { title ->
+                            product to levenshtein(title.lowercase(), query.lowercase())
+                        }
+                    }
+                    ?.sortedBy { it.second }
+                    ?.map { it.first }
+                    ?.take(5)
+
+                _searchResults.emit(results ?: listOf())
+            } else {
+                _searchResults.emit(emptyList())
+            }
+        }
+    }
+
+
+    private fun levenshtein(a: String, b: String): Int {
+        val dp = Array(a.length + 1) { IntArray(b.length + 1) }
+
+        for (i in 0..a.length) {
+            for (j in 0..b.length) {
+                when {
+                    i == 0 -> dp[i][j] = j
+                    j == 0 -> dp[i][j] = i
+                    a[i - 1] == b[j - 1] -> dp[i][j] = dp[i - 1][j - 1]
+                    else -> dp[i][j] = 1 + minOf(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+                }
+            }
+        }
+        return dp[a.length][b.length]
+    }
+
+
 
     fun uploadProduct(
         imageUris: List<Any>?,

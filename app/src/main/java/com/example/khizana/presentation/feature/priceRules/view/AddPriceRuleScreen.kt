@@ -20,7 +20,7 @@ import com.example.khizana.domain.model.Prerequisite_to_entitlement_quantity_rat
 import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.model.PriceRule
 import com.example.khizana.domain.model.PriceRuleItem
-import com.example.khizana.presentation.feature.priceRules.view.CustomDiscountCard
+import com.example.khizana.presentation.feature.priceRules.view.components.CustomDiscountCard
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
 import com.example.khizana.ui.theme.primaryColor

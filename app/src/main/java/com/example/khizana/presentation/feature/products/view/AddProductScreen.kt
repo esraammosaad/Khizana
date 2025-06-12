@@ -77,6 +77,16 @@ fun AddProductScreen(
     }
     val error = remember { mutableStateOf(false) }
     val errorMessage = remember { mutableStateOf("") }
+    val titleError = remember { mutableStateOf(false) }
+    val descriptionError = remember { mutableStateOf(false) }
+    val vendorError = remember { mutableStateOf(false) }
+    val typeError = remember { mutableStateOf(false) }
+    val statusError = remember { mutableStateOf(false) }
+    val titleErrorMessage = remember { mutableStateOf("") }
+    val descriptionErrorMessage = remember { mutableStateOf("") }
+    val vendorErrorMessage = remember { mutableStateOf("") }
+    val typeErrorMessage = remember { mutableStateOf("") }
+    val statusErrorMessage = remember { mutableStateOf("") }
     val showVariantDialog = remember { mutableStateOf(false) }
     val showOptionDialog = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
@@ -126,7 +136,7 @@ fun AddProductScreen(
                     showConfirmationDialog.value = false
                 }
             )
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(42.dp))
             Text(
                 text = if (isEditable) stringResource(R.string.edit_your_product) else stringResource(
                     R.string.add_new_product_now
@@ -146,13 +156,22 @@ fun AddProductScreen(
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                CustomTextField(value = productName, label = stringResource(R.string.product_title))
+                CustomTextField(
+                    value = productName,
+                    label = stringResource(R.string.product_title),
+                    error = titleError.value,
+                    errorMessage = titleErrorMessage.value
+                )
                 Text(
                     "Description",
                     style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                CustomTextArea(value = productDescription)
+                CustomTextArea(
+                    value = productDescription,
+                    error = descriptionError.value,
+                    errorMessage = descriptionErrorMessage.value
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 ProductForm(
                     vendors = listOf(
@@ -169,7 +188,13 @@ fun AddProductScreen(
                     statuses = listOf("active", "draft", "archived"),
                     productStatus = productStatus,
                     productVendor = productVendor,
-                    productType = productType
+                    productType = productType,
+                    vendorError = vendorError,
+                    vendorErrorMessage = vendorErrorMessage,
+                    typeError = typeError,
+                    typeErrorMessage = typeErrorMessage,
+                    statusError = statusError,
+                    statusErrorMessage = statusErrorMessage
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 CustomOptionsRow(
@@ -221,47 +246,53 @@ fun AddProductScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 CustomButton(
                     onClick = {
-                        when {
-                            imageUris.value.isNullOrEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please add at least one image"
-                            }
 
-                            productName.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please fill product name"
-                            }
 
-                            productDescription.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please fill product description"
-                            }
-
-                            productVendor.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please fill product vendor"
-                            }
-
-                            productType.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please fill product type"
-                            }
-
-                            variantList.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please add at least one variant"
-                            }
-
-                            optionList.value.isEmpty() -> {
-                                error.value = true
-                                errorMessage.value = "Please add at least one option"
-                            }
-
-                            else -> {
-                                error.value = false
-                                showConfirmationDialog.value = true
-                            }
+                        if (productName.value.isEmpty()) {
+                            titleError.value = true
+                            titleErrorMessage.value = "Please fill product name"
                         }
+                        if (productDescription.value.isEmpty()) {
+                            descriptionError.value = true
+                            descriptionErrorMessage.value = "Please fill product description"
+                        }
+                        if (productVendor.value.isEmpty()) {
+                            vendorError.value = true
+                            vendorErrorMessage.value = "Please fill product vendor"
+                        }
+                        if (productType.value.isEmpty()) {
+                            typeError.value = true
+                            typeErrorMessage.value = "Please fill product type"
+                        }
+                        if (productStatus.value.isEmpty()) {
+                            statusError.value = true
+                            statusErrorMessage.value = "Please fill product status"
+                        }
+                        if (imageUris.value.isNullOrEmpty()) {
+                            error.value = true
+                            errorMessage.value = "Please add at least one image"
+                        }
+                       else if (variantList.value.isEmpty()) {
+                            error.value = true
+                            errorMessage.value = "Please add at least one variant"
+                        }
+                       else if (optionList.value.isEmpty()) {
+                            error.value = true
+                            errorMessage.value = "Please add at least one option"
+                        }
+                        if (!error.value && !titleError.value && !descriptionError.value && !vendorError.value && !typeError.value) {
+                            error.value = false
+                            titleError.value = false
+                            descriptionError.value = false
+                            vendorError.value = false
+                            typeError.value = false
+                            titleErrorMessage.value = ""
+                            descriptionErrorMessage.value = ""
+                            vendorErrorMessage.value = ""
+                            typeErrorMessage.value = ""
+                            showConfirmationDialog.value = true
+                        }
+
                     },
                     text =
                     stringResource(R.string.save),
@@ -286,7 +317,13 @@ fun ProductForm(
     statuses: List<String>,
     productStatus: MutableState<String>,
     productVendor: MutableState<String>,
-    productType: MutableState<String>
+    productType: MutableState<String>,
+    vendorError: MutableState<Boolean>,
+    vendorErrorMessage: MutableState<String>,
+    typeError: MutableState<Boolean>,
+    typeErrorMessage: MutableState<String>,
+    statusError: MutableState<Boolean>,
+    statusErrorMessage: MutableState<String>
 ) {
     val expandedVendor = remember { mutableStateOf(false) }
 
@@ -300,7 +337,9 @@ fun ProductForm(
             modifier = Modifier.fillMaxWidth(),
             expandedType = expandedVendor,
             productTypes = vendors,
-            value = productVendor
+            value = productVendor,
+            error = vendorError.value,
+            errorMessage = vendorErrorMessage.value
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(
@@ -312,14 +351,18 @@ fun ProductForm(
                 text = "Status",
                 expandedType = expandedStatus,
                 productTypes = statuses,
-                value = productStatus
+                value = productStatus,
+                error = statusError.value,
+                errorMessage = statusErrorMessage.value
             )
             CustomTextFieldAndMenuColumn(
                 modifier = Modifier.Companion.weight(1f),
                 text = "Product type",
                 expandedType = expandedType,
                 productTypes = productTypes,
-                value = productType
+                value = productType,
+                error = typeError.value,
+                errorMessage = typeErrorMessage.value
             )
         }
     }
@@ -331,7 +374,9 @@ private fun CustomTextFieldAndMenuColumn(
     text: String,
     expandedType: MutableState<Boolean>,
     productTypes: List<String>,
-    value: MutableState<String>
+    value: MutableState<String>,
+    error: Boolean = false,
+    errorMessage: String = ""
 ) {
     Column(modifier = modifier) {
         Text(
@@ -339,7 +384,14 @@ private fun CustomTextFieldAndMenuColumn(
             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        CustomTextFieldWithDropDownMenu(expandedType, productTypes, value, text)
+        CustomTextFieldWithDropDownMenu(
+            expandedType,
+            productTypes,
+            value,
+            text,
+            error = error,
+            errorMessage = errorMessage
+        )
     }
 }
 
@@ -349,7 +401,9 @@ private fun CustomTextFieldWithDropDownMenu(
     expandedVendor: MutableState<Boolean>,
     vendors: List<String>,
     value: MutableState<String>,
-    text: String
+    text: String,
+    error: Boolean = false,
+    errorMessage: String = ""
 ) {
     ExposedDropdownMenuBox(
         expanded = expandedVendor.value,
@@ -380,6 +434,15 @@ private fun CustomTextFieldWithDropDownMenu(
                 errorPlaceholderColor = Color.Red,
                 cursorColor = primaryColor
             ),
+            isError = error,
+            supportingText = {
+                if (error) {
+                    Text(
+                        errorMessage,
+                        color = Color.Red
+                    )
+                }
+            }
         )
         ExposedDropdownMenu(
             expanded = expandedVendor.value,

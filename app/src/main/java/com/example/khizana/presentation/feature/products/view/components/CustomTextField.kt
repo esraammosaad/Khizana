@@ -20,6 +20,7 @@ fun CustomTextField(
     value: MutableState<String>,
     label: String,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {
         value.value = it
     },
@@ -51,6 +52,7 @@ fun CustomTextField(
             cursorColor = primaryColor
         ),
         trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon,
         isError = error,
         supportingText = {
             if (error) {

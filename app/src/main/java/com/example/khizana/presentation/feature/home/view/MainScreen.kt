@@ -3,15 +3,17 @@ package com.example.khizana.presentation.feature.home.view
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +23,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -32,19 +35,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.khizana.R
-import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.presentation.feature.inventory.view.InventoryScreen
 import com.example.khizana.presentation.feature.priceRules.view.PartialPriceRuleBottomSheet
 import com.example.khizana.presentation.feature.priceRules.view.PriceRules
-import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
-import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.presentation.feature.profile.view.ProfileScreen
+import com.example.khizana.ui.theme.offWhiteColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,20 +61,43 @@ fun MainScreen(
     val showPriceRuleBottomSheet = rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = offWhiteColor,
         topBar = {
             TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = offWhiteColor,
+                    scrolledContainerColor = Color.Black,
+                    navigationIconContentColor = Color.Black,
+                    titleContentColor = Color.Black,
+                    actionIconContentColor = Color.Black,
+                ),
                 title = {
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(offWhiteColor),
                     ) {
-                        Text(stringResource(R.string.app_name))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.bg),
+                                contentDescription = "",
+                                modifier = Modifier.size(40.dp),
+                            )
+                            Text(
+                                "Khizana.", style = TextStyle(
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                                modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                            )
+                        }
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
+
+
                 },
                 actions = {
                     IconButton(onClick = {
@@ -105,6 +131,7 @@ fun MainScreen(
             )
             Column(
                 modifier = Modifier
+                    .background(offWhiteColor)
                     .fillMaxSize()
                     .padding(it)
             ) {
@@ -261,6 +288,6 @@ fun MainScreen(
                     }
                 )
             }
-        }
+        },
     )
 }

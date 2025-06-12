@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -25,8 +24,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -52,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.khizana.R
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
@@ -62,6 +60,11 @@ import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
+import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
+import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
+import com.example.khizana.presentation.feature.products.view.components.PageIndicator
+import com.example.khizana.ui.theme.offWhiteColor
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -94,7 +97,7 @@ fun ProductDetailsScreen(
     }
     val showBottomSheet = remember { mutableStateOf(false) }
     Box {
-        LazyColumn(Modifier.systemBarsPadding()) {
+        LazyColumn(Modifier.systemBarsPadding().background(offWhiteColor)) {
             when (product) {
                 is Response.Success<*> -> {
                     product as Response.Success<ProductRequestDomain>
@@ -109,19 +112,15 @@ fun ProductDetailsScreen(
                         )
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.padding(top = 16.dp).fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            IconButton(
-                                onClick = {
-                                    navigationController.popBackStack()
-                                }
-                            ) {
+                            IconButton(onClick = {
+                                navigationController.popBackStack()
+                            }) {
                                 Icon(
-                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    Icons.Filled.ArrowBack,
                                     contentDescription = stringResource(R.string.back_icon),
                                     tint = Color.Black.copy(0.7f),
-                                    modifier = Modifier
-                                        .size(35.dp)
                                 )
                             }
                         }
@@ -134,7 +133,7 @@ fun ProductDetailsScreen(
                             if (product.result?.product?.images?.isNotEmpty() == true) {
                                 HorizontalPager(
                                     state = pagerState,
-                                    modifier = Modifier.wrapContentSize()
+                                    modifier = Modifier.wrapContentSize().padding(top = 5.dp)
                                 ) { index ->
                                     CustomProductImage(
                                         productImage = product.result?.product?.images?.get(
@@ -148,8 +147,13 @@ fun ProductDetailsScreen(
                                 CustomStatusBox(Modifier, product.result?.product)
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Column(Modifier.padding(16.dp)) {
+                            PageIndicator(
+                                items = product.result?.product?.images ?: listOf(),
+                                currentPage = pagerState.currentPage
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 "ID: #${product.result?.product?.id}", style = TextStyle(
                                     fontSize = 20.sp,
@@ -300,7 +304,7 @@ fun ProductDetailsScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(42.dp))
                     }
                 }
 
@@ -335,15 +339,6 @@ fun ProductDetailsScreen(
     }
 }
 
-@Composable
-private fun CustomProductImage(productImage: String?) {
-    AsyncImage(
-        model = productImage ?: "",
-        contentDescription = stringResource(R.string.product_image),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-    )
-}
+
 
 

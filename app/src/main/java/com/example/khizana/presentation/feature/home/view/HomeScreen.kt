@@ -62,7 +62,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 0.dp, start = 20.dp, end = 20.dp),
+            .padding(top = 8.dp, start = 20.dp, end = 20.dp),
     ) {
         item {
             Text(
