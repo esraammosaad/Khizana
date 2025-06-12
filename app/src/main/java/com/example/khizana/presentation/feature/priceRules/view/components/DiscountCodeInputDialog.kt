@@ -56,7 +56,13 @@ fun DiscountCodeInputDialog(
     if (showDialog.value) {
         AlertDialog(
             containerColor = Color.White,
-            onDismissRequest = { showDialog.value = false },
+            onDismissRequest = {
+                showDialog.value = false
+                discountCode.value = ""
+                code.value = ""
+
+
+            },
             title = {
 
                 Text("Add Discount Code!")
@@ -111,7 +117,12 @@ fun DiscountCodeInputDialog(
             },
             dismissButton = {
                 OutlinedButton(
-                    onClick = { showDialog.value = false },
+                    onClick = {
+                        showDialog.value = false
+                        discountCode.value = ""
+                        code.value = ""
+
+                    },
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = primaryColor,
                         containerColor = secondaryColor

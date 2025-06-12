@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -224,14 +226,16 @@ fun AddProductScreen(
                             text = "${option.name}: ${option.values?.joinToString(", ")}",
                             fontSize = 18.sp
                         )
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = "Delete",
-                            tint = primaryColor,
-                            modifier = Modifier.clickable {
-                                optionList.value = optionList.value.minus(option)
-                            }
-                        )
+                        Row {
+                            Icon(
+                                imageVector = Icons.Filled.Clear,
+                                contentDescription = "Delete",
+                                tint = primaryColor,
+                                modifier = Modifier.clickable {
+                                    optionList.value = optionList.value.minus(option)
+                                }
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(25.dp))
@@ -246,8 +250,6 @@ fun AddProductScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 CustomButton(
                     onClick = {
-
-
                         if (productName.value.isEmpty()) {
                             titleError.value = true
                             titleErrorMessage.value = "Please fill product name"
@@ -271,12 +273,10 @@ fun AddProductScreen(
                         if (imageUris.value.isNullOrEmpty()) {
                             error.value = true
                             errorMessage.value = "Please add at least one image"
-                        }
-                       else if (variantList.value.isEmpty()) {
+                        } else if (variantList.value.isEmpty()) {
                             error.value = true
                             errorMessage.value = "Please add at least one variant"
-                        }
-                       else if (optionList.value.isEmpty()) {
+                        } else if (optionList.value.isEmpty()) {
                             error.value = true
                             errorMessage.value = "Please add at least one option"
                         }
@@ -292,7 +292,6 @@ fun AddProductScreen(
                             typeErrorMessage.value = ""
                             showConfirmationDialog.value = true
                         }
-
                     },
                     text =
                     stringResource(R.string.save),

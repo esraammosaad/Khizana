@@ -37,7 +37,7 @@ fun ProductsItem.toDto(): ProductsItemEntity {
         product_type = product_type,
         updated_at = updated_at,
         vendor = vendor,
-        options = options?.map { it?.toDto() },
+        options = options?.map { it.toDto() },
         id = id,
         published_at = published_at,
         status = status

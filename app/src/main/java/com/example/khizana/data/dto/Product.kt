@@ -14,7 +14,7 @@ data class ProductsItemEntity(
     val product_type: String?,
     val updated_at: String?,
     val vendor: String?,
-    val options: List<OptionsItemEntity?>?,
+    val options: List<OptionsItemEntity>?,
     val id: String?,
     val published_at: String?,
     val status: String?
@@ -42,7 +42,7 @@ data class VariantsItemEntity(
 )
 
 data class OptionsItemEntity(
-    val values: List<String?>?,
+    val values: List<String>?,
     val name: String?,
 )
 

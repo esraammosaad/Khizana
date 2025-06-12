@@ -1,6 +1,7 @@
 package com.example.khizana.presentation.feature.home.viewModel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -75,6 +76,7 @@ class HomeViewModel @Inject constructor(
                     _totalOrdersPrice.emit(Response.Success(list.sum()))
                 }
             } catch (e: Exception) {
+                Log.i("TAG", "getTotalOrdersPrice: ${e.message.toString()}")
                 _orders.emit(Response.Failure(e.message.toString()))
                 _totalOrdersPrice.emit(Response.Failure(e.message.toString()))
             }

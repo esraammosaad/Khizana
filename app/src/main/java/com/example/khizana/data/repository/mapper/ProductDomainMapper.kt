@@ -30,7 +30,7 @@ fun ProductsItemEntity.toDomain(): ProductsItem {
         product_type = product_type,
         updated_at = updated_at,
         vendor = vendor,
-        options = options?.map { it?.toDomain() },
+        options = options?.map { it.toDomain() },
         id = id,
         published_at = published_at,
         status = status
