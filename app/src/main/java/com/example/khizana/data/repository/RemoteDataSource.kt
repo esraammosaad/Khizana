@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
     suspend fun login(email: String, password: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit)
+    suspend fun logout()
     suspend fun getProducts(): Flow<Product>
     suspend fun createProduct(product: ProductRequest) : Flow<ProductRequest>
     suspend fun getOrders(minDate: String, maxDate: String): Flow<Order>

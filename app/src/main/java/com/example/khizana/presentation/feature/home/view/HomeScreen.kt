@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.khizana.R
 import com.example.khizana.domain.model.CountDomain
@@ -37,7 +38,6 @@ import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.Response
-import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)

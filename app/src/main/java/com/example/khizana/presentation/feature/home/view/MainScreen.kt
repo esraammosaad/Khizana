@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -113,7 +112,7 @@ fun MainScreen(
                         }
 
                     }) {
-                        if (selectedIndex != 0 && selectedIndex != 2) {
+                        if (selectedIndex != 0 && selectedIndex != 2 && selectedIndex != 4) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = "Add",
@@ -169,7 +168,7 @@ fun MainScreen(
                     }
 
                     4 -> {
-                        return@Column ProfileScreen()
+                        return@Column ProfileScreen(navController = navigationController)
 
                     }
                 }

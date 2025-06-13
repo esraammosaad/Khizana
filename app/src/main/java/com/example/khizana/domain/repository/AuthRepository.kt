@@ -9,4 +9,8 @@ interface AuthRepository {
         onFailure: (Exception) -> Unit
     )
 
+    suspend fun logout()
+    suspend fun saveGetStartedState()
+    fun getStartedState(): Boolean
+
 }

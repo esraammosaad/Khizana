@@ -26,7 +26,9 @@ import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsCountUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
+import com.example.khizana.domain.usecase.GetStartedStateUseCase
 import com.example.khizana.domain.usecase.LoginUseCase
+import com.example.khizana.domain.usecase.LogoutUseCase
 import com.example.khizana.domain.usecase.SetInventoryItemQuantityUseCase
 import com.example.khizana.domain.usecase.UpdateInventoryItemUseCase
 import dagger.Module
@@ -49,6 +51,10 @@ class ProviderModule {
     @Provides
     fun provideLoginUseCase(authRepositoryImpl: AuthRepositoryImpl): LoginUseCase =
         LoginUseCase(authRepositoryImpl)
+
+    @Provides
+    fun provideLogoutUseCase(authRepositoryImpl: AuthRepositoryImpl): LogoutUseCase =
+        LogoutUseCase(authRepositoryImpl)
 
     @Provides
     fun provideGetProductsUseCase(productRepositoryImpl: ProductRepositoryImpl): GetProductsUseCase =
@@ -125,4 +131,7 @@ class ProviderModule {
     @Provides
     fun provideUpdateInventoryItemUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): UpdateInventoryItemUseCase =
         UpdateInventoryItemUseCase(inventoryRepositoryImpl)
+
+    @Provides
+    fun provideGetStartedStateUseCase(authRepositoryImpl: AuthRepositoryImpl): GetStartedStateUseCase = GetStartedStateUseCase(authRepositoryImpl)
 }

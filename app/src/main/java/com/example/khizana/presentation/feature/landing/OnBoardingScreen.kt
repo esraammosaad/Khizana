@@ -24,13 +24,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.khizana.R
+import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.NavigationRoutes
 
 @Composable
-fun OnBoardingScreen(navController: NavController) {
+fun OnBoardingScreen(navController: NavController, authViewModel: AuthViewModel = hiltViewModel()) {
 
     LazyColumn(
         Modifier.padding(top = 64.dp, start = 16.dp, end = 16.dp),
@@ -80,6 +82,7 @@ fun OnBoardingScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
             CustomButton(onClick = {
+                authViewModel.saveGetStartedState()
                 navController.navigate(NavigationRoutes.LoginScreen)
             }, text = "Log in")
         }

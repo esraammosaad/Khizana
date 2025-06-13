@@ -33,6 +33,9 @@ class RemoteDataSourceImpl @Inject constructor(
         auth.login(email, password, onSuccess, onFailure)
     }
 
+    override suspend fun logout() {
+        auth.logout()
+    }
 
     override suspend fun getProducts(): Flow<Product> {
         return flowOf(apiService.getProducts())

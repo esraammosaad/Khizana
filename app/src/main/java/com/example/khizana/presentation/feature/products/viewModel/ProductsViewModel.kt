@@ -133,43 +133,67 @@ class ProductsViewModel @Inject constructor(
     fun performSearch(query: String) {
         viewModelScope.launch {
             val productResponse = _products.value
-            if (productResponse is Response.Success<*>) {
-                val items = productResponse.result as ProductDomain
-
-                val results = items.products
-                    ?.mapNotNull { product ->
-                        product?.title?.let { title ->
-                            product to levenshtein(title.lowercase(), query.lowercase())
-                        }
-                    }
-                    ?.sortedBy { it.second }
-                    ?.map { it.first }
-                    ?.take(5)
-
-                _searchResults.emit(results ?: listOf())
-            } else {
+            if (productResponse !is Response.Success<*>) {
                 _searchResults.emit(emptyList())
+                return@launch
             }
-        }
-    }
 
+            val items = (productResponse.result as? ProductDomain)?.products ?: run {
+                _searchResults.emit(emptyList())
+                return@launch
+            }
 
-    private fun levenshtein(a: String, b: String): Int {
-        val dp = Array(a.length + 1) { IntArray(b.length + 1) }
+            if (query.isBlank()) {
+                _searchResults.emit(emptyList())
+                return@launch
+            }
 
-        for (i in 0..a.length) {
-            for (j in 0..b.length) {
-                when {
-                    i == 0 -> dp[i][j] = j
-                    j == 0 -> dp[i][j] = i
-                    a[i - 1] == b[j - 1] -> dp[i][j] = dp[i - 1][j - 1]
-                    else -> dp[i][j] = 1 + minOf(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1])
+            val normalizedQuery = query.lowercase().trim()
+
+            val results = items
+                .filterNotNull()
+                .map { product ->
+                    val title = product.title?.lowercase()?.trim() ?: ""
+                    val distance = if (title.isNotEmpty()) {
+                        val levenshteinScore = levenshteinDistance(title, normalizedQuery)
+                        val containsScore = if (title.contains(normalizedQuery)) 0 else 100
+                        val startsWithScore = if (title.startsWith(normalizedQuery)) 0 else 10
+                        (levenshteinScore * 0.6 + containsScore * 0.3 + startsWithScore * 0.1).toInt()
+                    } else {
+                        Int.MAX_VALUE
+                    }
+                    product to distance
                 }
-            }
+                .sortedBy { (_, distance) -> distance }
+                .take(5)
+                .map { (product, _) -> product }
+
+            _searchResults.emit(results)
         }
-        return dp[a.length][b.length]
     }
 
+    private fun levenshteinDistance(a: String, b: String): Int {
+        if (a.isEmpty()) return b.length
+        if (b.isEmpty()) return a.length
+
+        val costs = IntArray(b.length + 1) { it }
+
+        for (i in 1..a.length) {
+            var previousValue = i - 1
+            costs[0] = i
+
+            for (j in 1..b.length) {
+                val currentCost = when {
+                    a[i - 1] == b[j - 1] -> previousValue
+                    else -> 1 + minOf(costs[j - 1], costs[j], previousValue)
+                }
+                previousValue = costs[j]
+                costs[j] = currentCost
+            }
+        }
+
+        return costs[b.length]
+    }
 
 
     fun uploadProduct(

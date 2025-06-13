@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
@@ -16,6 +17,7 @@ import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.landing.OnBoardingScreen
 import com.example.khizana.presentation.feature.landing.SplashScreen
 import com.example.khizana.presentation.feature.login.view.LoginScreen
+import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
 import com.example.khizana.presentation.feature.priceRules.view.DiscountCodeScreen
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.utilis.NavigationRoutes
@@ -27,11 +29,20 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val authViewModel: AuthViewModel by viewModels()
         enableEdgeToEdge()
         setContent {
 
             val navigationController = rememberNavController()
             val snackBarHostState = remember { SnackbarHostState() }
+
+            fun decideStartDestination(): NavigationRoutes {
+                return when {
+                    FirebaseAuth.getInstance().currentUser != null -> NavigationRoutes.MainScreen
+                    authViewModel.getStartedState() -> NavigationRoutes.LoginScreen
+                    else -> NavigationRoutes.OnBoardingScreen
+                }
+            }
 
             NavHost(
                 navController = navigationController,
@@ -39,17 +50,8 @@ class MainActivity : ComponentActivity() {
             ) {
                 composable<NavigationRoutes.SplashScreen> {
                     SplashScreen {
-                        if (FirebaseAuth.getInstance().currentUser != null)
                             navigationController.navigate(
-                                NavigationRoutes.MainScreen,
-                                builder = {
-                                    popUpTo(NavigationRoutes.SplashScreen) {
-                                        inclusive = true
-                                    }
-                                }
-                            )
-                        else
-                            navigationController.navigate(NavigationRoutes.OnBoardingScreen,
+                                decideStartDestination(),
                                 builder = {
                                     popUpTo(NavigationRoutes.SplashScreen) {
                                         inclusive = true
@@ -77,6 +79,7 @@ class MainActivity : ComponentActivity() {
                     val id = data.productId
                     ProductDetailsScreen(
                         productId = id,
+                        snackBarHostState = snackBarHostState,
                         navigationController = navigationController
                     )
                 }
@@ -93,5 +96,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+
 
 
