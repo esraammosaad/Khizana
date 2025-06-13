@@ -60,6 +60,7 @@ import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.khizana.presentation.feature.inventory.view.CustomDivider
 import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
 import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
 import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
@@ -97,7 +98,9 @@ fun ProductDetailsScreen(
     }
     val showBottomSheet = remember { mutableStateOf(false) }
     Box {
-        LazyColumn(Modifier.systemBarsPadding().background(offWhiteColor)) {
+        LazyColumn(Modifier
+            .systemBarsPadding()
+            .background(offWhiteColor)) {
             when (product) {
                 is Response.Success<*> -> {
                     product as Response.Success<ProductRequestDomain>
@@ -133,7 +136,9 @@ fun ProductDetailsScreen(
                             if (product.result?.product?.images?.isNotEmpty() == true) {
                                 HorizontalPager(
                                     state = pagerState,
-                                    modifier = Modifier.wrapContentSize().padding(top = 5.dp)
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .padding(top = 5.dp)
                                 ) { index ->
                                     CustomProductImage(
                                         productImage = product.result?.product?.images?.get(
@@ -200,13 +205,7 @@ fun ProductDetailsScreen(
                                     )
                                 )
                             }
-                            HorizontalDivider(
-                                color = Color.Gray.copy(alpha = 0.3f),
-                                thickness = 1.dp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
-                            )
+                            CustomDivider()
                             Text(
                                 text = product.result?.product?.body_html ?: "",
                                 style = TextStyle(
@@ -223,7 +222,7 @@ fun ProductDetailsScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 product.result?.product?.options?.forEach { option ->
-                                    if (!option?.values.isNullOrEmpty()) {
+                                    if (!option.values.isNullOrEmpty()) {
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -232,13 +231,13 @@ fun ProductDetailsScreen(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "${option?.name}:",
+                                                text = "${option.name}:",
                                                 fontSize = 18.sp,
                                                 fontWeight = FontWeight.Medium,
                                                 modifier = Modifier.padding(bottom = 4.dp)
                                             )
                                             Spacer(modifier = Modifier.width(6.dp))
-                                            option?.values?.forEach { value ->
+                                            option.values.forEach { value ->
                                                 Box(
                                                     modifier = Modifier
                                                         .padding(end = 6.dp)
@@ -248,7 +247,7 @@ fun ProductDetailsScreen(
                                                         )
                                                 ) {
                                                     Text(
-                                                        text = value ?: "",
+                                                        text = value,
                                                         modifier = Modifier.padding(
                                                             horizontal = 12.dp,
                                                             vertical = 6.dp
