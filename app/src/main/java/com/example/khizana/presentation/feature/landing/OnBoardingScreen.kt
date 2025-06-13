@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.khizana.R
-import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.NavigationRoutes
 

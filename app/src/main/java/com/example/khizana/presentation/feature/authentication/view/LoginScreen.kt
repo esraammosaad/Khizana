@@ -1,4 +1,4 @@
-package com.example.khizana.presentation.feature.login.view
+package com.example.khizana.presentation.feature.authentication.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,7 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.landing.CustomButton
-import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
 import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor

@@ -35,6 +35,8 @@ import com.example.khizana.presentation.feature.products.view.components.CustomD
 import com.example.khizana.presentation.feature.products.view.components.CustomProductCard
 import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
+import com.example.khizana.utilis.internet.InternetConnectivityViewModel
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -51,12 +53,14 @@ fun ProductsScreen(
     val searchText = rememberSaveable { mutableStateOf("") }
     val searchResult = rememberSaveable { mutableStateOf(emptyList<ProductsItem>()) }
 
+
     LaunchedEffect(Unit) {
         productsViewModel.getProducts()
         productsViewModel.message.collect {
             snackBarHostState.showSnackbar(it)
         }
     }
+
 
     LaunchedEffect(searchText.value) {
         productsViewModel.searchResults.collect {

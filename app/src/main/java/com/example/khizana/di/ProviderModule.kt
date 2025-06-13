@@ -1,5 +1,6 @@
 package com.example.khizana.di
 
+import android.content.Context
 import com.example.khizana.data.datasource.remote.ApiService
 import com.example.khizana.data.datasource.remote.AuthService
 import com.example.khizana.data.datasource.remote.RetrofitFactory
@@ -31,9 +32,12 @@ import com.example.khizana.domain.usecase.LoginUseCase
 import com.example.khizana.domain.usecase.LogoutUseCase
 import com.example.khizana.domain.usecase.SetInventoryItemQuantityUseCase
 import com.example.khizana.domain.usecase.UpdateInventoryItemUseCase
+import com.example.khizana.utilis.internet.InternetObserver
+import com.example.khizana.utilis.internet.InternetObserverImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -43,7 +47,7 @@ class ProviderModule {
 
     @Provides
     @Singleton
-    fun provideApiService(): ApiService = RetrofitFactory().apiService
+    fun provideApiService(@ApplicationContext context: Context): ApiService = RetrofitFactory(context).apiService
 
     @Provides
     fun provideAuth(): AuthService = AuthService()
@@ -134,4 +138,7 @@ class ProviderModule {
 
     @Provides
     fun provideGetStartedStateUseCase(authRepositoryImpl: AuthRepositoryImpl): GetStartedStateUseCase = GetStartedStateUseCase(authRepositoryImpl)
+
+    @Provides
+    fun provideInternetObserver(@ApplicationContext context: Context): InternetObserver = InternetObserverImpl(context)
 }

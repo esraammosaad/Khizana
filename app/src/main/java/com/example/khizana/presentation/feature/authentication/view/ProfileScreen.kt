@@ -1,4 +1,4 @@
-package com.example.khizana.presentation.feature.profile.view
+package com.example.khizana.presentation.feature.authentication.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.khizana.R
-import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.ui.theme.lighterGreyColor
 import com.example.khizana.ui.theme.primaryColor

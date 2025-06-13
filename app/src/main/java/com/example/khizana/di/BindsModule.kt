@@ -14,12 +14,13 @@ import com.example.khizana.domain.repository.InventoryRepository
 import com.example.khizana.domain.repository.OrderRepository
 import com.example.khizana.domain.repository.PriceRuleRepository
 import com.example.khizana.domain.repository.ProductRepository
+import com.example.khizana.utilis.internet.InternetObserver
+import com.example.khizana.utilis.internet.InternetObserverImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
 
 
 @Module
@@ -52,5 +53,4 @@ abstract class BindsModule {
     @Binds
     @Singleton
     abstract fun bindDiscountCodeRepository(discountCodeRepositoryImpl: DiscountCodeRepositoryImpl): DiscountCodeRepository
-
 }

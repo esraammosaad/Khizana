@@ -1,4 +1,4 @@
-package com.example.khizana.presentation.feature.login.viewModel
+package com.example.khizana.presentation.feature.authentication.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

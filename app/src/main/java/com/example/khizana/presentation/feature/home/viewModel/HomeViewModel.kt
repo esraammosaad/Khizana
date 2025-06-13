@@ -47,6 +47,7 @@ class HomeViewModel @Inject constructor(
     private var _inventoryLocationsCount = MutableStateFlow<Response>(Response.Loading)
     val inventoryLocationsCount = _inventoryLocationsCount.asStateFlow()
 
+    private var message = MutableStateFlow<String>("")
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTotalOrdersPrice() {

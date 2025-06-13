@@ -16,8 +16,8 @@ import androidx.navigation.toRoute
 import com.example.khizana.presentation.feature.home.view.MainScreen
 import com.example.khizana.presentation.feature.landing.OnBoardingScreen
 import com.example.khizana.presentation.feature.landing.SplashScreen
-import com.example.khizana.presentation.feature.login.view.LoginScreen
-import com.example.khizana.presentation.feature.login.viewModel.AuthViewModel
+import com.example.khizana.presentation.feature.authentication.view.LoginScreen
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.presentation.feature.priceRules.view.DiscountCodeScreen
 import com.example.khizana.presentation.feature.products.view.ProductDetailsScreen
 import com.example.khizana.utilis.NavigationRoutes
