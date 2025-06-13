@@ -68,6 +68,7 @@ fun VariantsItem.toDto(): VariantsItemEntity {
         option1 = option1,
         option2 = option2,
         inventory_quantity = inventory_quantity,
+        inventory_item_id = inventory_item_id
     )
 }
 

@@ -1,5 +1,6 @@
-package com.example.khizana.presentation.feature.priceRules.view.components
+package com.example.khizana.presentation.feature.inventory.view.components
 
+import com.example.khizana.presentation.feature.products.view.components.CustomTextField
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,79 +18,64 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.khizana.R
-import com.example.khizana.domain.model.DiscountCodeRequestDomain
-import com.example.khizana.domain.model.DiscountCode
+import com.example.khizana.domain.model.InventoryLevelRequestDomain
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 
 @Composable
-fun DiscountCodeInputDialog(
+fun InventoryItemInputDialog(
     showDialog: MutableState<Boolean>,
-    onConfirm: (DiscountCodeRequestDomain) -> Unit,
-    code: MutableState<String>,
-) {
-    val discountCode = remember { mutableStateOf("") }
+    inventoryItemId: String,
+    productQuantity: String,
+    onConfirm: (InventoryLevelRequestDomain) -> Unit,
+
+    ) {
+    val quantity = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
     val errorText = remember { mutableStateOf("") }
 
-    LaunchedEffect(code.value) {
-        if (code.value.isNotEmpty()) {
-            discountCode.value = code.value
-        }
+    LaunchedEffect(inventoryItemId) {
+        quantity.value = productQuantity
     }
+
+
     if (showDialog.value) {
         AlertDialog(
             containerColor = Color.White,
-            onDismissRequest = {
-                showDialog.value = false
-                discountCode.value = ""
-                code.value = ""
-            },
+            onDismissRequest = { showDialog.value = false },
             title = {
 
-                Text("Add Discount Code!")
+                Text("Edit Inventory Item")
             },
             text = {
                 Column {
-                    InputDiscountCodeCard(
-                        code = discountCode
+                    CustomTextField(
+                        value = quantity,
+                        label = "Quantity",
+                        error = error.value,
+                        errorMessage = errorText.value
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    if (error.value)
-                        Text(
-                            errorText.value,
-                            color = Color.Red,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
                 }
             },
             confirmButton = {
                 Button(
                     onClick = {
-                        if (discountCode.value.isEmpty()) {
+                        if (quantity.value.isEmpty()) {
                             error.value = true
-                            errorText.value = "Please enter a discount code"
+                            errorText.value = "Please Add New Quantity"
                             return@Button
                         }
-                        if (discountCode.value.isNotEmpty()) {
-                            error.value = false
-                            errorText.value = ""
-                            onConfirm(
-                                DiscountCodeRequestDomain(
-                                    DiscountCode(
-                                        discountCode.value
-                                    )
-                                )
-                            )
-                            showDialog.value = false
-                            discountCode.value = ""
-                            code.value = ""
-                        }
+                        val inventoryLevel = InventoryLevelRequestDomain(
+                            available = quantity.value.toInt(),
+                            inventory_item_id = inventoryItemId,
+                            available_adjustment = 0,
+                            location_id = "70409781361"
+                        )
+                        onConfirm(inventoryLevel)
+                        showDialog.value = false
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = secondaryColor,
@@ -97,18 +83,13 @@ fun DiscountCodeInputDialog(
                     )
                 ) {
                     Text(
-                        "Save"
+                        stringResource(R.string.save)
                     )
                 }
             },
             dismissButton = {
                 OutlinedButton(
-                    onClick = {
-                        showDialog.value = false
-                        discountCode.value = ""
-                        code.value = ""
-
-                    },
+                    onClick = { showDialog.value = false },
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = primaryColor,
                         containerColor = secondaryColor
@@ -120,4 +101,3 @@ fun DiscountCodeInputDialog(
         )
     }
 }
-

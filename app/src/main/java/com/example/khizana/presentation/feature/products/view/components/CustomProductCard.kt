@@ -116,9 +116,7 @@ private fun CustomProductInfoRow(
                 product?.variants?.get(0)?.inventory_quantity ?: ""
             )
         )
-
         Spacer(modifier = Modifier.width(8.dp))
         CustomInfoBox(text = product?.vendor ?: "")
-
     }
 }

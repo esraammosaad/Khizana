@@ -25,7 +25,8 @@ interface RemoteDataSource {
     suspend fun editProduct(productId: String, product: ProductRequest)
     suspend fun getAllInventoryLocations() : Flow<Location>
     suspend fun getInventoryLevels(locationId : String) : Flow<InventoryLevel>
-    suspend fun adjustInventory(inventoryLevelRequest: InventoryLevelRequest)
+    suspend fun adjustInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest)
+    suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest)
     suspend fun getPriceRules() : Flow<PriceRule>
     suspend fun createPriceRules(priceRuleRequest : PriceRuleRequest)
     suspend fun updatePriceRules(priceRuleId : String ,priceRuleRequest : PriceRuleRequest)

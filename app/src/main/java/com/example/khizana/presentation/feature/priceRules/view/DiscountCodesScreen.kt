@@ -30,18 +30,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,6 +47,8 @@ import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.khizana.presentation.feature.priceRules.view.components.DiscountCodeCard
+import com.example.khizana.utilis.dashedBorder
 
 
 @Composable
@@ -164,114 +158,6 @@ fun DiscountCodeScreen(
     )
 }
 
-@Composable
-fun DiscountCodeCard(
-    code: String,
-    usageCount: Int,
-    onDeleteClick: () -> Unit,
-    onEditClick: () -> Unit,
 
-    ) {
-    Column(
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(lightGreyColor)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .dashedBorder(
-                    color = primaryColor,
-                    strokeWidth = 1.dp,
-                    cornerRadius = 8.dp
-                )
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = code,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                color = Color.Black,
-                letterSpacing = 2.sp
-            )
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Usage Count:",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(
-                    text = usageCount.toString(),
-                    fontSize = 16.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row {
-                Icon(
-                    Icons.Default.Edit,
-                    contentDescription = "edit icon",
-                    tint = Color.Gray,
-                    modifier = Modifier.clickable {
-                        onEditClick.invoke()
-                    }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "delete icon",
-                    tint = Color.Gray,
-                    modifier = Modifier.clickable {
-                        onDeleteClick.invoke()
-                    }
-                )
 
-            }
-        }
-    }
-}
-
-fun Modifier.dashedBorder(
-    color: Color,
-    strokeWidth: Dp,
-    cornerRadius: Dp,
-    dashLength: Float = 10f,
-    gapLength: Float = 10f
-): Modifier = this.then(
-    Modifier.drawBehind {
-        val stroke = Stroke(
-            width = strokeWidth.toPx(),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashLength, gapLength), 0f)
-        )
-
-        val width = size.width
-        val height = size.height
-        val radius = cornerRadius.toPx()
-
-        val path = Path().apply {
-            addRoundRect(
-                RoundRect(
-                    rect = Rect(0f, 0f, width, height),
-                    cornerRadius = CornerRadius(radius, radius)
-                )
-            )
-        }
-
-        drawPath(path = path, color = color, style = stroke)
-    }
-)
 

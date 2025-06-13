@@ -62,7 +62,10 @@ interface ApiService {
     suspend fun getInventoryLevels(@Path("locationId") locationId: String): InventoryLevel
 
     @POST("inventory_levels/adjust.json")
-    suspend fun adjustInventory(@Body inventoryLevelRequest: InventoryLevelRequest)
+    suspend fun adjustInventoryItemQuantity(@Body inventoryLevelRequest: InventoryLevelRequest)
+
+    @POST("inventory_levels/set.json")
+    suspend fun setInventoryItemQuantity(@Body inventoryLevelRequest: InventoryLevelRequest)
 
     @GET("price_rules.json")
     suspend fun getPriceRules(): PriceRule

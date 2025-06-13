@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface InventoryRepository {
     suspend fun getInventoryLevels(locationId : String) : Flow<InventoryLevelDomain>
-    suspend fun adjustInventory(inventoryLevelRequest: InventoryLevelRequestDomain)
+    suspend fun adjustInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequestDomain)
+    suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequestDomain)
     suspend fun getAllInventoryLocations() : Flow<LocationDomain>
 }

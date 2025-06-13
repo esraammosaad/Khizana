@@ -73,8 +73,12 @@ class RemoteDataSourceImpl @Inject constructor(
         return flowOf(apiService.getInventoryLevels(locationId))
     }
 
-    override suspend fun adjustInventory(inventoryLevelRequest: InventoryLevelRequest) {
-        apiService.adjustInventory(inventoryLevelRequest)
+    override suspend fun adjustInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest) {
+        apiService.adjustInventoryItemQuantity(inventoryLevelRequest)
+    }
+
+    override suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest) {
+        apiService.setInventoryItemQuantity(inventoryLevelRequest)
     }
 
     override suspend fun getPriceRules(): Flow<PriceRule> {

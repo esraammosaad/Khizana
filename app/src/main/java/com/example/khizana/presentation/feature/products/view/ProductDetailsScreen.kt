@@ -30,7 +30,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -60,12 +59,12 @@ import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.khizana.presentation.feature.inventory.view.CustomDivider
 import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
 import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
 import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
 import com.example.khizana.presentation.feature.products.view.components.PageIndicator
 import com.example.khizana.ui.theme.offWhiteColor
+import com.example.khizana.utilis.CustomDivider
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -85,7 +84,7 @@ fun ProductDetailsScreen(
     val product = productsViewModel.product.collectAsStateWithLifecycle().value
     val productImagesListSize = remember { mutableIntStateOf(0) }
     val pagerState = rememberPagerState(
-        pageCount = { productImagesListSize.intValue ?: 0 },
+        pageCount = { productImagesListSize.intValue },
         initialPage = 0,
     )
     LaunchedEffect(pagerState.currentPage) {
@@ -98,9 +97,11 @@ fun ProductDetailsScreen(
     }
     val showBottomSheet = remember { mutableStateOf(false) }
     Box {
-        LazyColumn(Modifier
-            .systemBarsPadding()
-            .background(offWhiteColor)) {
+        LazyColumn(
+            Modifier
+                .systemBarsPadding()
+                .background(offWhiteColor)
+        ) {
             when (product) {
                 is Response.Success<*> -> {
                     product as Response.Success<ProductRequestDomain>

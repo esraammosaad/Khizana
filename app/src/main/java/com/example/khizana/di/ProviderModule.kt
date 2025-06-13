@@ -26,6 +26,7 @@ import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsCountUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.domain.usecase.LoginUseCase
+import com.example.khizana.domain.usecase.SetInventoryItemQuantityUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -110,4 +111,9 @@ class ProviderModule {
     @Provides
     fun provideGtInventoryLocationsUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): GetInventoryLocationsUseCase =
         GetInventoryLocationsUseCase(inventoryRepositoryImpl)
+
+    @Provides
+    fun provideSetInventoryItemQuantityUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): SetInventoryItemQuantityUseCase =
+        SetInventoryItemQuantityUseCase(inventoryRepositoryImpl)
+
 }

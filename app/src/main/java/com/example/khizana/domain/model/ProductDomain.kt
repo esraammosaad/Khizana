@@ -39,7 +39,9 @@ data class VariantsItem(
     val option1: String?,
     val option2: String?,
     val inventory_quantity: Int?,
-)
+    val inventory_item_id: String?
+
+    )
 
 data class OptionsItem(
     val values: List<String>?,
