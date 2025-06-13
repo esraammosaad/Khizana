@@ -20,6 +20,7 @@ import com.example.khizana.domain.usecase.EditPriceRuleUseCase
 import com.example.khizana.domain.usecase.EditProductUseCase
 import com.example.khizana.domain.usecase.GetAllPriceRulesUseCase
 import com.example.khizana.domain.usecase.GetDiscountCodeUseCase
+import com.example.khizana.domain.usecase.GetInventoryItemUseCase
 import com.example.khizana.domain.usecase.GetInventoryLocationsUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductByIdUseCase
@@ -27,6 +28,7 @@ import com.example.khizana.domain.usecase.GetProductsCountUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.domain.usecase.LoginUseCase
 import com.example.khizana.domain.usecase.SetInventoryItemQuantityUseCase
+import com.example.khizana.domain.usecase.UpdateInventoryItemUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -116,4 +118,11 @@ class ProviderModule {
     fun provideSetInventoryItemQuantityUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): SetInventoryItemQuantityUseCase =
         SetInventoryItemQuantityUseCase(inventoryRepositoryImpl)
 
+    @Provides
+    fun provideGetInventoryItemUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): GetInventoryItemUseCase =
+        GetInventoryItemUseCase(inventoryRepositoryImpl)
+
+    @Provides
+    fun provideUpdateInventoryItemUseCase(inventoryRepositoryImpl: InventoryRepositoryImpl): UpdateInventoryItemUseCase =
+        UpdateInventoryItemUseCase(inventoryRepositoryImpl)
 }

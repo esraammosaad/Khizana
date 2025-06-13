@@ -40,7 +40,8 @@ fun ProductsItem.toDto(): ProductsItemEntity {
         options = options?.map { it.toDto() },
         id = id,
         published_at = published_at,
-        status = status
+        status = status,
+        tags = tags
     )
 }
 

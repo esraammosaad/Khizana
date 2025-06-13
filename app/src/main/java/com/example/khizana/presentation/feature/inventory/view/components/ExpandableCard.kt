@@ -42,9 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.khizana.R
 import com.example.khizana.domain.model.ProductsItem
+import com.example.khizana.presentation.feature.inventory.viewModel.InventoryViewModel
 import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.CustomDivider
@@ -54,7 +56,8 @@ fun ExpandableCard(
     product: ProductsItem?,
     showDialog: MutableState<Boolean>,
     inventoryItemId: MutableState<String>,
-    productQuantity: MutableState<String>
+    productQuantity: MutableState<String>,
+    inventoryViewModel: InventoryViewModel = hiltViewModel()
 ) {
     val expandedState = rememberSaveable { mutableStateOf(false) }
     val rotationState = animateFloatAsState(
@@ -166,10 +169,7 @@ fun ExpandableCard(
                                                 variant?.inventory_item_id.toString()
                                             productQuantity.value =
                                                 variant?.inventory_quantity.toString()
-                                            Log.i(
-                                                "TAG",
-                                                "ExpandableCard: ${productQuantity.value} ${inventoryItemId.value}"
-                                            )
+                                            inventoryViewModel.getInventoryItem(inventoryItemId.value)
                                             showDialog.value = true
                                         },
                                 )

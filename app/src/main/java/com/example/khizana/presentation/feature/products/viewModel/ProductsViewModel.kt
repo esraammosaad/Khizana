@@ -179,6 +179,7 @@ class ProductsViewModel @Inject constructor(
         productType: String,
         productVendor: String,
         productStatus: String,
+        tag: String,
         variantList: List<VariantsItem>,
         optionList: List<OptionsItem>,
         showBottomSheet: MutableState<Boolean>,
@@ -248,7 +249,8 @@ class ProductsViewModel @Inject constructor(
                             options = optionList,
                             id = "",
                             published_at = "",
-                            status = productStatus
+                            status = productStatus,
+                            tags = tag
                         )
                         if (isEditable) {
                             editProduct(
@@ -306,7 +308,8 @@ class ProductsViewModel @Inject constructor(
                 options = optionList,
                 id = "",
                 published_at = "",
-                status = productStatus
+                status = productStatus,
+                tags = tag
             )
             editProduct(
                 productId ?: "",

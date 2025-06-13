@@ -7,6 +7,7 @@ data class ProductDomain(
 data class ProductsItem(
     val image: Image?,
     val body_html: String?,
+    val tags: String,
     val images: List<ImagesItem?>?,
     val created_at: String?,
     val variants: List<VariantsItem?>?,

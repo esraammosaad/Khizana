@@ -8,6 +8,7 @@ import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.Count
+import com.example.khizana.data.dto.InventoryItemRequest
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
@@ -79,6 +80,17 @@ class RemoteDataSourceImpl @Inject constructor(
 
     override suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest) {
         apiService.setInventoryItemQuantity(inventoryLevelRequest)
+    }
+
+    override suspend fun updateInventoryItem(
+        inventoryItemRequest: InventoryItemRequest,
+        inventoryItemId: String
+    ) {
+        apiService.updateInventoryItem(inventoryItemRequest, inventoryItemId)
+    }
+
+    override suspend fun getInventoryItem(inventoryItemId: String): Flow<InventoryItemRequest> {
+        return flowOf(apiService.getInventoryItem(inventoryItemId))
     }
 
     override suspend fun getPriceRules(): Flow<PriceRule> {

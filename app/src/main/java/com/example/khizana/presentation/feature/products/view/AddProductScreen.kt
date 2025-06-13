@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -92,6 +90,9 @@ fun AddProductScreen(
     val showVariantDialog = remember { mutableStateOf(false) }
     val showOptionDialog = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
+    val productTags = remember { mutableStateOf("") }
+    val productTagsError = remember { mutableStateOf(false) }
+    val productTagsErrorMessage = remember { mutableStateOf("") }
 
 
     LaunchedEffect(Unit) {
@@ -103,8 +104,9 @@ fun AddProductScreen(
             imageUris.value = product.images?.map { it?.src ?: "" }
             imageUri.value = imageUris.value?.firstOrNull()
             variantList.value = (product.variants ?: emptyList()) as List<VariantsItem>
-            optionList.value = (product.options ?: emptyList()) as List<OptionsItem>
+            optionList.value = (product.options ?: emptyList())
             productStatus.value = product.status ?: ""
+            productTags.value = product.tags
         }
     }
 
@@ -126,11 +128,12 @@ fun AddProductScreen(
                             productType.value,
                             productVendor.value,
                             productStatus.value,
+                            productTags.value,
                             variantList.value,
                             optionList.value,
                             showBottomSheet,
                             isEditable,
-                            productId
+                            productId,
                         )
                     }
                 },
@@ -174,7 +177,6 @@ fun AddProductScreen(
                     error = descriptionError.value,
                     errorMessage = descriptionErrorMessage.value
                 )
-                Spacer(modifier = Modifier.height(8.dp))
                 ProductForm(
                     vendors = listOf(
                         "ADIDAS",
@@ -198,7 +200,18 @@ fun AddProductScreen(
                     statusError = statusError,
                     statusErrorMessage = statusErrorMessage
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    "Tags",
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                CustomTextField(
+                    value = productTags,
+                    label = "Product Tags",
+                    error = productTagsError.value,
+                    errorMessage = productTagsErrorMessage.value
+                )
+                Spacer(modifier = Modifier.height(14.dp))
                 CustomOptionsRow(
                     text = stringResource(R.string.variants),
                     onClick = {
@@ -266,6 +279,10 @@ fun AddProductScreen(
                             typeError.value = true
                             typeErrorMessage.value = "Please fill product type"
                         }
+                        if (productTags.value.isEmpty()) {
+                            productTagsError.value = true
+                            productTagsErrorMessage.value = "Please fill product tags"
+                        }
                         if (productStatus.value.isEmpty()) {
                             statusError.value = true
                             statusErrorMessage.value = "Please fill product status"
@@ -280,7 +297,7 @@ fun AddProductScreen(
                             error.value = true
                             errorMessage.value = "Please add at least one option"
                         }
-                        if (!error.value && !titleError.value && !descriptionError.value && !vendorError.value && !typeError.value) {
+                        if (!error.value && !titleError.value && !descriptionError.value && !productTagsError.value && !statusError.value && !vendorError.value && !typeError.value) {
                             error.value = false
                             titleError.value = false
                             descriptionError.value = false
@@ -340,7 +357,7 @@ fun ProductForm(
             error = vendorError.value,
             errorMessage = vendorErrorMessage.value
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)

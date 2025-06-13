@@ -54,7 +54,7 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel = hiltViewModel()) {
                 products as Response.Success<ProductDomain>
                 items(
                     items = products.result?.products.orEmpty(),
-                    key = { it?.id  ?: "" }
+                    key = { it?.id ?: "" }
                 ) {
                     ExpandableCard(
                         product = it,
@@ -83,8 +83,11 @@ fun InventoryScreen(inventoryViewModel: InventoryViewModel = hiltViewModel()) {
         showDialog = showDialog,
         inventoryItemId = inventoryItemId.value,
         productQuantity = productQuantity.value,
-        onConfirm = {
-            inventoryViewModel.setInventoryItemQuantity(it)
+        onConfirm = { inventoryLevel, inventoryItem ->
+            inventoryViewModel.updateInventoryItemWithQuantity(
+                inventoryLevelRequestDomain = inventoryLevel,
+                inventoryItemRequestDomain = inventoryItem
+            )
         }
     )
 }

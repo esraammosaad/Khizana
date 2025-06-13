@@ -178,6 +178,14 @@ fun ProductDetailsScreen(
                                 )
                             }
                             Text(
+                                ("#Tags: " + product.result?.product?.tags), style = TextStyle(
+                                    fontSize = 14.sp,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
                                 product.result?.product?.title ?: "", style = TextStyle(
                                     fontSize = 18.sp,
                                 )

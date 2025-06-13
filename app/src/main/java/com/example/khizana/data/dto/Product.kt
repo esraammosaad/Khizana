@@ -8,6 +8,7 @@ data class ProductsItemEntity(
     val image: ImageEntity?,
     val body_html: String?,
     val images: List<ImagesItemEntity?>?,
+    val tags: String,
     val created_at: String?,
     val variants: List<VariantsItemEntity?>?,
     val title: String?,
