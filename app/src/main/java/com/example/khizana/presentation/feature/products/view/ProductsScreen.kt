@@ -1,6 +1,5 @@
 package com.example.khizana.presentation.feature.products.view
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -42,10 +41,10 @@ import com.example.khizana.presentation.feature.products.view.components.CustomT
 fun ProductsScreen(
     modifier: Modifier = Modifier,
     productsViewModel: ProductsViewModel = hiltViewModel(),
-    navigationController: NavHostController
+    navigationController: NavHostController,
+    snackBarHostState: SnackbarHostState
 ) {
 
-    val context = LocalContext.current
     val products = productsViewModel.products.collectAsStateWithLifecycle().value
     val showDialog = remember { mutableStateOf(false) }
     val selectedProduct = remember { mutableStateOf("") }
@@ -55,7 +54,7 @@ fun ProductsScreen(
     LaunchedEffect(Unit) {
         productsViewModel.getProducts()
         productsViewModel.message.collect {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            snackBarHostState.showSnackbar(it)
         }
     }
 

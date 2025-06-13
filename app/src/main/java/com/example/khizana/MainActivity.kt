@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,6 +31,8 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val navigationController = rememberNavController()
+            val snackBarHostState = remember { SnackbarHostState() }
+
             NavHost(
                 navController = navigationController,
                 startDestination = NavigationRoutes.SplashScreen
@@ -64,6 +68,7 @@ class MainActivity : ComponentActivity() {
                 }
                 composable<NavigationRoutes.MainScreen> {
                     MainScreen(
+                        snackBarHostState = snackBarHostState,
                         navigationController = navigationController,
                     )
                 }
@@ -80,6 +85,7 @@ class MainActivity : ComponentActivity() {
                     val id = data.priceRuleId
                     DiscountCodeScreen(
                         priceRuleId = id,
+                        snackBarHostState = snackBarHostState,
                         navigationController = navigationController
                     )
                 }

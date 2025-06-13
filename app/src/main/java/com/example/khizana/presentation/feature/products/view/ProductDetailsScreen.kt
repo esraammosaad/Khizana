@@ -1,7 +1,6 @@
 package com.example.khizana.presentation.feature.products.view
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +31,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,30 +41,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.khizana.R
 import com.example.khizana.domain.model.ProductRequestDomain
-import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
-import com.example.khizana.ui.theme.primaryColor
-import com.example.khizana.ui.theme.secondaryColor
-import com.example.khizana.utilis.CustomLoadingIndicator
-import com.example.khizana.utilis.Response
-import kotlinx.coroutines.delay
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
 import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
 import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
 import com.example.khizana.presentation.feature.products.view.components.PageIndicator
+import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
 import com.example.khizana.ui.theme.offWhiteColor
+import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.CustomDivider
+import com.example.khizana.utilis.CustomLoadingIndicator
+import com.example.khizana.utilis.Response
+import kotlinx.coroutines.delay
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -72,13 +71,13 @@ import com.example.khizana.utilis.CustomDivider
 fun ProductDetailsScreen(
     productId: String,
     productsViewModel: ProductsViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState,
     navigationController: NavController
 ) {
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
         productsViewModel.getProductById(productId = productId)
         productsViewModel.message.collect {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            snackBarHostState.showSnackbar(it)
         }
     }
     val product = productsViewModel.product.collectAsStateWithLifecycle().value
