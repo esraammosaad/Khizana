@@ -61,7 +61,6 @@ class ProductsViewModel @Inject constructor(
                 }
                     .collect {
                         _products.emit(Response.Success(it))
-                        Log.i("TAG", "getProducts: $it")
                     }
             } catch (e: Exception) {
                 _products.emit(Response.Failure(e.message.toString()))
@@ -109,7 +108,6 @@ class ProductsViewModel @Inject constructor(
                     _message.emit(it.message.toString())
                 }.collect {
                     _product.emit(Response.Success(it))
-                    Log.i("TAG", "getProductById: $it")
                 }
             } catch (e: Exception) {
                 _product.emit(Response.Failure(e.message.toString()))
@@ -137,20 +135,17 @@ class ProductsViewModel @Inject constructor(
                 _searchResults.emit(emptyList())
                 return@launch
             }
-
             val items = (productResponse.result as? ProductDomain)?.products ?: run {
                 _searchResults.emit(emptyList())
                 return@launch
             }
-
             if (query.isBlank()) {
                 _searchResults.emit(emptyList())
                 return@launch
             }
-
             val normalizedQuery = query.lowercase().trim()
-
             val results = items
+                .asSequence()
                 .filterNotNull()
                 .map { product ->
                     val title = product.title?.lowercase()?.trim() ?: ""
@@ -167,7 +162,7 @@ class ProductsViewModel @Inject constructor(
                 .sortedBy { (_, distance) -> distance }
                 .take(5)
                 .map { (product, _) -> product }
-
+                .toList()
             _searchResults.emit(results)
         }
     }
@@ -175,13 +170,10 @@ class ProductsViewModel @Inject constructor(
     private fun levenshteinDistance(a: String, b: String): Int {
         if (a.isEmpty()) return b.length
         if (b.isEmpty()) return a.length
-
         val costs = IntArray(b.length + 1) { it }
-
         for (i in 1..a.length) {
             var previousValue = i - 1
             costs[0] = i
-
             for (j in 1..b.length) {
                 val currentCost = when {
                     a[i - 1] == b[j - 1] -> previousValue
@@ -191,7 +183,6 @@ class ProductsViewModel @Inject constructor(
                 costs[j] = currentCost
             }
         }
-
         return costs[b.length]
     }
 

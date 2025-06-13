@@ -94,33 +94,4 @@ class InventoryViewModel @Inject constructor(
 
         }
     }
-
-    fun setInventoryItemQuantity(inventoryLevelRequestDomain: InventoryLevelRequestDomain) {
-        viewModelScope.launch {
-            try {
-                setInventoryItemQuantityUseCase.setInventoryItemQuantity(inventoryLevelRequestDomain)
-                delay(5000)
-                getProducts()
-                _message.emit("Inventory item updated successfully")
-            } catch (e: Exception) {
-                _message.emit(e.message.toString())
-            }
-        }
-    }
-//
-//    fun updateInventoryItem(
-//        inventoryItemRequestDomain: InventoryItemRequestDomain,
-//        inventoryItemId: String
-//    ) {
-//        viewModelScope.launch {
-//            try {
-//                updateInventoryItemUseCase.updateInventoryItem(
-//                    inventoryItemRequestDomain,
-//                    inventoryItemId
-//                )
-//            } catch (e: Exception) {
-//                _message.emit(e.message.toString())
-//            }
-//        }
-//    }
 }

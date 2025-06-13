@@ -2,7 +2,6 @@ package com.example.khizana.data.datasource.remote
 
 import android.content.Context
 import android.net.ConnectivityManager
-import com.example.khizana.utilis.Strings
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -17,14 +16,8 @@ import javax.inject.Inject
 class RetrofitFactory @Inject constructor(
     private val context: Context
 ) {
-    companion object {
-        private const val CACHE_SIZE = 10 * 1024 * 1024L
-        private const val MAX_AGE = 60
-        private const val MAX_STALE = 60 * 60 * 24 * 7
-    }
-
     private val cache by lazy {
-        Cache(File(context.cacheDir, "http_cache"), CACHE_SIZE)
+        Cache(File(context.cacheDir, "http_cache"), Strings.CACHE_SIZE)
     }
 
     private val retrofit: Retrofit by lazy {
@@ -67,7 +60,7 @@ class RetrofitFactory @Inject constructor(
         return Interceptor { chain ->
             val response = chain.proceed(chain.request())
             response.newBuilder()
-                .header("Cache-Control", "public, max-age=$MAX_AGE")
+                .header("Cache-Control", "public, max-age=${Strings.MAX_AGE}")
                 .build()
         }
     }
@@ -79,7 +72,7 @@ class RetrofitFactory @Inject constructor(
                 request = request.newBuilder()
                     .header(
                         "Cache-Control",
-                        "public, only-if-cached, max-stale=$MAX_STALE"
+                        "public, only-if-cached, max-stale=${Strings.MAX_STALE}"
                     )
                     .build()
             }
@@ -96,4 +89,12 @@ object NetworkUtil {
         val activeNetwork = connectivityManager.activeNetworkInfo
         return activeNetwork?.isConnectedOrConnecting == true
     }
+}
+
+object Strings {
+    const val CACHE_SIZE = 10 * 1024 * 1024L
+    const val MAX_AGE = 60
+    const val MAX_STALE = 60 * 60 * 24 * 7
+    const val BASE_URL = "https://mad45-sv-and4.myshopify.com/admin/api/2025-04/"
+    const val SHOPIFY_ACCESS_TOKEN = "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"
 }
