@@ -20,6 +20,8 @@ import com.example.khizana.ui.theme.secondaryColor
 @Composable
 fun CustomTextArea(
     value: MutableState<String>,
+    error: Boolean = false,
+    errorMessage: String = ""
 ) {
     OutlinedTextField(
         label = {
@@ -44,11 +46,20 @@ fun CustomTextArea(
             focusedBorderColor = secondaryColor,
             disabledBorderColor = secondaryColor,
             unfocusedBorderColor = secondaryColor,
-            errorBorderColor = primaryColor,
-            errorTextColor = primaryColor,
-            errorCursorColor = primaryColor,
-            errorPlaceholderColor = primaryColor,
+            errorBorderColor = Color.Red,
+            errorTextColor = Color.Red,
+            errorCursorColor = Color.Red,
+            errorPlaceholderColor = Color.Red,
             cursorColor = primaryColor
         ),
+        isError = error,
+        supportingText = {
+            if (error) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red
+                )
+            }
+        }
     )
 }

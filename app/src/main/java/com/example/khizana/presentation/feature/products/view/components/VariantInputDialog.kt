@@ -125,7 +125,8 @@ fun VariantInputDialog(
                             option3 = optionThree.value.ifEmpty { null },
                             option1 = optionOne.value,
                             option2 = optionTwo.value.ifEmpty { null },
-                            inventory_quantity = variantQuantity.value.toIntOrNull() ?: 0
+                            inventory_quantity = variantQuantity.value.toIntOrNull() ?: 0,
+                            inventory_item_id = ""
                         )
                         onConfirm(variant)
                         variantTitle.value = ""

@@ -7,6 +7,7 @@ data class ProductDomain(
 data class ProductsItem(
     val image: Image?,
     val body_html: String?,
+    val tags: String,
     val images: List<ImagesItem?>?,
     val created_at: String?,
     val variants: List<VariantsItem?>?,
@@ -14,7 +15,7 @@ data class ProductsItem(
     val product_type: String?,
     val updated_at: String?,
     val vendor: String?,
-    val options: List<OptionsItem?>?,
+    val options: List<OptionsItem>?,
     val id: String?,
     val published_at: String?,
     val status: String?
@@ -39,10 +40,12 @@ data class VariantsItem(
     val option1: String?,
     val option2: String?,
     val inventory_quantity: Int?,
-)
+    val inventory_item_id: String?
+
+    )
 
 data class OptionsItem(
-    val values: List<String?>?,
+    val values: List<String>?,
     val name: String?,
 )
 
