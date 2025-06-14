@@ -1,7 +1,6 @@
 package com.example.khizana.presentation.feature.products.viewModel
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -108,7 +108,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getOrdersCount() {
         viewModelScope.launch {
