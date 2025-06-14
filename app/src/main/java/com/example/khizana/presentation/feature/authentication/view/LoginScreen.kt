@@ -1,4 +1,4 @@
-package com.example.khizana.presentation.feature.login.view
+package com.example.khizana.presentation.feature.authentication.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -31,23 +33,27 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.khizana.R
 import com.example.khizana.presentation.feature.landing.CustomButton
-import com.example.khizana.presentation.feature.login.viewModel.LoginViewModel
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
 import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.NavigationRoutes
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(
+    navController: NavHostController,
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
 
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val email = remember { mutableStateOf("") }
@@ -55,14 +61,19 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
     val isLoading = remember { mutableStateOf(false) }
     val emailError = remember { mutableStateOf(false) }
     val emailErrorMessage = remember { mutableStateOf("") }
+    val username = remember { mutableStateOf("") }
+    val usernameError = remember { mutableStateOf(false) }
+    val usernameErrorMessage = remember { mutableStateOf("") }
     val passwordError = remember { mutableStateOf(false) }
     val passwordErrorMessage = remember { mutableStateOf("") }
+    val hidePassword = remember { mutableStateOf(true) }
 
-    val snackbarHostState = remember { SnackbarHostState() }
+
+    val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
         println(it)
         LazyColumn(
@@ -120,6 +131,12 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                             verticalArrangement = Arrangement.Top
                         ) {
                             CustomTextField(
+                                value = username,
+                                label = "Username",
+                                error = usernameError.value,
+                                errorMessage = usernameErrorMessage.value
+                            )
+                            CustomTextField(
                                 value = email,
                                 label = "Email",
                                 error = emailError.value,
@@ -129,17 +146,24 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                                 value = password,
                                 label = "Password",
                                 error = passwordError.value,
-                                errorMessage = passwordErrorMessage.value
+                                errorMessage = passwordErrorMessage.value,
+                                isPassword = hidePassword,
+                                trailingIcon = {
+                                    val image = if (hidePassword.value)
+                                        R.drawable.baseline_visibility_24
+                                    else
+                                        R.drawable.baseline_visibility_off_24
+                                    IconButton(onClick = {
+                                        hidePassword.value = !hidePassword.value
+                                    }) {
+                                        Icon(
+                                            painter = painterResource(id = image),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
                             )
-                            Text(
-                                "Forgot Password?",
-                                style = TextStyle(
-                                    color = primaryColor,
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                textDecoration = TextDecoration.Underline
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             if (isLoading.value) Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center
@@ -148,27 +172,32 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                                     if (email.value.isEmpty()) {
                                         emailError.value = true
                                         emailErrorMessage.value = "Email is required"
+                                    } else {
+                                        emailError.value = false
+                                        emailErrorMessage.value = ""
                                     }
                                     if (password.value.isEmpty()) {
                                         passwordError.value = true
                                         passwordErrorMessage.value = "Password is required"
-                                    }
-                                    if (email.value.isNotEmpty()) {
-                                        emailError.value = false
-                                        emailErrorMessage.value = ""
-                                    }
-                                    if (password.value.isNotEmpty()) {
+                                    } else {
                                         passwordError.value = false
+                                        passwordErrorMessage.value = ""
                                     }
-
-                                    if (email.value.isNotEmpty() && password.value.isNotEmpty()) {
+                                    if (username.value.isEmpty()) {
+                                        usernameError.value = true
+                                        usernameErrorMessage.value = "Username is required"
+                                    } else {
+                                        usernameError.value = false
+                                        usernameErrorMessage.value = ""
+                                    }
+                                    if (email.value.isNotEmpty() && password.value.isNotEmpty() && username.value.isNotEmpty()) {
                                         isLoading.value = true
-                                        loginViewModel.login(
+                                        authViewModel.login(
                                             email = email.value,
                                             password = password.value,
                                             onSuccess = {
                                                 coroutineScope.launch {
-                                                    snackbarHostState.showSnackbar("Login successful")
+                                                    snackBarHostState.showSnackbar("Login successful")
                                                 }
                                                 isLoading.value = false
                                                 navController.navigate(NavigationRoutes.MainScreen) {
@@ -176,11 +205,15 @@ fun LoginScreen(navController: NavHostController, loginViewModel: LoginViewModel
                                                         inclusive = true
                                                     }
                                                 }
+                                                FirebaseAuth.getInstance().currentUser?.updateProfile(
+                                                    UserProfileChangeRequest.Builder()
+                                                        .setDisplayName(username.value).build()
+                                                )
                                             },
                                             onFailure = {
                                                 isLoading.value = false
                                                 coroutineScope.launch {
-                                                    snackbarHostState.showSnackbar(it.message.toString())
+                                                    snackBarHostState.showSnackbar(it.message.toString())
                                                 }
                                             }
                                         )

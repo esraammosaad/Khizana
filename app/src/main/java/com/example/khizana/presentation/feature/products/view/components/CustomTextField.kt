@@ -8,8 +8,11 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
@@ -20,11 +23,13 @@ fun CustomTextField(
     value: MutableState<String>,
     label: String,
     trailingIcon: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {
         value.value = it
     },
     error: Boolean = false,
-    errorMessage: String = ""
+    errorMessage: String = "",
+    isPassword: MutableState<Boolean> = mutableStateOf(false)
 ) {
     OutlinedTextField(
         label = {
@@ -35,8 +40,7 @@ fun CustomTextField(
         },
         enabled = true,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp),
+            .fillMaxWidth(),
         value = value.value,
         onValueChange = onValueChange,
         shape = RoundedCornerShape(25),
@@ -51,7 +55,9 @@ fun CustomTextField(
             cursorColor = primaryColor
         ),
         trailingIcon = trailingIcon,
+        leadingIcon = leadingIcon,
         isError = error,
+        visualTransformation = if (isPassword.value) PasswordVisualTransformation() else VisualTransformation.None,
         supportingText = {
             if (error) {
                 Text(

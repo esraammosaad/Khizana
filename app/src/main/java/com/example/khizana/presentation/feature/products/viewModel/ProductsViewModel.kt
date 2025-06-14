@@ -10,6 +10,7 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.OptionsItem
+import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.domain.model.VariantsItem
@@ -46,6 +47,10 @@ class ProductsViewModel @Inject constructor(
 
     private var _message = MutableSharedFlow<String>()
     val message = _message.asSharedFlow()
+
+    private val _searchResults = MutableSharedFlow<List<ProductsItem>>(replay = 1)
+    val searchResults = _searchResults.asSharedFlow()
+
     fun getProducts() {
         viewModelScope.launch {
             try {
@@ -56,7 +61,6 @@ class ProductsViewModel @Inject constructor(
                 }
                     .collect {
                         _products.emit(Response.Success(it))
-                        Log.i("TAG", "getProducts: $it")
                     }
             } catch (e: Exception) {
                 _products.emit(Response.Failure(e.message.toString()))
@@ -104,7 +108,6 @@ class ProductsViewModel @Inject constructor(
                     _message.emit(it.message.toString())
                 }.collect {
                     _product.emit(Response.Success(it))
-                    Log.i("TAG", "getProductById: $it")
                 }
             } catch (e: Exception) {
                 _product.emit(Response.Failure(e.message.toString()))
@@ -125,6 +128,65 @@ class ProductsViewModel @Inject constructor(
         }
     }
 
+    fun performSearch(query: String) {
+        viewModelScope.launch {
+            val productResponse = _products.value
+            if (productResponse !is Response.Success<*>) {
+                _searchResults.emit(emptyList())
+                return@launch
+            }
+            val items = (productResponse.result as? ProductDomain)?.products ?: run {
+                _searchResults.emit(emptyList())
+                return@launch
+            }
+            if (query.isBlank()) {
+                _searchResults.emit(emptyList())
+                return@launch
+            }
+            val normalizedQuery = query.lowercase().trim()
+            val results = items
+                .asSequence()
+                .filterNotNull()
+                .map { product ->
+                    val title = product.title?.lowercase()?.trim() ?: ""
+                    val distance = if (title.isNotEmpty()) {
+                        val levenshteinScore = levenshteinDistance(title, normalizedQuery)
+                        val containsScore = if (title.contains(normalizedQuery)) 0 else 100
+                        val startsWithScore = if (title.startsWith(normalizedQuery)) 0 else 10
+                        (levenshteinScore * 0.6 + containsScore * 0.3 + startsWithScore * 0.1).toInt()
+                    } else {
+                        Int.MAX_VALUE
+                    }
+                    product to distance
+                }
+                .sortedBy { (_, distance) -> distance }
+                .take(5)
+                .map { (product, _) -> product }
+                .toList()
+            _searchResults.emit(results)
+        }
+    }
+
+    private fun levenshteinDistance(a: String, b: String): Int {
+        if (a.isEmpty()) return b.length
+        if (b.isEmpty()) return a.length
+        val costs = IntArray(b.length + 1) { it }
+        for (i in 1..a.length) {
+            var previousValue = i - 1
+            costs[0] = i
+            for (j in 1..b.length) {
+                val currentCost = when {
+                    a[i - 1] == b[j - 1] -> previousValue
+                    else -> 1 + minOf(costs[j - 1], costs[j], previousValue)
+                }
+                previousValue = costs[j]
+                costs[j] = currentCost
+            }
+        }
+        return costs[b.length]
+    }
+
+
     fun uploadProduct(
         imageUris: List<Any>?,
         productName: String,
@@ -132,6 +194,7 @@ class ProductsViewModel @Inject constructor(
         productType: String,
         productVendor: String,
         productStatus: String,
+        tag: String,
         variantList: List<VariantsItem>,
         optionList: List<OptionsItem>,
         showBottomSheet: MutableState<Boolean>,
@@ -201,7 +264,8 @@ class ProductsViewModel @Inject constructor(
                             options = optionList,
                             id = "",
                             published_at = "",
-                            status = productStatus
+                            status = productStatus,
+                            tags = tag
                         )
                         if (isEditable) {
                             editProduct(
@@ -259,7 +323,8 @@ class ProductsViewModel @Inject constructor(
                 options = optionList,
                 id = "",
                 published_at = "",
-                status = productStatus
+                status = productStatus,
+                tags = tag
             )
             editProduct(
                 productId ?: "",

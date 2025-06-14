@@ -29,4 +29,8 @@ class AuthService @Inject constructor() {
                 onFailure(it)
             }
     }
+
+    fun logout(){
+        auth.signOut()
+    }
 }

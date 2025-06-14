@@ -15,14 +15,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import com.example.khizana.R
 import com.example.khizana.domain.model.Prerequisite_to_entitlement_quantity_ratio
 import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.model.PriceRule
 import com.example.khizana.domain.model.PriceRuleItem
-import com.example.khizana.presentation.feature.priceRules.view.CustomDiscountCard
+import com.example.khizana.presentation.feature.priceRules.view.components.CustomDiscountCard
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
+import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.ConfirmationDialog
@@ -60,6 +62,9 @@ fun AddPriceRuleScreen(
     val errorMessage = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
     val showConfirmationDialog = remember { mutableStateOf(false) }
+    val openStartDatePicker = remember { mutableStateOf(false) }
+    val openEndDatePicker = remember { mutableStateOf(false) }
+
 
 
     LaunchedEffect(Unit) {
@@ -79,11 +84,11 @@ fun AddPriceRuleScreen(
         }
     }
 
-    LazyColumn(modifier = modifier.padding(top = 16.dp)) {
+    LazyColumn {
         item {
             ConfirmationDialog(
                 showDialog = showConfirmationDialog.value,
-                text = "Are you sure you want to save this coupon?",
+                text = stringResource(R.string.are_you_sure_you_want_to_save_this_coupon),
                 onConfirm = {
                     val rule = PriceRuleRequestDomain(
                         price_rule = PriceRule(
@@ -122,6 +127,15 @@ fun AddPriceRuleScreen(
                     showConfirmationDialog.value = false
                 }
             )
+            ComposeDatePickerExample(
+                date = startDate,
+                openDialog = openStartDatePicker
+            )
+            ComposeDatePickerExample(
+                date = endDate,
+                openDialog = openEndDatePicker
+            )
+            Spacer(modifier = Modifier.height(42.dp))
             Text(
                 "Add New Coupon Now!", style = TextStyle(
                     fontSize = 24.sp,
@@ -140,7 +154,6 @@ fun AddPriceRuleScreen(
 
             Column(modifier = Modifier.padding(16.dp)) {
                 CustomTextField(
-
                     value = discountValue,
                     label = "Discount",
                     onValueChange = {
@@ -171,17 +184,7 @@ fun AddPriceRuleScreen(
                 Row {
                     Button(
                         onClick = {
-                            val datePicker = DatePickerDialog(
-                                context,
-                                { _: DatePicker, year: Int, month: Int, day: Int ->
-                                    startDate.value = "$year-${month + 1}-$day"
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                            )
-                            datePicker.datePicker.minDate = System.currentTimeMillis()
-                            datePicker.show()
+                            openStartDatePicker.value = true
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = secondaryColor
@@ -195,17 +198,7 @@ fun AddPriceRuleScreen(
 
                     Button(
                         onClick = {
-                            val datePicker = DatePickerDialog(
-                                context,
-                                { _: DatePicker, year: Int, month: Int, day: Int ->
-                                    endDate.value = "$year-${month + 1}-$day"
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                            )
-                            datePicker.datePicker.minDate = System.currentTimeMillis()
-                            datePicker.show()
+                            openEndDatePicker.value = true
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = secondaryColor
@@ -275,17 +268,14 @@ fun AddPriceRuleScreen(
                             discountError.value = true
                             discountErrorMessage.value = "Please enter a discount"
                         } else {
-                            discountError.value = false
-                            discountErrorMessage.value = ""
-                        }
-
-                        if (discountValue.value.toDouble() >= 0.0) {
-                            discountError.value = true
-                            discountErrorMessage.value = "Discount must be negative"
-
-                        } else {
-                            discountError.value = false
-                            discountErrorMessage.value = ""
+                            val discountCheck = discountValue.value.toDoubleOrNull()
+                            if (discountCheck == null || discountCheck >= 0.0) {
+                                discountError.value = true
+                                discountErrorMessage.value = "Discount must be negative number"
+                            } else {
+                                discountError.value = false
+                                discountErrorMessage.value = ""
+                            }
                         }
 
                         if (startDate.value == "Start Date" || endDate.value == "End Date") {
@@ -323,4 +313,61 @@ fun AddPriceRuleScreen(
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ComposeDatePickerExample(
+    date: MutableState<String>,
+    openDialog: MutableState<Boolean>
+) {
+    val datePickerState = rememberDatePickerState()
+    val selectedDate = datePickerState.selectedDateMillis?.let { millis ->
+        val calendar = Calendar.getInstance().apply { timeInMillis = millis }
+        "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.DAY_OF_MONTH)}"
+    }
+
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = { openDialog.value = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        if (selectedDate != null)
+                            date.value = selectedDate
+                    }
+                ) {
+                    Text("OK", color = primaryColor)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { openDialog.value = false }) {
+                    Text("Cancel", color = Color.Red)
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = offWhiteColor,
+                    titleContentColor = primaryColor,
+                    headlineContentColor = primaryColor,
+                    weekdayContentColor = primaryColor,
+                    subheadContentColor = primaryColor,
+                    dayContentColor = primaryColor,
+                    selectedDayContainerColor = primaryColor,
+                    selectedDayContentColor = Color.White,
+                    todayContentColor = primaryColor,
+                    todayDateBorderColor = primaryColor,
+                    dayInSelectionRangeContentColor = Color.White,
+                    dayInSelectionRangeContainerColor = primaryColor,
+
+                    )
+            )
+        }
+    }
+}
+
 

@@ -30,7 +30,7 @@ import com.example.khizana.ui.theme.secondaryColor
 @Composable
 fun OptionInputDialog(
     showDialog: MutableState<Boolean>,
-    onConfirm: (OptionsItem) -> Unit
+    onConfirm: (OptionsItem) -> Unit,
 ) {
     val optionName = remember { mutableStateOf("") }
     val optionValue = remember { mutableStateOf("") }

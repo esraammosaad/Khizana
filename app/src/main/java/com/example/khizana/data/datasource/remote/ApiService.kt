@@ -7,6 +7,7 @@ import com.example.khizana.data.dto.InventoryLevelRequest
 import com.example.khizana.data.dto.Location
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.Count
+import com.example.khizana.data.dto.InventoryItemRequest
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
 import com.example.khizana.data.dto.Product
@@ -62,7 +63,21 @@ interface ApiService {
     suspend fun getInventoryLevels(@Path("locationId") locationId: String): InventoryLevel
 
     @POST("inventory_levels/adjust.json")
-    suspend fun adjustInventory(@Body inventoryLevelRequest: InventoryLevelRequest)
+    suspend fun adjustInventoryItemQuantity(@Body inventoryLevelRequest: InventoryLevelRequest)
+
+    @POST("inventory_levels/set.json")
+    suspend fun setInventoryItemQuantity(@Body inventoryLevelRequest: InventoryLevelRequest)
+
+    @PUT("inventory_items/{inventoryItemId}.json")
+    suspend fun updateInventoryItem(
+        @Body inventoryItemRequest: InventoryItemRequest,
+        @Path("inventoryItemId") inventoryItemId: String
+    )
+
+   @GET("inventory_items/{inventoryItemId}.json")
+    suspend fun getInventoryItem(
+        @Path("inventoryItemId") inventoryItemId: String
+    ) : InventoryItemRequest
 
     @GET("price_rules.json")
     suspend fun getPriceRules(): PriceRule

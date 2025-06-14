@@ -1,7 +1,6 @@
 package com.example.khizana.presentation.feature.products.view
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -25,15 +23,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,25 +41,29 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.khizana.R
 import com.example.khizana.domain.model.ProductRequestDomain
+import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
+import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
+import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
+import com.example.khizana.presentation.feature.products.view.components.PageIndicator
 import com.example.khizana.presentation.feature.products.viewModel.ProductsViewModel
+import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
+import com.example.khizana.utilis.CustomDivider
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
 import kotlinx.coroutines.delay
-import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,19 +71,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun ProductDetailsScreen(
     productId: String,
     productsViewModel: ProductsViewModel = hiltViewModel(),
+    snackBarHostState: SnackbarHostState,
     navigationController: NavController
 ) {
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
         productsViewModel.getProductById(productId = productId)
         productsViewModel.message.collect {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            snackBarHostState.showSnackbar(it)
         }
     }
     val product = productsViewModel.product.collectAsStateWithLifecycle().value
     val productImagesListSize = remember { mutableIntStateOf(0) }
     val pagerState = rememberPagerState(
-        pageCount = { productImagesListSize.intValue ?: 0 },
+        pageCount = { productImagesListSize.intValue },
         initialPage = 0,
     )
     LaunchedEffect(pagerState.currentPage) {
@@ -94,7 +96,11 @@ fun ProductDetailsScreen(
     }
     val showBottomSheet = remember { mutableStateOf(false) }
     Box {
-        LazyColumn(Modifier.systemBarsPadding()) {
+        LazyColumn(
+            Modifier
+                .systemBarsPadding()
+                .background(offWhiteColor)
+        ) {
             when (product) {
                 is Response.Success<*> -> {
                     product as Response.Success<ProductRequestDomain>
@@ -111,17 +117,13 @@ fun ProductDetailsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            IconButton(
-                                onClick = {
-                                    navigationController.popBackStack()
-                                }
-                            ) {
+                            IconButton(onClick = {
+                                navigationController.popBackStack()
+                            }) {
                                 Icon(
-                                    imageVector = Icons.Default.KeyboardArrowLeft,
+                                    Icons.Filled.ArrowBack,
                                     contentDescription = stringResource(R.string.back_icon),
                                     tint = Color.Black.copy(0.7f),
-                                    modifier = Modifier
-                                        .size(35.dp)
                                 )
                             }
                         }
@@ -134,7 +136,9 @@ fun ProductDetailsScreen(
                             if (product.result?.product?.images?.isNotEmpty() == true) {
                                 HorizontalPager(
                                     state = pagerState,
-                                    modifier = Modifier.wrapContentSize()
+                                    modifier = Modifier
+                                        .wrapContentSize()
+                                        .padding(top = 5.dp)
                                 ) { index ->
                                     CustomProductImage(
                                         productImage = product.result?.product?.images?.get(
@@ -148,8 +152,13 @@ fun ProductDetailsScreen(
                                 CustomStatusBox(Modifier, product.result?.product)
                             }
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         Column(Modifier.padding(16.dp)) {
+                            PageIndicator(
+                                items = product.result?.product?.images ?: listOf(),
+                                currentPage = pagerState.currentPage
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                             Text(
                                 "ID: #${product.result?.product?.id}", style = TextStyle(
                                     fontSize = 20.sp,
@@ -167,6 +176,14 @@ fun ProductDetailsScreen(
                                     product.result?.product?.product_type ?: ""
                                 )
                             }
+                            Text(
+                                ("#Tags: " + product.result?.product?.tags), style = TextStyle(
+                                    fontSize = 14.sp,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 product.result?.product?.title ?: "", style = TextStyle(
                                     fontSize = 18.sp,
@@ -196,13 +213,7 @@ fun ProductDetailsScreen(
                                     )
                                 )
                             }
-                            HorizontalDivider(
-                                color = Color.Gray.copy(alpha = 0.3f),
-                                thickness = 1.dp,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
-                            )
+                            CustomDivider()
                             Text(
                                 text = product.result?.product?.body_html ?: "",
                                 style = TextStyle(
@@ -219,7 +230,7 @@ fun ProductDetailsScreen(
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
                                 product.result?.product?.options?.forEach { option ->
-                                    if (!option?.values.isNullOrEmpty()) {
+                                    if (!option.values.isNullOrEmpty()) {
                                         Row(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -228,13 +239,13 @@ fun ProductDetailsScreen(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Text(
-                                                text = "${option?.name}:",
+                                                text = "${option.name}:",
                                                 fontSize = 18.sp,
                                                 fontWeight = FontWeight.Medium,
                                                 modifier = Modifier.padding(bottom = 4.dp)
                                             )
                                             Spacer(modifier = Modifier.width(6.dp))
-                                            option?.values?.forEach { value ->
+                                            option.values.forEach { value ->
                                                 Box(
                                                     modifier = Modifier
                                                         .padding(end = 6.dp)
@@ -244,7 +255,7 @@ fun ProductDetailsScreen(
                                                         )
                                                 ) {
                                                     Text(
-                                                        text = value ?: "",
+                                                        text = value,
                                                         modifier = Modifier.padding(
                                                             horizontal = 12.dp,
                                                             vertical = 6.dp
@@ -300,7 +311,7 @@ fun ProductDetailsScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(42.dp))
                     }
                 }
 
@@ -335,15 +346,6 @@ fun ProductDetailsScreen(
     }
 }
 
-@Composable
-private fun CustomProductImage(productImage: String?) {
-    AsyncImage(
-        model = productImage ?: "",
-        contentDescription = stringResource(R.string.product_image),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
-    )
-}
+
 
 

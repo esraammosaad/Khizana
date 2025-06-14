@@ -124,7 +124,6 @@ class PriceRuleViewModel @Inject constructor(
                 getDiscountCodes(priceRuleId)
                 _message.emit("Discount code deleted successfully")
             } catch (e: Exception) {
-                Log.i("TAG", "deleteDiscountCode: ${e.message.toString()}")
                 _message.emit(e.message.toString())
             }
         }

@@ -31,4 +31,5 @@
     <string name="options">Options</string>
     <string name="edit_your_product">Edit Your Product</string>
     <string name="are_you_sure_you_want_to_save_this_product">Are you sure you want to save this product?</string>
+    <string name="are_you_sure_you_want_to_save_this_coupon">Are you sure you want to save this coupon?</string>
 </resources>

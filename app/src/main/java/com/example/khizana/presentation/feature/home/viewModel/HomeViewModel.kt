@@ -9,7 +9,6 @@ import com.example.khizana.domain.usecase.GetInventoryLocationsUseCase
 import com.example.khizana.domain.usecase.GetOrdersUseCase
 import com.example.khizana.domain.usecase.GetProductsCountUseCase
 import com.example.khizana.utilis.Response
-import com.example.khizana.utilis.Strings
 import com.example.khizana.utilis.getShopifyOrderCountDatesForLastSevenDays
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,9 +27,6 @@ class HomeViewModel @Inject constructor(
     private var _products = MutableStateFlow<Response>(Response.Loading)
     val products = _products.asStateFlow()
 
-    private var _orders = MutableStateFlow<Response>(Response.Loading)
-    val orders = _orders.asStateFlow()
-
     private var _totalOrdersPrice = MutableStateFlow<Response>(Response.Loading)
     val totalOrdersPrice = _totalOrdersPrice.asStateFlow()
 
@@ -46,7 +42,6 @@ class HomeViewModel @Inject constructor(
     private var _inventoryLocationsCount = MutableStateFlow<Response>(Response.Loading)
     val inventoryLocationsCount = _inventoryLocationsCount.asStateFlow()
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTotalOrdersPrice() {
         viewModelScope.launch {
@@ -57,7 +52,6 @@ class HomeViewModel @Inject constructor(
                     getShopifyOrderCountDatesForLastSevenDays()[6] + Strings.END_OF_THE_DAY
                 )
                 response.catch {
-                    _orders.emit(Response.Failure(it.message.toString()))
                     _totalOrdersPrice.emit(Response.Failure(it.message.toString()))
                 }.collect {
                     it.orders?.forEach { order ->
@@ -71,11 +65,9 @@ class HomeViewModel @Inject constructor(
                             list.add(amount)
                         }
                     }
-                    _orders.emit(Response.Success(it))
                     _totalOrdersPrice.emit(Response.Success(list.sum()))
                 }
             } catch (e: Exception) {
-                _orders.emit(Response.Failure(e.message.toString()))
                 _totalOrdersPrice.emit(Response.Failure(e.message.toString()))
             }
         }
@@ -170,5 +162,10 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+}
+
+object Strings {
+    const val START_OF_THE_DAY = "T00:00:00Z"
+    const val END_OF_THE_DAY = "T23:59:59Z"
 }
 
