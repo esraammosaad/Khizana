@@ -1,27 +1,28 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class PriceRuleRequest(
-    val price_rule: Price_ruleEntity
+    @SerializedName("price_rule")
+    val priceRule: PriceRuleEntity
 )
 
-data class Price_ruleEntity(
-    val allocation_method: String,
-    val prerequisite_to_entitlement_quantity_ratio: Prerequisite_to_entitlement_quantity_ratioEntity,
-    val value_type: String,
-    val starts_at: String,
-    val allocation_limit: Int,
-    val target_type: String,
-    val entitled_product_ids: List<String>,
+data class PriceRuleEntity(
+    @SerializedName("value_type")
+    val valueType: String,
+    @SerializedName("starts_at")
+    val startsAt: String,
+    @SerializedName("target_type")
+    val targetType: String = "line_item",
+    @SerializedName("target_selection")
+    val targetSelection: String = "all",
+    @SerializedName("allocation_method")
+    val allocationMethod: String = "across",
+    @SerializedName("customer_selection")
+    val customerSelection: String = "all",
     val title: String,
-    val customer_selection: String,
-    val target_selection: String,
-    val ends_at: String,
+    @SerializedName("ends_at")
+    val endsAt: String,
     val value: String,
-    val prerequisite_collection_ids: List<String>
-)
-
-data class Prerequisite_to_entitlement_quantity_ratioEntity(
-    val prerequisite_quantity: Int,
-    val entitled_quantity: Int
 )
 

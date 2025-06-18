@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.FakeRemoteDataSource
 import com.example.ProductDtoTestFactory
-import com.example.ProductRequestDtoTestFactory
+import com.example.ProductRequestTestFactory
+import com.example.ProductTestFactory
 import com.example.khizana.domain.model.CountDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.repository.ProductRepository
@@ -59,7 +60,7 @@ class ProductRepositoryImplTest {
         //Given
 
         //When
-        remoteDataSourceImpl.getProducts()
+        productRepositoryImpl.getProducts()
 
         //Then
         assertThat(productsList.size, `is`(1))
@@ -70,10 +71,18 @@ class ProductRepositoryImplTest {
         //Given
 
         //When
-        remoteDataSourceImpl.createProduct(ProductRequestDtoTestFactory.createProductRequest())
+        productRepositoryImpl.createProduct(ProductRequestDomain(
+            product = ProductTestFactory.createProductItem(
+                id = "prod_456",
+                title = "new title",
+            )
+        ))
 
         //Then
         assertThat(productsList.size, `is`(2))
+        assertThat(productsList.first().id, `is`("prod_123"))
+        assertThat(productsList.last().id, `is`("prod_456"))
+        assertThat(productsList.last().title, `is`("new title"))
     }
 
     @Test
@@ -81,7 +90,7 @@ class ProductRepositoryImplTest {
         //Given
 
         //When
-        remoteDataSourceImpl.deleteProduct("prod_123")
+        productRepositoryImpl.deleteProduct("prod_123")
 
         //Then
         assertThat(productsList.size, `is`(0))
@@ -112,9 +121,9 @@ class ProductRepositoryImplTest {
         //Given
 
         //When
-        remoteDataSourceImpl.editProduct(
-            "prod_123", ProductRequestDtoTestFactory.createProductRequest(
-                ProductDtoTestFactory.createProductItemEntity(
+        productRepositoryImpl.editProduct(
+            "prod_123", ProductRequestTestFactory.createProductRequest(
+                ProductTestFactory.createProductItem(
                     title = "new title",
                 )
             )
@@ -142,6 +151,4 @@ class ProductRepositoryImplTest {
         //Then
         assertThat(values.size, `is`(1))
     }
-
-
 }

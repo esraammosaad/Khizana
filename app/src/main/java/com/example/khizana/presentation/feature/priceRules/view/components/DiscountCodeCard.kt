@@ -35,10 +35,11 @@ fun DiscountCodeCard(
     usageCount: Int,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
+    modifier: Modifier = Modifier
 
     ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(lightGreyColor)

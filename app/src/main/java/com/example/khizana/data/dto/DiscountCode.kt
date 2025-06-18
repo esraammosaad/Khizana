@@ -1,15 +1,22 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class DiscountCode(
-    val discount_codes: List<Discount_codesItemEntity>
+    @SerializedName("discount_codes")
+    val discountCodes: List<DiscountCodesItemEntity>
 )
 
-data class Discount_codesItemEntity(
-    val usage_count: Int,
-    val code: String,
-    val updated_at: String,
-    val price_rule_id: String,
-    val created_at: String,
+data class DiscountCodesItemEntity(
+    @SerializedName("usage_count")
+    val usageCount: Int,
+    var code: String,
+    @SerializedName("updated_at")
+    val updatedAt: String,
+    @SerializedName("price_rule_id")
+    val priceRuleId: String,
+    @SerializedName("created_at")
+    val createdAt: String,
     val id: String
 )
 

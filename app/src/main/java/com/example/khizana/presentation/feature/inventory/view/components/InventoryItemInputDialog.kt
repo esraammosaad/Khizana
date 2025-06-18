@@ -73,8 +73,8 @@ fun InventoryItemInputDialog(
 
             is Response.Success<*> -> {
                 inventoryItem as Response.Success<InventoryItemRequestDomain>
-                cost.value = inventoryItem.result?.inventory_item?.cost ?: ""
-                isTracked.value = inventoryItem.result?.inventory_item?.tracked ?: false
+                cost.value = inventoryItem.result?.inventoryItem?.cost ?: ""
+                isTracked.value = inventoryItem.result?.inventoryItem?.tracked ?: false
             }
         }
     }
@@ -179,7 +179,7 @@ fun InventoryItemInputDialog(
                                 location_id = "70409781361"
                             )
                             val inventoryItem = InventoryItemRequestDomain(
-                                inventory_item = InventoryItem(
+                                inventoryItem = InventoryItem(
                                     cost = cost.value,
                                     tracked = isTracked.value
                                 )

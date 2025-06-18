@@ -198,7 +198,8 @@ class ProductsViewModel @Inject constructor(
         optionList: List<OptionsItem>,
         showBottomSheet: MutableState<Boolean>,
         isEditable: Boolean,
-        productId: String? = null
+        productId: String? = null,
+        isUploading: MutableState<Boolean>
     ) {
         val urlList: MutableList<String> = mutableListOf()
         val uriList: MutableList<String> = mutableListOf()
@@ -281,6 +282,7 @@ class ProductsViewModel @Inject constructor(
                             )
                         }
                         showBottomSheet.value = false
+                        isUploading.value = false
                     }
                 }
 
@@ -332,6 +334,7 @@ class ProductsViewModel @Inject constructor(
                 )
             )
             showBottomSheet.value = false
+            isUploading.value = false
         }
     }
 }

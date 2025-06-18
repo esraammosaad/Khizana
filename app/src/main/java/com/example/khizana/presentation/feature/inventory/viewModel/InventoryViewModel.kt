@@ -1,5 +1,6 @@
 package com.example.khizana.presentation.feature.inventory.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.khizana.domain.model.InventoryItemRequestDomain
@@ -80,11 +81,11 @@ class InventoryViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                setInventoryItemQuantityUseCase.setInventoryItemQuantity(inventoryLevelRequestDomain)
                 updateInventoryItemUseCase.updateInventoryItem(
                     inventoryItemRequestDomain,
                     inventoryLevelRequestDomain.inventory_item_id
                 )
+                setInventoryItemQuantityUseCase.setInventoryItemQuantity(inventoryLevelRequestDomain)
                 delay(5000)
                 getProducts()
                 _message.emit("Inventory item updated successfully")

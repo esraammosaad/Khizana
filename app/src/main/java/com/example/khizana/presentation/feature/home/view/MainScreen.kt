@@ -68,20 +68,6 @@ fun MainScreen(
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
     val showPriceRuleBottomSheet = rememberSaveable { mutableStateOf(false) }
-    val internetConnectivityViewModel : InternetConnectivityViewModel = hiltViewModel()
-
-    LaunchedEffect(Unit) {
-        internetConnectivityViewModel.getInternetConnectivity()
-        delay(1000)
-        internetConnectivityViewModel.isConnected.collect { isConnected ->
-                snackBarHostState.showSnackbar(
-                    message = if(isConnected) "Internet Connection Restored" else "Internet Connection Lost",
-                    duration = SnackbarDuration.Long,
-                    withDismissAction = true,
-                )
-        }
-    }
-
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         containerColor = offWhiteColor,
@@ -119,8 +105,6 @@ fun MainScreen(
                     }
                 },
                 navigationIcon = {
-
-
                 },
                 actions = {
                     IconButton(onClick = {

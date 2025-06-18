@@ -1,36 +1,45 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class Product(
     val products: List<ProductsItemEntity?>?
 )
 
 data class ProductsItemEntity(
     val image: ImageEntity?,
-    val body_html: String?,
+    @SerializedName("body_html")
+    val bodyHtml: String?,
     val images: List<ImagesItemEntity?>?,
     val tags: String,
-    val created_at: String?,
+    @SerializedName("created_at")
+    val createdAt: String?,
     val variants: List<VariantsItemEntity?>?,
     val title: String?,
-    val product_type: String?,
-    val updated_at: String?,
+    @SerializedName("product_type")
+    val productType: String?,
+    @SerializedName("updated_at")
+    val updatedAt: String?,
     val vendor: String?,
     val options: List<OptionsItemEntity>?,
     val id: String?,
-    val published_at: String?,
+    @SerializedName("published_at")
+    val publishedAt: String?,
     val status: String?
 )
 
 data class ImageEntity(
     val src: String?,
     val alt: String?,
-    val variant_ids: List<String?>?,
+    @SerializedName("variant_ids")
+    val variantIds: List<String?>?,
 )
 
 data class ImagesItemEntity(
     val src: String?,
     val alt: String?,
-    val variant_ids: List<String?>?,
+    @SerializedName("variant_ids")
+    val variantIds: List<String?>?,
 )
 
 data class VariantsItemEntity(
@@ -39,8 +48,10 @@ data class VariantsItemEntity(
     val option3: String?,
     val option1: String?,
     val option2: String?,
-    val inventory_quantity: Int?,
-    val inventory_item_id: String?
+    @SerializedName("inventory_quantity")
+    val inventoryQuantity: Int?,
+    @SerializedName("inventory_item_id")
+    val inventoryItemId: String?
 )
 
 data class OptionsItemEntity(

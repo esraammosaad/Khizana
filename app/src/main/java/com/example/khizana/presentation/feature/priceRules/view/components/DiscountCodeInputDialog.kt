@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.khizana.R
 import com.example.khizana.domain.model.DiscountCodeRequestDomain
-import com.example.khizana.domain.model.DiscountCode
+import com.example.khizana.domain.model.DiscountCodeDomainRequest
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 
@@ -81,7 +81,7 @@ fun DiscountCodeInputDialog(
                             errorText.value = ""
                             onConfirm(
                                 DiscountCodeRequestDomain(
-                                    DiscountCode(
+                                    DiscountCodeDomainRequest(
                                         discountCode.value
                                     )
                                 )

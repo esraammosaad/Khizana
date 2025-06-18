@@ -1,7 +1,7 @@
 package com.example.khizana.domain.model
 
 data class InventoryItemRequestDomain(
-    val inventory_item: InventoryItem
+    val inventoryItem: InventoryItem
 )
 
 data class InventoryItem(

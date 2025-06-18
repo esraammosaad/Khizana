@@ -31,7 +31,7 @@ fun PartialBottomSheet(
     productId: String? = null
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false,
+        skipPartiallyExpanded = true,
     )
     Column(
         modifier = Modifier
@@ -45,7 +45,8 @@ fun PartialBottomSheet(
                 dragHandle = null,
                 modifier = Modifier.wrapContentSize(),
                 sheetState = sheetState,
-                onDismissRequest = { showBottomSheet.value = false },
+                onDismissRequest = {
+                    showBottomSheet.value = false },
             ) {
                AddProductScreen(productsViewModel = productsViewModel, showBottomSheet = showBottomSheet, product = product, isEditable = isEditable, productId = productId)
             }

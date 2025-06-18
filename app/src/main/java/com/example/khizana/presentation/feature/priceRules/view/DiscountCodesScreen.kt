@@ -1,7 +1,6 @@
 package com.example.khizana.presentation.feature.priceRules.view
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,7 +47,6 @@ fun DiscountCodeScreen(
 ) {
 
     val discountCodes = priceRuleViewModel.discountCodes.collectAsStateWithLifecycle().value
-    val context = LocalContext.current
     val showDialog = remember { mutableStateOf(false) }
     val showDeleteDialog = remember { mutableStateOf(false) }
     val code = remember { mutableStateOf("") }
@@ -60,6 +57,7 @@ fun DiscountCodeScreen(
             snackBarHostState.showSnackbar(it)
         }
     }
+    Log.i("TAG", "DiscountCodeScreen: $discountCodes")
     LazyColumn(
         Modifier
             .padding(top = 64.dp)
@@ -99,23 +97,23 @@ fun DiscountCodeScreen(
         when (discountCodes) {
             is Response.Success<*> -> {
                 discountCodes as Response.Success<DiscountCodeDomain>
-                items(discountCodes.result?.discount_codes?.size ?: 0,
-                    key = { discountCodes.result?.discount_codes?.get(it)?.id ?: "" }) {
+                items(discountCodes.result?.discountCodes?.size ?: 0,
+                    key = { discountCodes.result?.discountCodes?.get(it)?.id ?: "" }) {
                     DiscountCodeCard(
-                        code = discountCodes.result?.discount_codes?.get(it)?.code ?: "",
-                        usageCount = discountCodes.result?.discount_codes?.get(it)?.usage_count
+                        modifier = Modifier.animateItem(),
+                        code = discountCodes.result?.discountCodes?.get(it)?.code ?: "",
+                        usageCount = discountCodes.result?.discountCodes?.get(it)?.usageCount
                             ?: 0,
                         onDeleteClick = {
 
-                            codeId.value = discountCodes.result?.discount_codes?.get(it)?.id ?: ""
+                            codeId.value = discountCodes.result?.discountCodes?.get(it)?.id ?: ""
                             showDeleteDialog.value = true
 
                         },
                         onEditClick = {
-                            code.value = discountCodes.result?.discount_codes?.get(it)?.code ?: ""
-                            codeId.value = discountCodes.result?.discount_codes?.get(it)?.id ?: ""
+                            code.value = discountCodes.result?.discountCodes?.get(it)?.code ?: ""
+                            codeId.value = discountCodes.result?.discountCodes?.get(it)?.id ?: ""
                             showDialog.value = true
-                            Log.i("TAG", "DiscountCodeScreen: ${code.value}")
                         }
                     )
                 }

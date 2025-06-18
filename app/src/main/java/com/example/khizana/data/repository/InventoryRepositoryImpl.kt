@@ -13,14 +13,6 @@ import javax.inject.Inject
 
 class InventoryRepositoryImpl @Inject constructor(private val remoteDataSource: RemoteDataSource) :
     InventoryRepository {
-    override suspend fun getInventoryLevels(locationId: String): Flow<InventoryLevelDomain> {
-        return remoteDataSource.getInventoryLevels(locationId).map { it.toDomain() }
-    }
-
-    override suspend fun adjustInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequestDomain) {
-        remoteDataSource.adjustInventoryItemQuantity(inventoryLevelRequest.toDto())
-    }
-
     override suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequestDomain) {
         remoteDataSource.setInventoryItemQuantity(inventoryLevelRequest.toDto())
     }

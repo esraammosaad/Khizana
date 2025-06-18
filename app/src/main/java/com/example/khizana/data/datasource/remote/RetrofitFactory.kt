@@ -34,8 +34,8 @@ class RetrofitFactory @Inject constructor(
         return OkHttpClient.Builder()
             .cache(cache)
             .addInterceptor(createHeaderInterceptor(apiKey))
-            .addInterceptor(createOfflineCacheInterceptor())
-            .addNetworkInterceptor(createCacheInterceptor())
+//            .addInterceptor(createOfflineCacheInterceptor())
+//            .addNetworkInterceptor(createCacheInterceptor())
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
             })
@@ -55,46 +55,11 @@ class RetrofitFactory @Inject constructor(
             chain.proceed(request)
         }
     }
-
-    private fun createCacheInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val response = chain.proceed(chain.request())
-            response.newBuilder()
-                .header("Cache-Control", "public, max-age=${Strings.MAX_AGE}")
-                .build()
-        }
-    }
-
-    private fun createOfflineCacheInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            var request = chain.request()
-            if (!NetworkUtil.isNetworkAvailable(context)) {
-                request = request.newBuilder()
-                    .header(
-                        "Cache-Control",
-                        "public, only-if-cached, max-stale=${Strings.MAX_STALE}"
-                    )
-                    .build()
-            }
-            chain.proceed(request)
-        }
-    }
 }
 
-object NetworkUtil {
-    fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        ) as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetworkInfo
-        return activeNetwork?.isConnectedOrConnecting == true
-    }
-}
 
 object Strings {
     const val CACHE_SIZE = 10 * 1024 * 1024L
-    const val MAX_AGE = 60
-    const val MAX_STALE = 60 * 60 * 24 * 7
     const val BASE_URL = "https://mad45-sv-and4.myshopify.com/admin/api/2025-04/"
     const val SHOPIFY_ACCESS_TOKEN = "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"
 }
