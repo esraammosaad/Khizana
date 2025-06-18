@@ -1,5 +1,6 @@
-package com.example
+package com.example.khizana.data.repository
 
+import com.example.ProductTestFactory
 import com.example.khizana.domain.model.CountDomain
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
@@ -15,10 +16,12 @@ class FakeProductRepository(private val productsList: MutableList<ProductsItem>)
     }
 
     override suspend fun createProduct(product: ProductRequestDomain): Flow<ProductRequestDomain> {
-        productsList.add(ProductTestFactory.createProductItem(
-            id = product.product?.id ?: "prod_123",
-            title = product.product?.title ?: "Product 1",
-        ))
+        productsList.add(
+            ProductTestFactory.createProductItem(
+                id = product.product?.id ?: "prod_123",
+                title = product.product?.title ?: "Product 1",
+            )
+        )
         return flowOf(product)
     }
 

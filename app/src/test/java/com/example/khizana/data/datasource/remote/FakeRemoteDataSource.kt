@@ -1,5 +1,8 @@
-package com.example
+package com.example.khizana.data.datasource.remote
 
+import com.example.DiscountCodeDtoTestFactory
+import com.example.PriceRuleDtoTestFactory
+import com.example.ProductDtoTestFactory
 import com.example.khizana.data.dto.Count
 import com.example.khizana.data.dto.DiscountCode
 import com.example.khizana.data.dto.DiscountCodeRequest

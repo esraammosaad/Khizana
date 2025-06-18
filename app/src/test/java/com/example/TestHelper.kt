@@ -341,7 +341,7 @@ object PriceRuleRequestDtoTestFactory {
     }
 }
 
-object PriceRuleTestFactory {
+object PriceRuleRequestTestFactory {
 
     fun createPriceRule(
         valueType: String = "percentage",

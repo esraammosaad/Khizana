@@ -6,7 +6,7 @@ data class DiscountCodeDomain(
 
 data class DiscountCodesItem(
     val usageCount: Int,
-    val code: String,
+    var code: String,
     val updatedAt: String,
     val priceRuleId: String,
     val createdAt: String,

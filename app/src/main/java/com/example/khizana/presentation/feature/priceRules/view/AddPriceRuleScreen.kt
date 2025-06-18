@@ -62,10 +62,10 @@ fun AddPriceRuleScreen(
             title.value = priceRule.title
             titleValue.value = priceRule.title
             discountValue.value = priceRule.value
-            startDate.value = priceRule.starts_at.substring(0, 10)
-            endDate.value = priceRule.ends_at.substring(0, 10)
+            startDate.value = priceRule.startsAt.substring(0, 10)
+            endDate.value = priceRule.endsAt.substring(0, 10)
             barcode.value = priceRule.id
-            discountType.value = priceRule.value_type
+            discountType.value = priceRule.valueType
             if (discountType.value == "percentage") {
                 discount.value = "${priceRule.value}%"
             } else {

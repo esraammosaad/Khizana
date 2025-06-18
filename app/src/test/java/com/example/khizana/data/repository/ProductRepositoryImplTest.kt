@@ -1,34 +1,25 @@
 package com.example.khizana.data.repository
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.FakeRemoteDataSource
+import com.example.khizana.data.datasource.remote.FakeRemoteDataSource
 import com.example.ProductDtoTestFactory
 import com.example.ProductRequestTestFactory
 import com.example.ProductTestFactory
 import com.example.khizana.domain.model.CountDomain
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.domain.repository.ProductRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 
-@RunWith(AndroidJUnit4::class)
 class ProductRepositoryImplTest {
 
     private lateinit var productRepositoryImpl: ProductRepository
@@ -36,23 +27,16 @@ class ProductRepositoryImplTest {
     private var productsList = mutableListOf(ProductDtoTestFactory.createProductItemEntity())
 
 
-    @get:Rule
-    val myRule = InstantTaskExecutorRule()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
-        remoteDataSourceImpl = FakeRemoteDataSource(productsList)
+        remoteDataSourceImpl = FakeRemoteDataSource(productsList = productsList)
         productRepositoryImpl = ProductRepositoryImpl(
             remoteDataSourceImpl = remoteDataSourceImpl
         )
-        Dispatchers.setMain(StandardTestDispatcher())
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
-        Dispatchers.resetMain()
     }
 
     @Test

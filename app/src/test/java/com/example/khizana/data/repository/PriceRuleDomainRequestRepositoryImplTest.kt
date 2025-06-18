@@ -1,8 +1,8 @@
 package com.example.khizana.data.repository
 
-import com.example.FakeRemoteDataSource
+import com.example.khizana.data.datasource.remote.FakeRemoteDataSource
 import com.example.PriceRuleDtoTestFactory
-import com.example.PriceRuleTestFactory
+import com.example.PriceRuleRequestTestFactory
 import com.example.khizana.domain.model.PriceRuleRequestDomain
 import com.example.khizana.domain.repository.PriceRuleRepository
 import kotlinx.coroutines.test.runTest
@@ -48,7 +48,7 @@ class PriceRuleDomainRequestRepositoryImplTest {
         //When
         priceRuleRepositoryImpl.createPriceRules(
             PriceRuleRequestDomain(
-                priceRule = PriceRuleTestFactory.createPriceRule(
+                priceRule = PriceRuleRequestTestFactory.createPriceRule(
                     title = "new title",
                 )
             )
@@ -79,7 +79,7 @@ class PriceRuleDomainRequestRepositoryImplTest {
         //When
         priceRuleRepositoryImpl.updatePriceRule(
             "default_id_123", PriceRuleRequestDomain(
-                priceRule = PriceRuleTestFactory.createPriceRule(
+                priceRule = PriceRuleRequestTestFactory.createPriceRule(
                     title = "new title",
                 )
             )

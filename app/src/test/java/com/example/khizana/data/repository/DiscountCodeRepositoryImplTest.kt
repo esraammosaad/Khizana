@@ -1,7 +1,7 @@
 package com.example.khizana.data.repository
 
 import com.example.DiscountCodeDtoTestFactory
-import com.example.FakeRemoteDataSource
+import com.example.khizana.data.datasource.remote.FakeRemoteDataSource
 import com.example.khizana.domain.model.DiscountCodeDomainRequest
 import com.example.khizana.domain.model.DiscountCodeRequestDomain
 import com.example.khizana.domain.repository.DiscountCodeRepository
@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 
 
-class DiscountCodeDomainRequestRepositoryImplTest {
+class DiscountCodeRepositoryImplTest {
 
     private lateinit var discountCodeRepositoryImpl: DiscountCodeRepository
     private lateinit var remoteDataSourceImpl: RemoteDataSource

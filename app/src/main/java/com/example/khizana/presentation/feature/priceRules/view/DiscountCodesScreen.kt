@@ -1,9 +1,10 @@
 package com.example.khizana.presentation.feature.priceRules.view
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,9 +20,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -57,7 +61,6 @@ fun DiscountCodeScreen(
             snackBarHostState.showSnackbar(it)
         }
     }
-    Log.i("TAG", "DiscountCodeScreen: $discountCodes")
     LazyColumn(
         Modifier
             .padding(top = 64.dp)
@@ -97,26 +100,53 @@ fun DiscountCodeScreen(
         when (discountCodes) {
             is Response.Success<*> -> {
                 discountCodes as Response.Success<DiscountCodeDomain>
-                items(discountCodes.result?.discountCodes?.size ?: 0,
-                    key = { discountCodes.result?.discountCodes?.get(it)?.id ?: "" }) {
-                    DiscountCodeCard(
-                        modifier = Modifier.animateItem(),
-                        code = discountCodes.result?.discountCodes?.get(it)?.code ?: "",
-                        usageCount = discountCodes.result?.discountCodes?.get(it)?.usageCount
-                            ?: 0,
-                        onDeleteClick = {
 
-                            codeId.value = discountCodes.result?.discountCodes?.get(it)?.id ?: ""
-                            showDeleteDialog.value = true
-
-                        },
-                        onEditClick = {
-                            code.value = discountCodes.result?.discountCodes?.get(it)?.code ?: ""
-                            codeId.value = discountCodes.result?.discountCodes?.get(it)?.id ?: ""
-                            showDialog.value = true
+                if (discountCodes.result?.discountCodes?.isEmpty() == true) {
+                    item {
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(
+                                    LocalConfiguration.current.screenHeightDp.dp / 2
+                                ),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "No discount codes found", style = TextStyle(
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black.copy(0.7f)
+                                )
+                            )
                         }
-                    )
+                    }
+                } else {
+                    items(discountCodes.result?.discountCodes?.size ?: 0,
+                        key = { discountCodes.result?.discountCodes?.get(it)?.id ?: "" }) {
+                        DiscountCodeCard(
+                            modifier = Modifier.animateItem(),
+                            code = discountCodes.result?.discountCodes?.get(it)?.code ?: "",
+                            usageCount = discountCodes.result?.discountCodes?.get(it)?.usageCount
+                                ?: 0,
+                            onDeleteClick = {
+
+                                codeId.value =
+                                    discountCodes.result?.discountCodes?.get(it)?.id ?: ""
+                                showDeleteDialog.value = true
+
+                            },
+                            onEditClick = {
+                                code.value =
+                                    discountCodes.result?.discountCodes?.get(it)?.code ?: ""
+                                codeId.value =
+                                    discountCodes.result?.discountCodes?.get(it)?.id ?: ""
+                                showDialog.value = true
+                            }
+                        )
+                    }
                 }
+
             }
 
             is Response.Failure -> {

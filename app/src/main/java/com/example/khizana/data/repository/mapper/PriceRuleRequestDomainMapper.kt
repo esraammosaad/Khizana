@@ -22,8 +22,6 @@ fun PriceRuleEntity.toDomain(): PriceRuleDomainRequest {
     )
 }
 
-
-
 fun PriceRuleRequestDomain.toDto(): PriceRuleRequest {
     return PriceRuleRequest(
         priceRule = priceRule.toDto()
