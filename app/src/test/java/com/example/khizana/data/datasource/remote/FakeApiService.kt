@@ -11,9 +11,12 @@ import com.example.khizana.data.dto.Count
 import com.example.khizana.data.dto.DiscountCode
 import com.example.khizana.data.dto.DiscountCodeRequest
 import com.example.khizana.data.dto.DiscountCodesItemEntity
+import com.example.khizana.data.dto.InventoryItemEntity
 import com.example.khizana.data.dto.InventoryItemRequest
 import com.example.khizana.data.dto.InventoryLevelRequest
+import com.example.khizana.data.dto.InventoryLevelsItemEntity
 import com.example.khizana.data.dto.Location
+import com.example.khizana.data.dto.LocationsItemEntity
 import com.example.khizana.data.dto.Order
 import com.example.khizana.data.dto.PriceRule
 import com.example.khizana.data.dto.PriceRuleRequest
@@ -21,13 +24,17 @@ import com.example.khizana.data.dto.PriceRulesItemEntity
 import com.example.khizana.data.dto.Product
 import com.example.khizana.data.dto.ProductRequest
 import com.example.khizana.data.dto.ProductsItemEntity
+import kotlinx.coroutines.flow.flowOf
 import retrofit2.Response
 
 
 class FakeApiService(
     private val productsList: MutableList<ProductsItemEntity>,
     private val priceRulesList: MutableList<PriceRulesItemEntity>,
-    private val discountCodesList: MutableList<DiscountCodesItemEntity>
+    private val discountCodesList: MutableList<DiscountCodesItemEntity>,
+    private val inventoryLocationsList: MutableList<LocationsItemEntity> = mutableListOf(),
+    private val inventoryLevelsList: MutableList<InventoryLevelsItemEntity> = mutableListOf(),
+    private val inventoryItemsList: MutableList<InventoryItemEntity> = mutableListOf(),
 ) : ApiService {
 
     override suspend fun getProducts(): Product {
@@ -86,29 +93,23 @@ class FakeApiService(
     }
 
     override suspend fun getAllInventoryLocations(): Location {
-        return LocationTestFactory.createLocation()
+        return Location(locations = inventoryLocationsList)
     }
 
     override suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequest) {
-        InventoryLevelDtoTestFactory.createInventoryLevelRequest(
-            inventoryItemId = inventoryLevelRequest.inventoryItemId,
-            availableAdjustment = inventoryLevelRequest.availableAdjustment,
-            available = inventoryLevelRequest.available,
-            locationId = inventoryLevelRequest.locationId
-        )
+        inventoryLevelsList.first().available = inventoryLevelRequest.available
     }
 
     override suspend fun updateInventoryItem(
         inventoryItemRequest: InventoryItemRequest,
         inventoryItemId: String
     ) {
-        InventoryItemDtoTestFactory.createInventoryItemRequest(
-            inventoryItem = inventoryItemRequest.inventoryItem
-        )
+        inventoryItemsList.first().cost = inventoryItemRequest.inventoryItem.cost
+        inventoryItemsList.first().tracked = inventoryItemRequest.inventoryItem.tracked
     }
 
     override suspend fun getInventoryItem(inventoryItemId: String): InventoryItemRequest {
-        return InventoryItemDtoTestFactory.createInventoryItemRequest()
+        return InventoryItemRequest(inventoryItem = inventoryItemsList.first())
     }
 
     override suspend fun getPriceRules(): PriceRule {

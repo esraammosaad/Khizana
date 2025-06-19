@@ -404,7 +404,7 @@ object DiscountCodeDtoTestFactory {
 }
 
 object InventoryItemDtoTestFactory {
-    private fun createInventoryItemEntity(
+    fun createInventoryItemEntity(
         cost: String = "10.0",
         tracked: Boolean = true,
     ): InventoryItemEntity = InventoryItemEntity(

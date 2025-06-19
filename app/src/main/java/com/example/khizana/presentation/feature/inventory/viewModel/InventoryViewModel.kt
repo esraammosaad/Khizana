@@ -1,6 +1,5 @@
 package com.example.khizana.presentation.feature.inventory.viewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.khizana.domain.model.InventoryItemRequestDomain
@@ -56,7 +55,6 @@ class InventoryViewModel @Inject constructor(
     }
 
     fun getInventoryItem(inventoryItemId: String) {
-
         viewModelScope.launch {
             try {
                 val response = getInventoryItemUseCase.getInventoryItem(inventoryItemId)
