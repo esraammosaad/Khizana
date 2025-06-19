@@ -11,25 +11,32 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.khizana.R
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.presentation.feature.inventory.view.components.ExpandableCard
 import com.example.khizana.presentation.feature.inventory.view.components.InventoryItemInputDialog
 import com.example.khizana.presentation.feature.inventory.viewModel.InventoryViewModel
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
+import com.example.khizana.utilis.WarningDialog
 
 
 @Composable
 fun InventoryScreen(
     inventoryViewModel: InventoryViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    isConnected: MutableState<Boolean>,
+    onConfirmation: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         inventoryViewModel.getProducts()
@@ -38,15 +45,17 @@ fun InventoryScreen(
         }
     }
     val products = inventoryViewModel.products.collectAsStateWithLifecycle().value
-    val showDialog = remember { mutableStateOf(false) }
+    val showDialog = rememberSaveable { mutableStateOf(false) }
     val inventoryItemId = remember { mutableStateOf("") }
     val productQuantity = remember { mutableStateOf("") }
+    val showWarningDialog = rememberSaveable { mutableStateOf(false) }
+
 
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(end = 16.dp, start = 16.dp, top = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -61,9 +70,11 @@ fun InventoryScreen(
                         product = it,
                         showDialog = showDialog,
                         inventoryItemId = inventoryItemId,
-                        productQuantity = productQuantity
+                        productQuantity = productQuantity,
+                        isConnected = isConnected,
+                        showWarningDialog = showWarningDialog
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
@@ -80,6 +91,13 @@ fun InventoryScreen(
             }
         }
     }
+    WarningDialog(
+        onConfirmation = onConfirmation,
+        dialogText = stringResource(R.string.there_is_no_internet_connection_you_can_t_edit_anything_right_now),
+        dialogTitle = stringResource(R.string.warning),
+        confirmText = stringResource(R.string.wifi_settings),
+        showAlert = showWarningDialog
+    )
     InventoryItemInputDialog(
         showDialog = showDialog,
         inventoryItemId = inventoryItemId.value,

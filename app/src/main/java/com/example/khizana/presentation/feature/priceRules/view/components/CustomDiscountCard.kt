@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,7 @@ fun CustomDiscountCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "DISCOUNT",
+                        text = stringResource(R.string.discount),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -113,12 +114,12 @@ fun CustomDiscountCard(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "start at: ${startAt.substring(0, 10)}",
+                            text = stringResource(R.string.start_at, startAt.substring(0, 10)),
                             fontSize = 16.sp,
                             color = Color.White
                         )
                         Text(
-                            text = "end at: ${endAt.substring(0, 10)}",
+                            text = stringResource(R.string.end_at, endAt.substring(0, 10)),
                             fontSize = 16.sp,
                             color = Color.White
                         )

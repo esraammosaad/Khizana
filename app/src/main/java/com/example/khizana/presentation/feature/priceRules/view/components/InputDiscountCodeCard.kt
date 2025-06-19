@@ -17,10 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.khizana.R
 import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.dashedBorder
@@ -56,7 +58,7 @@ fun InputDiscountCodeCard(
                     letterSpacing = 2.sp,
                     color = Color.Black,
                 ),
-                placeholder = { Text("Enter Code", color = Color.Gray) },
+                placeholder = { Text(stringResource(R.string.enter_code), color = Color.Gray) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent,

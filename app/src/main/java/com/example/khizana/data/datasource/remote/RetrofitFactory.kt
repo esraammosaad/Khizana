@@ -2,6 +2,7 @@ package com.example.khizana.data.datasource.remote
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -24,18 +25,18 @@ class RetrofitFactory @Inject constructor(
         Retrofit.Builder()
             .baseUrl(Strings.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient(Strings.SHOPIFY_ACCESS_TOKEN))
+            .client(okHttpClient())
             .build()
     }
 
     val apiService: ApiService by lazy { retrofit.create(ApiService::class.java) }
 
-    private fun okHttpClient(apiKey: String): OkHttpClient {
+    private fun okHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .cache(cache)
-            .addInterceptor(createHeaderInterceptor(apiKey))
-//            .addInterceptor(createOfflineCacheInterceptor())
-//            .addNetworkInterceptor(createCacheInterceptor())
+            .addInterceptor(createHeaderInterceptor())
+            .addInterceptor(createOfflineCacheInterceptor())
+            .addNetworkInterceptor(createCacheInterceptor())
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BASIC
             })
@@ -45,18 +46,49 @@ class RetrofitFactory @Inject constructor(
             .build()
     }
 
-    private fun createHeaderInterceptor(apiKey: String): Interceptor {
+    private fun createHeaderInterceptor(): Interceptor {
         return Interceptor { chain ->
             val request: Request = chain.request()
                 .newBuilder()
                 .header("Content-Type", "application/json")
-                .header("X-Shopify-Access-Token", apiKey)
+                .header("X-Shopify-Access-Token", Strings.SHOPIFY_ACCESS_TOKEN)
                 .build()
             chain.proceed(request)
         }
     }
-}
 
+    private fun createCacheInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            val response = chain.proceed(chain.request())
+            response.newBuilder()
+                .header("Cache-Control", "public, max-age=0")
+                .build()
+        }
+    }
+
+    private fun createOfflineCacheInterceptor(): Interceptor {
+        return Interceptor { chain ->
+            var request = chain.request()
+            if (!isNetworkAvailable(context)) {
+                request = request.newBuilder()
+                    .header(
+                        "Cache-Control",
+                        "public, only-if-cached, max-stale=${60 * 60 * 24 * 7}"
+                    )
+                    .build()
+            }
+            chain.proceed(request)
+        }
+    }
+
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+}
 
 object Strings {
     const val CACHE_SIZE = 10 * 1024 * 1024L

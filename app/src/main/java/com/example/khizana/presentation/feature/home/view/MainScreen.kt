@@ -14,25 +14,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Inventory
+import androidx.compose.material.icons.outlined.LocalMall
+import androidx.compose.material.icons.outlined.Logout
+import androidx.compose.material.icons.outlined.Redeem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,22 +44,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.khizana.R
+import com.example.khizana.presentation.feature.authentication.viewModel.AuthViewModel
 import com.example.khizana.presentation.feature.inventory.view.InventoryScreen
 import com.example.khizana.presentation.feature.priceRules.view.PartialPriceRuleBottomSheet
 import com.example.khizana.presentation.feature.priceRules.view.PriceRules
 import com.example.khizana.presentation.feature.products.view.PartialBottomSheet
 import com.example.khizana.presentation.feature.products.view.ProductsScreen
-import com.example.khizana.presentation.feature.authentication.view.ProfileScreen
 import com.example.khizana.ui.theme.offWhiteColor
-import com.example.khizana.utilis.internet.InternetConnectivityViewModel
-import kotlinx.coroutines.delay
+import com.example.khizana.ui.theme.primaryColor
+import com.example.khizana.utilis.NavigationRoutes
+import com.example.khizana.utilis.WarningDialog
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -63,11 +69,24 @@ import kotlinx.coroutines.delay
 fun MainScreen(
     snackBarHostState: SnackbarHostState,
     navigationController: NavHostController,
+    isConnected: MutableState<Boolean>,
+    onConfirmation: () -> Unit,
+    authViewModel: AuthViewModel,
 ) {
 
     var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
     val showBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val showWarningDialog = rememberSaveable { mutableStateOf(false) }
     val showPriceRuleBottomSheet = rememberSaveable { mutableStateOf(false) }
+    val colors: NavigationBarItemColors = NavigationBarItemDefaults.colors(
+        unselectedIconColor = Color.Gray,
+        selectedIconColor = primaryColor,
+        indicatorColor = Color.Transparent,
+        unselectedTextColor = Color.Gray,
+        disabledIconColor = Color.Gray,
+        disabledTextColor = Color.Gray,
+        selectedTextColor = primaryColor,
+    )
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         containerColor = offWhiteColor,
@@ -86,21 +105,22 @@ fun MainScreen(
                             .fillMaxWidth()
                             .background(offWhiteColor),
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.bg),
-                                contentDescription = "",
-                                modifier = Modifier.size(40.dp),
-                            )
-                            Text(
-                                "Khizana.", style = TextStyle(
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                ),
-                                modifier = Modifier.padding(start = 8.dp, top = 8.dp)
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.bg),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(40.dp),
+                                )
+                                Text(
+                                    stringResource(R.string.app_name), style = TextStyle(
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                                    modifier = Modifier.padding(start = 8.dp, top = 8.dp)
+                                )
+
                         }
                     }
                 },
@@ -108,17 +128,38 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        if (selectedIndex == 1) {
-                            showBottomSheet.value = true
-                        } else if (selectedIndex == 3) {
-                            showPriceRuleBottomSheet.value = true
+                        if (isConnected.value) {
+                            if (selectedIndex == 1) {
+                                showBottomSheet.value = true
+                            } else if (selectedIndex == 3) {
+                                showPriceRuleBottomSheet.value = true
+                            }else if (selectedIndex == 0){
+                                authViewModel.logout()
+                                navigationController.navigate(
+                                    NavigationRoutes.LoginScreen,
+                                    builder = {
+                                        popUpTo(NavigationRoutes.SplashScreen) {
+                                            inclusive = true
+                                        }
+                                    }
+                                )
+
+                            }
+                        } else {
+                            showWarningDialog.value = true
                         }
 
                     }) {
                         if (selectedIndex != 0 && selectedIndex != 2 && selectedIndex != 4) {
                             Icon(
                                 Icons.Default.Add,
-                                contentDescription = "Add",
+                                contentDescription = stringResource(R.string.add),
+                            )
+                        }
+                        if(selectedIndex == 0){
+                            Icon(
+                                imageVector = Icons.Outlined.Logout,
+                                contentDescription = stringResource(R.string.logout),
                             )
                         }
                     }
@@ -130,6 +171,13 @@ fun MainScreen(
                 showBottomSheet = showBottomSheet,
                 product = null,
                 isEditable = false
+            )
+            WarningDialog(
+                onConfirmation = onConfirmation,
+                dialogText = stringResource(R.string.there_is_no_internet_connection_you_can_t_add_anything_right_now),
+                dialogTitle = stringResource(R.string.warning),
+                confirmText = stringResource(R.string.wifi_settings),
+                showAlert = showWarningDialog
             )
             PartialPriceRuleBottomSheet(
                 showBottomSheet = showPriceRuleBottomSheet,
@@ -158,6 +206,8 @@ fun MainScreen(
                     2 -> {
                         return@Column InventoryScreen(
                             snackBarHostState = snackBarHostState,
+                            isConnected = isConnected,
+                            onConfirmation = onConfirmation
                         )
 
                     }
@@ -167,11 +217,6 @@ fun MainScreen(
                             snackBarHostState = snackBarHostState,
                             navigationController = navigationController
                         )
-
-                    }
-
-                    4 -> {
-                        return@Column ProfileScreen(navController = navigationController)
 
                     }
                 }
@@ -186,82 +231,62 @@ fun MainScreen(
 
                 ) {
                 NavigationBarItem(
-                    colors = NavigationBarItemDefaults.colors(
-                        unselectedIconColor = Color.Gray,
-                        selectedIconColor = Color.White,
-                        indicatorColor = Color.White,
-                    ),
-
+                    colors = colors,
                     label = {
-                        if (selectedIndex == 0)
-                            Text("Home")
+                        Text(stringResource(R.string.overview))
                     },
-                    selected = false,
+                    selected = selectedIndex == 0,
                     onClick = {
                         selectedIndex = 0
                     },
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_show_chart_24),
-                            contentDescription = ""
+                        Icon(
+                            imageVector = Icons.Outlined.BarChart,
+                            contentDescription = stringResource(R.string.barchart_icon)
                         )
                     }
                 )
                 NavigationBarItem(
-                    selected = false,
+                    colors = colors,
+                    selected = selectedIndex == 1,
                     label = {
-                        if (selectedIndex == 1)
-                            Text("Products")
+                        Text(stringResource(R.string.products))
                     },
                     onClick = {
                         selectedIndex = 1
                     },
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_production_quantity_limits_24),
-                            contentDescription = ""
+                        Icon(
+                            imageVector = Icons.Outlined.LocalMall,
+                            contentDescription = stringResource(R.string.products_icon)
                         )
                     }
                 )
                 NavigationBarItem(
-                    selected = false,
+                    colors = colors,
+                    selected = selectedIndex == 2,
                     onClick = { selectedIndex = 2 },
                     label = {
-                        if (selectedIndex == 2)
-                            Text("Inventory")
+                        Text(stringResource(R.string.inventory))
                     },
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_inventory_24),
-                            contentDescription = ""
+                        Icon(
+                            imageVector = Icons.Outlined.Inventory,
+                            contentDescription = stringResource(R.string.inventory_icon)
                         )
                     }
                 )
                 NavigationBarItem(
-                    selected = false,
+                    colors = colors,
+                    selected = selectedIndex == 3,
                     onClick = { selectedIndex = 3 },
                     label = {
-                        if (selectedIndex == 3)
-                            Text("Coupons")
+                        Text(stringResource(R.string.coupons))
                     },
                     icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_discount_24),
-                            contentDescription = ""
-                        )
-                    }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = { selectedIndex = 4 },
-                    label = {
-                        if (selectedIndex == 4)
-                            Text("Profile")
-                    },
-                    icon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_person_24),
-                            contentDescription = ""
+                        Icon(
+                            imageVector = Icons.Outlined.Redeem,
+                            contentDescription = stringResource(R.string.discount_icon)
                         )
                     }
                 )

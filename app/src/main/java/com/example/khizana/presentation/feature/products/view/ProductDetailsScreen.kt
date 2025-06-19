@@ -311,7 +311,7 @@ fun ProductDetailsScreen(
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(42.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
                     }
                 }
 

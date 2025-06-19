@@ -30,7 +30,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,7 +56,6 @@ fun LoginScreen(
     navController: NavHostController,
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -67,10 +68,10 @@ fun LoginScreen(
     val passwordError = remember { mutableStateOf(false) }
     val passwordErrorMessage = remember { mutableStateOf("") }
     val hidePassword = remember { mutableStateOf(true) }
-
-
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) }
@@ -103,7 +104,7 @@ fun LoginScreen(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        "Hi Welcome Back Admin!",
+                        stringResource(R.string.hi_welcome_back_admin),
                         style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold),
                         modifier = Modifier.padding(horizontal = 6.dp)
                     )
@@ -132,19 +133,19 @@ fun LoginScreen(
                         ) {
                             CustomTextField(
                                 value = username,
-                                label = "Username",
+                                label = stringResource(R.string.username),
                                 error = usernameError.value,
                                 errorMessage = usernameErrorMessage.value
                             )
                             CustomTextField(
                                 value = email,
-                                label = "Email",
+                                label = stringResource(R.string.email),
                                 error = emailError.value,
                                 errorMessage = emailErrorMessage.value
                             )
                             CustomTextField(
                                 value = password,
-                                label = "Password",
+                                label = stringResource(R.string.password),
                                 error = passwordError.value,
                                 errorMessage = passwordErrorMessage.value,
                                 isPassword = hidePassword,
@@ -171,21 +172,24 @@ fun LoginScreen(
                                 onClick = {
                                     if (email.value.isEmpty()) {
                                         emailError.value = true
-                                        emailErrorMessage.value = "Email is required"
+                                        emailErrorMessage.value =
+                                            context.getString(R.string.email_is_required)
                                     } else {
                                         emailError.value = false
                                         emailErrorMessage.value = ""
                                     }
                                     if (password.value.isEmpty()) {
                                         passwordError.value = true
-                                        passwordErrorMessage.value = "Password is required"
+                                        passwordErrorMessage.value =
+                                            context.getString(R.string.password_is_required)
                                     } else {
                                         passwordError.value = false
                                         passwordErrorMessage.value = ""
                                     }
                                     if (username.value.isEmpty()) {
                                         usernameError.value = true
-                                        usernameErrorMessage.value = "Username is required"
+                                        usernameErrorMessage.value =
+                                            context.getString(R.string.username_is_required)
                                     } else {
                                         usernameError.value = false
                                         usernameErrorMessage.value = ""
@@ -197,7 +201,10 @@ fun LoginScreen(
                                             password = password.value,
                                             onSuccess = {
                                                 coroutineScope.launch {
-                                                    snackBarHostState.showSnackbar("Login successful")
+                                                    snackBarHostState.showSnackbar(
+                                                        context.getString(
+                                                            R.string.login_successful
+                                                        ))
                                                 }
                                                 isLoading.value = false
                                                 navController.navigate(NavigationRoutes.MainScreen) {
@@ -219,7 +226,7 @@ fun LoginScreen(
                                         )
                                     }
                                 },
-                                text = "Log in"
+                                text = stringResource(R.string.log_in)
                             )
                         }
                     }

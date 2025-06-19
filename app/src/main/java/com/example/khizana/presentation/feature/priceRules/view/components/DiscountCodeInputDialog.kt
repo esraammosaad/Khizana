@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ fun DiscountCodeInputDialog(
     val discountCode = remember { mutableStateOf("") }
     val error = remember { mutableStateOf(false) }
     val errorText = remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     LaunchedEffect(code.value) {
         if (code.value.isNotEmpty()) {
@@ -51,7 +53,7 @@ fun DiscountCodeInputDialog(
             },
             title = {
 
-                Text("Add Discount Code!")
+                Text(stringResource(R.string.add_discount_code))
             },
             text = {
                 Column {
@@ -73,7 +75,8 @@ fun DiscountCodeInputDialog(
                     onClick = {
                         if (discountCode.value.isEmpty()) {
                             error.value = true
-                            errorText.value = "Please enter a discount code"
+                            errorText.value =
+                                context.getString(R.string.please_enter_a_discount_code)
                             return@Button
                         }
                         if (discountCode.value.isNotEmpty()) {
@@ -97,7 +100,7 @@ fun DiscountCodeInputDialog(
                     )
                 ) {
                     Text(
-                        "Save"
+                        stringResource(R.string.save)
                     )
                 }
             },

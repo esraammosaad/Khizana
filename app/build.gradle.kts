@@ -47,10 +47,9 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
 
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-
+    implementation ("androidx.compose.material:material-icons-extended:1.6.0")
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
-
     implementation ("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.google.firebase:firebase-auth")
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))

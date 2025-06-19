@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.flowOf
 
 
 class FakeInventoryRepository(
-    private var inventoryItemsList: MutableList<InventoryItem>,
-    private var inventoryLocationList: MutableList<LocationsItem>,
-    private val inventoryLevelsList: MutableList<InventoryLevelsItem>
+    private var inventoryItemsList: MutableList<InventoryItem> = mutableListOf(),
+    private var inventoryLocationList: MutableList<LocationsItem> = mutableListOf() ,
+    private val inventoryLevelsList: MutableList<InventoryLevelsItem> = mutableListOf()
 ) : InventoryRepository {
 
     override suspend fun setInventoryItemQuantity(inventoryLevelRequest: InventoryLevelRequestDomain) {

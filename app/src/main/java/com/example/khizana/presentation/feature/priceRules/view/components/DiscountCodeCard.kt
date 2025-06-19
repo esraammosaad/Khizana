@@ -22,9 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.khizana.R
 import com.example.khizana.ui.theme.lightGreyColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.dashedBorder
@@ -75,7 +77,7 @@ fun DiscountCodeCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Usage Count:",
+                    text = stringResource(R.string.usage_count),
                     fontSize = 16.sp,
                     color = Color.Gray
                 )
@@ -90,7 +92,7 @@ fun DiscountCodeCard(
             Row {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "edit icon",
+                    contentDescription = stringResource(R.string.edit_icon),
                     tint = Color.Gray,
                     modifier = Modifier.clickable {
                         onEditClick.invoke()
@@ -99,7 +101,7 @@ fun DiscountCodeCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "delete icon",
+                    contentDescription = stringResource(R.string.delete_icon),
                     tint = Color.Gray,
                     modifier = Modifier.clickable {
                         onDeleteClick.invoke()
