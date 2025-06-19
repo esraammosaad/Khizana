@@ -93,7 +93,7 @@ fun InventoryItemInputDialog(
                 Column {
                     CustomTextField(
                         value = quantity,
-                        label = stringResource(R.string.quantity),
+                        label = "quantity",
                         error = error.value,
                         errorMessage = errorText.value
                     )

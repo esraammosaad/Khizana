@@ -51,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.khizana.R
+import com.example.khizana.domain.model.ImagesItem
 import com.example.khizana.domain.model.ProductRequestDomain
 import com.example.khizana.presentation.feature.products.view.components.CustomInfoBox
 import com.example.khizana.presentation.feature.products.view.components.CustomProductImage
@@ -81,9 +82,10 @@ fun ProductDetailsScreen(
         }
     }
     val product = productsViewModel.product.collectAsStateWithLifecycle().value
-    val productImagesListSize = remember { mutableIntStateOf(0) }
+    var productImagesList: MutableList<ImagesItem?> = mutableListOf()
+    val size = remember { mutableIntStateOf(productImagesList.size) }
     val pagerState = rememberPagerState(
-        pageCount = { productImagesListSize.intValue },
+        pageCount = { size.intValue },
         initialPage = 0,
     )
     LaunchedEffect(pagerState.currentPage) {
@@ -104,7 +106,9 @@ fun ProductDetailsScreen(
             when (product) {
                 is Response.Success<*> -> {
                     product as Response.Success<ProductRequestDomain>
-                    productImagesListSize.intValue = product.result?.product?.images?.size ?: 0
+                    productImagesList =
+                        product.result?.product?.images?.toMutableList() ?: mutableListOf()
+                    size.intValue = productImagesList.size
                     item {
                         PartialBottomSheet(
                             showBottomSheet = showBottomSheet,
@@ -141,9 +145,7 @@ fun ProductDetailsScreen(
                                         .padding(top = 5.dp)
                                 ) { index ->
                                     CustomProductImage(
-                                        productImage = product.result?.product?.images?.get(
-                                            index
-                                        )?.src ?: ""
+                                        productImage = productImagesList[index]?.src ?: ""
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -335,7 +337,7 @@ fun ProductDetailsScreen(
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(horizontal = 20.dp, vertical = 38.dp),
+                .padding(horizontal = 20.dp, vertical = 42.dp),
             containerColor = Color(0xFF295BBE),
             contentColor = Color.White,
             shape = CircleShape,
