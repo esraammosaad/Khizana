@@ -2,7 +2,6 @@ package com.example.khizana.presentation.feature.home.view
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -34,10 +32,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.khizana.R
 import com.example.khizana.domain.model.CountDomain
+import com.example.khizana.presentation.feature.home.view.component.CustomBox
+import com.example.khizana.presentation.feature.home.view.component.CustomCountBox
 import com.example.khizana.presentation.feature.home.viewModel.HomeViewModel
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.Response
+import com.google.firebase.auth.FirebaseAuth
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -66,12 +67,15 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
     ) {
         item {
             Text(
-                stringResource(R.string.hello_admin),
+                stringResource(
+                    R.string.hello,
+                    FirebaseAuth.getInstance().currentUser?.displayName ?: ""
+                ),
                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                stringResource(R.string.welcome_back),
+                stringResource(R.string.let_s_get_back_to_business),
                 style = TextStyle(fontSize = 18.sp, color = Color.Gray)
             )
             Spacer(modifier = Modifier.height(24.dp))
@@ -123,7 +127,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 CustomBox(
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFf8ede7),
-                    textOne = "Sales Last Week",
+                    textOne = stringResource(R.string.sales_last_week),
                     textTwo = totalOrdersPrice,
                     icon = R.drawable.discount
                 )
@@ -131,7 +135,7 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 CustomBox(
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFece9f2),
-                    textOne = "Revenue Last Week",
+                    textOne = stringResource(R.string.revenue_last_week),
                     textTwo = totalRevenue,
                     icon = R.drawable.chart
                 )
@@ -141,127 +145,27 @@ fun HomeScreen(homeViewModel: HomeViewModel = hiltViewModel()) {
                 CustomCountBox(
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFece9f2),
-                    textOne = "Products Count",
+                    textOne = stringResource(R.string.products_count),
                     textTwo = productsCount,
                     icon = R.drawable.instock,
-                    text = "Products"
+                    text = stringResource(R.string.product)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 CustomCountBox(
                     modifier = Modifier.weight(1f),
                     color = Color(0xFFf8ede7),
-                    textOne = "Inventory Locations Count",
+                    textOne = stringResource(R.string.inventory_locations_count),
                     textTwo = inventoryLocationsCount,
                     icon = R.drawable.location,
-                    text = "Locations"
+                    text = stringResource(R.string.location)
                 )
             }
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 }
 
-@Composable
-private fun CustomBox(
-    modifier: Modifier = Modifier,
-    color: Color,
-    textOne: String,
-    textTwo: Response,
-    icon: Int
-) {
-    Box(
-        modifier = modifier
-            .background(color, shape = RoundedCornerShape(12))
-            .height(120.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start,
 
-            ) {
-            Image(painter = painterResource(icon), contentDescription = "")
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                textOne,
-                style = TextStyle(fontSize = 16.sp, color = Color.Gray)
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            when (textTwo) {
-                is Response.Success<*> -> {
-                    textTwo as Response.Success<Double>
-                    Text(
-                        String.format("%.2f", textTwo.result) + " EGP",
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    )
-                }
 
-                is Response.Failure -> {
-                    Text(textTwo.exception)
-                }
 
-                is Response.Loading -> {
-                    CircularProgressIndicator(
-                        color = primaryColor,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun CustomCountBox(
-    modifier: Modifier = Modifier,
-    color: Color,
-    text: String,
-    textOne: String,
-    textTwo: Response,
-    icon: Int
-) {
-    Box(
-        modifier = modifier
-            .background(color, shape = RoundedCornerShape(12))
-            .height(120.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start,
-
-            ) {
-            Image(painter = painterResource(icon), contentDescription = "")
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                textOne,
-                style = TextStyle(fontSize = 16.sp, color = Color.Gray)
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-            when (textTwo) {
-                is Response.Success<*> -> {
-                    textTwo as Response.Success<Int>
-                    Text(
-                        "${textTwo.result.toString()} $text",
-                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                    )
-                }
-
-                is Response.Failure -> {
-                    Text(textTwo.exception)
-                }
-
-                is Response.Loading -> {
-                    CircularProgressIndicator(
-                        color = primaryColor,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
 

@@ -32,7 +32,7 @@ fun PartialPriceRuleBottomSheet(
     isEditable: Boolean
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false,
+        skipPartiallyExpanded = true,
     )
     Column(
         modifier = Modifier
@@ -50,8 +50,8 @@ fun PartialPriceRuleBottomSheet(
             ) {
                 AddPriceRuleScreen(
                     priceRuleViewModel = priceRuleViewModel,
-                    showBottomSheet = showBottomSheet,
                     priceRule = priceRule,
+                    showBottomSheet = showBottomSheet,
                     isEditable = isEditable,
                 )
             }

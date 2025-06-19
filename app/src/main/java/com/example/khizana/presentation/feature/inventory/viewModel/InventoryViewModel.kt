@@ -55,7 +55,6 @@ class InventoryViewModel @Inject constructor(
     }
 
     fun getInventoryItem(inventoryItemId: String) {
-
         viewModelScope.launch {
             try {
                 val response = getInventoryItemUseCase.getInventoryItem(inventoryItemId)
@@ -80,11 +79,11 @@ class InventoryViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                setInventoryItemQuantityUseCase.setInventoryItemQuantity(inventoryLevelRequestDomain)
                 updateInventoryItemUseCase.updateInventoryItem(
                     inventoryItemRequestDomain,
                     inventoryLevelRequestDomain.inventory_item_id
                 )
+                setInventoryItemQuantityUseCase.setInventoryItemQuantity(inventoryLevelRequestDomain)
                 delay(5000)
                 getProducts()
                 _message.emit("Inventory item updated successfully")

@@ -66,33 +66,33 @@ fun PriceRules(
             is Response.Success<*> -> {
                 priceRules as Response.Success<PriceRuleDomain>
                 items(
-                    priceRules.result?.price_rules?.size ?: 0,
-                    key = { priceRules.result?.price_rules?.get(it)?.id ?: "" }) {
+                    priceRules.result?.priceRules?.size ?: 0,
+                    key = { priceRules.result?.priceRules?.get(it)?.id ?: "" }) {
                     Box(
                         modifier = Modifier
                             .animateItem()
                             .clickable {
                                 navigationController.navigate(
                                     NavigationRoutes.DiscountCodesScreen(
-                                        priceRules.result?.price_rules?.get(it)?.id ?: ""
+                                        priceRules.result?.priceRules?.get(it)?.id ?: ""
                                     )
                                 )
                             }
                     ) {
                         Box(contentAlignment = Alignment.TopEnd) {
                             DiscountCard(
-                                title = priceRules.result?.price_rules?.get(it)?.title ?: "",
-                                discount = priceRules.result?.price_rules?.get(it)?.value.toString() + if (priceRules.result?.price_rules?.get(
+                                title = priceRules.result?.priceRules?.get(it)?.title ?: "",
+                                discount = priceRules.result?.priceRules?.get(it)?.value.toString() + if (priceRules.result?.priceRules?.get(
                                         it
-                                    )?.value_type == "percentage"
+                                    )?.valueType == "percentage"
                                 ) "%" else "EGP",
-                                barcode = priceRules.result?.price_rules?.get(it)?.id ?: "",
-                                startAt = priceRules.result?.price_rules?.get(it)?.starts_at ?: "",
-                                endAt = priceRules.result?.price_rules?.get(it)?.ends_at ?: "",
+                                barcode = priceRules.result?.priceRules?.get(it)?.id ?: "",
+                                startAt = priceRules.result?.priceRules?.get(it)?.startsAt ?: "",
+                                endAt = priceRules.result?.priceRules?.get(it)?.endsAt ?: "",
                                 modifier = Modifier.animateItem(),
                                 onDeleteIconClicked = {
                                     selectedPriceRule.value =
-                                        priceRules.result?.price_rules?.get(it)?.id ?: ""
+                                        priceRules.result?.priceRules?.get(it)?.id ?: ""
                                     showDialog.value = true
                                 }
                             )
@@ -102,7 +102,7 @@ fun PriceRules(
                                 modifier = Modifier
                                     .padding(end = 32.dp, top = 16.dp)
                                     .clickable {
-                                        priceRule.value = priceRules.result?.price_rules?.get(it)
+                                        priceRule.value = priceRules.result?.priceRules?.get(it)
                                         showBottomSheet.value = true
                                     },
                                 fontSize = 16.sp

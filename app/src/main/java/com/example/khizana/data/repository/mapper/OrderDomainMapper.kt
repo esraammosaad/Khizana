@@ -21,20 +21,20 @@ import com.example.khizana.domain.model.TotalPriceSet
 
 fun Order.toDomain(): OrderDomain {
     return OrderDomain(
-        orders = orders?.map { it.toDomain() }
+        orders = orders?.map { it.toDomain() } ?: listOf()
     )
 }
 
 fun OrdersItemEntity.toDomain(): OrdersItem {
     return OrdersItem(
-        total_discounts_set = total_discounts_set?.toDomain(),
-        current_subtotal_price_set = current_subtotal_price_set?.toDomain(),
-        current_subtotal_price = current_subtotal_price,
-        total_discounts = total_discounts,
+        total_discounts_set = totalDiscountsSet?.toDomain(),
+        current_subtotal_price_set = currentSubtotalPriceSet?.toDomain(),
+        current_subtotal_price = currentSubtotalPrice,
+        total_discounts = totalDiscounts,
         currency = currency,
-        subtotal_price = subtotal_price,
-        total_price = total_price,
-        current_total_price_set = current_total_price_set?.toDomain(),
+        subtotal_price = subtotalPrice,
+        total_price = totalPrice,
+        current_total_price_set = currentTotalPriceSet?.toDomain(),
     )
 }
 
@@ -42,52 +42,52 @@ fun OrdersItemEntity.toDomain(): OrdersItem {
 
 fun CurrentTotalDiscountsSetEntity.toDomain(): CurrentTotalDiscountsSet {
     return CurrentTotalDiscountsSet(
-        shop_money = shop_money?.toDomain(),
-        presentment_money = presentment_money?.toDomain()
+        shop_money = shopMoney?.toDomain(),
+        presentment_money = presentmentMoney?.toDomain()
     )
 }
 
 fun CurrentTotalPriceSetEntity.toDomain(): CurrentTotalPriceSet {
     return CurrentTotalPriceSet(
-        shop_money = shop_money?.toDomain(),
-        presentment_money = presentment_money?.toDomain()
+        shop_money = shopMoney?.toDomain(),
+        presentment_money = presentmentMoney?.toDomain()
     )
 }
 
 fun ShopMoneyEntity.toDomain(): ShopMoneySet {
     return ShopMoneySet(
         amount = amount,
-        currency_code = currency_code
+        currency_code = currencyCode
     )
 }
 
 fun PresentmentMoneyEntity.toDomain(): PresentmentMoneySet {
     return PresentmentMoneySet(
         amount = amount,
-        currency_code = currency_code
+        currency_code = currencyCode
     )
 }
 
 fun TotalDiscountsSetEntity.toDomain(): TotalDiscountsSet {
     return TotalDiscountsSet(
-        shop_money = shop_money?.toDomain(),
-        presentment_money = presentment_money?.toDomain()
+        shop_money = shopMoney?.toDomain(),
+        presentment_money = presentmentMoney?.toDomain()
     )
 }
 
 
 fun CurrentSubtotalPriceSetEntity.toDomain(): CurrentSubtotalPriceSet {
     return CurrentSubtotalPriceSet(
-        shop_money = shop_money?.toDomain(),
-        presentment_money = presentment_money?.toDomain()
+        shop_money = shopMoney?.toDomain(),
+        presentment_money = presentmentMoney?.toDomain()
     )
 }
 
 
 fun TotalPriceSetEntity.toDomain(): TotalPriceSet {
     return TotalPriceSet(
-        shop_money = shop_money?.toDomain(),
-        presentment_money = presentment_money?.toDomain()
+        shop_money = shopMoney?.toDomain(),
+        presentment_money = presentmentMoney?.toDomain()
     )
 }
 

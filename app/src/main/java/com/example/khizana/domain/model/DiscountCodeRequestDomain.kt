@@ -1,10 +1,10 @@
 package com.example.khizana.domain.model
 
 data class DiscountCodeRequestDomain(
-    val discount_code: DiscountCode
+    val discount_code: DiscountCodeDomainRequest
 )
 
-data class DiscountCode(
+data class DiscountCodeDomainRequest(
     val code: String
 )
 

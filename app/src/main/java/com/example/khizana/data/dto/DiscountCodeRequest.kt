@@ -1,7 +1,10 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class DiscountCodeRequest(
-    val discount_code: DiscountCodeEntity
+    @SerializedName("discount_code")
+    val discountCode: DiscountCodeEntity
 )
 
 data class DiscountCodeEntity(

@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -28,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -93,6 +95,8 @@ fun AddProductScreen(
     val productTags = remember { mutableStateOf("") }
     val productTagsError = remember { mutableStateOf(false) }
     val productTagsErrorMessage = remember { mutableStateOf("") }
+    val isUploading = remember { mutableStateOf(false) }
+
 
 
     LaunchedEffect(Unit) {
@@ -120,6 +124,7 @@ fun AddProductScreen(
                 showDialog = showConfirmationDialog.value,
                 text = stringResource(R.string.are_you_sure_you_want_to_save_this_product),
                 onConfirm = {
+                    isUploading.value = true
                     if (!error.value) {
                         productsViewModel.uploadProduct(
                             imageUris.value,
@@ -134,6 +139,7 @@ fun AddProductScreen(
                             showBottomSheet,
                             isEditable,
                             productId,
+                            isUploading
                         )
                     }
                 },
@@ -152,7 +158,6 @@ fun AddProductScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Column(Modifier.fillMaxSize()) {
-                //CustomAsyncImage(imageUri.value ?: "")
                 Spacer(modifier = Modifier.height(16.dp))
                 CustomImagesRow(imageUris, imageUri)
                 Spacer(modifier = Modifier.height(20.dp))
@@ -261,31 +266,59 @@ fun AddProductScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                CustomButton(
+               if(isUploading.value) Row(
+                   Modifier.fillMaxWidth(),
+                   horizontalArrangement = Arrangement.Center,
+                   verticalAlignment = Alignment.CenterVertically
+
+               ) {
+                   CircularProgressIndicator(
+                       color = primaryColor
+                   )
+
+               } else CustomButton(
                     onClick = {
                         if (productName.value.isEmpty()) {
                             titleError.value = true
                             titleErrorMessage.value = "Please fill product name"
+                        }else{
+                            titleError.value = false
+                            titleErrorMessage.value = ""
                         }
                         if (productDescription.value.isEmpty()) {
                             descriptionError.value = true
                             descriptionErrorMessage.value = "Please fill product description"
+                        }else{
+                            descriptionError.value = false
+                            descriptionErrorMessage.value = ""
                         }
                         if (productVendor.value.isEmpty()) {
                             vendorError.value = true
                             vendorErrorMessage.value = "Please fill product vendor"
+                        }else{
+                            vendorError.value = false
+                            vendorErrorMessage.value = ""
                         }
                         if (productType.value.isEmpty()) {
                             typeError.value = true
                             typeErrorMessage.value = "Please fill product type"
+                        }else{
+                            typeError.value = false
+                            typeErrorMessage.value = ""
                         }
                         if (productTags.value.isEmpty()) {
                             productTagsError.value = true
                             productTagsErrorMessage.value = "Please fill product tags"
+                        }else{
+                            productTagsError.value = false
+                            productTagsErrorMessage.value = ""
                         }
                         if (productStatus.value.isEmpty()) {
                             statusError.value = true
                             statusErrorMessage.value = "Please fill product status"
+                        }else{
+                            statusError.value = false
+                            statusErrorMessage.value = ""
                         }
                         if (imageUris.value.isNullOrEmpty()) {
                             error.value = true
@@ -296,6 +329,9 @@ fun AddProductScreen(
                         } else if (optionList.value.isEmpty()) {
                             error.value = true
                             errorMessage.value = "Please add at least one option"
+                        }else{
+                            error.value = false
+                            errorMessage.value = ""
                         }
                         if (!error.value && !titleError.value && !descriptionError.value && !productTagsError.value && !statusError.value && !vendorError.value && !typeError.value) {
                             error.value = false

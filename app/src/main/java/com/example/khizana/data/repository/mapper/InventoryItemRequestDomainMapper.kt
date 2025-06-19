@@ -7,7 +7,7 @@ import com.example.khizana.domain.model.InventoryItem
 
 fun InventoryItemRequest.toDomain(): InventoryItemRequestDomain {
     return InventoryItemRequestDomain(
-        inventory_item = inventory_item.toDomain()
+        inventoryItem = inventoryItem.toDomain()
     )
 }
 
@@ -20,7 +20,7 @@ fun InventoryItemEntity.toDomain(): InventoryItem {
 
 fun InventoryItemRequestDomain.toDto(): InventoryItemRequest {
     return InventoryItemRequest(
-        inventory_item = inventory_item.toDto()
+        inventoryItem = inventoryItem.toDto()
     )
 }
 

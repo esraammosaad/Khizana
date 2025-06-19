@@ -2,7 +2,7 @@ package com.example.khizana.presentation.feature.products.viewModel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.FakeProductRepository
+import com.example.khizana.data.repository.FakeProductRepository
 import com.example.ProductTestFactory
 import com.example.khizana.domain.model.ProductDomain
 import com.example.khizana.domain.model.ProductRequestDomain
@@ -51,7 +51,7 @@ class ProductsViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
-        productRepository = FakeProductRepository(productsList)
+        productRepository = FakeProductRepository(productsList = productsList)
         getProductsUseCase = GetProductsUseCase(productRepository)
         createProductUseCase = CreateProductUseCase(productRepository)
         deleteProductUseCase = DeleteProductUseCase(productRepository)
@@ -134,7 +134,7 @@ class ProductsViewModelTest {
         }
 
         //When
-        productsViewModel.deleteProduct("prod_123")
+        productsViewModel.deleteProduct("sample prod id")
         advanceUntilIdle()
 
         //Then
@@ -156,14 +156,14 @@ class ProductsViewModelTest {
         }
 
         //When
-        productsViewModel.getProductById("prod_123")
+        productsViewModel.getProductById("sample prod id")
         advanceUntilIdle()
 
         //Then
         assertThat(values.first(), `is`(Response.Loading))
         assertThat(values.last(), `is`(instanceOf(Response.Success::class.java)))
         val result = values.last() as Response.Success<ProductRequestDomain>
-        assertThat(result.result?.product?.id, `is`("prod_123"))
+        assertThat(result.result?.product?.id, `is`("sample prod id"))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -179,7 +179,7 @@ class ProductsViewModelTest {
 
         //When
         productsViewModel.editProduct(
-            "prod_123", ProductRequestDomain(
+            "sample prod id", ProductRequestDomain(
                 product = ProductTestFactory.createProductItem(
                     title = "new title",
                 )

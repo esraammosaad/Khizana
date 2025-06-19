@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ fun OnBoardingScreen(navController: NavController, authViewModel: AuthViewModel 
                     modifier = Modifier.size(40.dp),
                 )
                 Text(
-                    "Khizana.", style = TextStyle(
+                    stringResource(R.string.app_name), style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                     ),
@@ -57,7 +58,7 @@ fun OnBoardingScreen(navController: NavController, authViewModel: AuthViewModel 
             Spacer(modifier = Modifier.height(16.dp))
             Column(Modifier.padding(horizontal = 6.dp)) {
                 Text(
-                    "Welcome to Khizana Admin!",
+                    stringResource(R.string.welcome_to_khizana_admin),
                     style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -70,21 +71,24 @@ fun OnBoardingScreen(navController: NavController, authViewModel: AuthViewModel 
                     .fillMaxWidth(),
             )
             Text(
-                "Manage your store with ease. Add products, track orders, and stay in control – all in one place.",
+                stringResource(R.string.manage_your_store_with_ease_add_products_track_orders_and_stay_in_control_all_in_one_place),
                 style = TextStyle(fontSize = 18.sp, color = Color.Gray)
             )
             Spacer(modifier = Modifier.height(28.dp))
             HorizontalDivider(color = Color.Gray, thickness = 1.dp)
             Spacer(modifier = Modifier.height(28.dp))
             Text(
-                "Let's Get Started!",
+                stringResource(R.string.let_s_get_started),
                 style = TextStyle(fontSize = 32.sp, fontWeight = FontWeight.Bold)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomButton(onClick = {
-                authViewModel.saveGetStartedState()
-                navController.navigate(NavigationRoutes.LoginScreen)
-            }, text = "Log in")
+            CustomButton(
+                onClick = {
+                    authViewModel.saveGetStartedState()
+                    navController.navigate(NavigationRoutes.LoginScreen)
+                },
+                text = stringResource(R.string.get_started),
+            )
         }
     }
 }

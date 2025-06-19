@@ -1,11 +1,14 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class InventoryItemRequest(
-    val inventory_item: InventoryItemEntity
+    @SerializedName("inventory_item")
+    val inventoryItem: InventoryItemEntity
 )
 
 data class InventoryItemEntity(
-    val cost: String?,
-    val tracked: Boolean
+    var cost: String?,
+    var tracked: Boolean
 )
 

@@ -28,6 +28,7 @@ import javax.inject.Singleton
 abstract class BindsModule {
 
     @Binds
+    @Singleton
     abstract fun bindRemoteDataSource(remoteDataSourceImpl: RemoteDataSourceImpl): RemoteDataSource
 
     @Binds

@@ -1,38 +1,61 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 
 data class PriceRule(
-    val price_rules: List<Price_rulesItemEntity>
+    @SerializedName("price_rules")
+    val priceRules: List<PriceRulesItemEntity>
 )
 
-data class Price_rulesItemEntity(
-    val value_type: String,
-    val once_per_customer: Boolean,
-    val starts_at: String,
-    val ends_at: String,
-    val created_at: String,
-    val prerequisite_customer_ids: List<String>,
-    val title: String,
-    val entitled_collection_ids: List<String>,
-    val updated_at: String,
-    val entitled_country_ids: List<String>,
-    val entitled_variant_ids: List<String>,
+data class PriceRulesItemEntity(
+    @SerializedName("value_type")
+    val valueType: String,
+    @SerializedName("once_per_customer")
+    val oncePerCustomer: Boolean,
+    @SerializedName("starts_at")
+    val startsAt: String,
+    @SerializedName("ends_at")
+    val endsAt: String,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("prerequisite_customer_ids")
+    val prerequisiteCustomerIds: List<String>,
+    var title: String,
+    @SerializedName("entitled_collection_ids")
+    val entitledCollectionIds: List<String>,
+    @SerializedName("updated_at")
+    val updatedAt: String,
+    @SerializedName("entitled_country_ids")
+    val entitledCountryIds: List<String>,
+    @SerializedName("entitled_variant_ids")
+    val entitledVariantIds: List<String>,
     val id: String,
-    val value: String,
-    val allocation_method: String,
-    val allocation_limit: Int,
-    val target_type: String,
-    val entitled_product_ids: List<String>,
-    val customer_segment_prerequisite_ids: List<String>,
-    val customer_selection: String,
-    val target_selection: String,
-    val prerequisite_to_entitlement_quantity_ratio: PrerequisiteToEntitlementQuantityRatio
+    var value: String,
+    @SerializedName("allocation_method")
+    val allocationMethod: String,
+    @SerializedName("allocation_limit")
+    val allocationLimit: Int,
+    @SerializedName("target_type")
+    val targetType: String,
+    @SerializedName("entitled_product_ids")
+    val entitledProductIds: List<String>,
+    @SerializedName("customer_segment_prerequisite_ids")
+    val customerSegmentPrerequisiteIds: List<String>,
+    @SerializedName("customer_selection")
+    val customerSelection: String,
+    @SerializedName("target_selection")
+    val targetSelection: String,
+    @SerializedName("prerequisite_to_entitlement_quantity_ratio")
+    val prerequisiteToEntitlementQuantityRatio: PrerequisiteToEntitlementQuantityRatio
 )
 
 
 data class PrerequisiteToEntitlementQuantityRatio(
-    val prerequisite_quantity: Int,
-    val entitled_quantity: Int
+    @SerializedName("prerequisite_quantity")
+    val prerequisiteQuantity: Int,
+    @SerializedName("entitled_quantity")
+    val entitledQuantity: Int
 )
 
 

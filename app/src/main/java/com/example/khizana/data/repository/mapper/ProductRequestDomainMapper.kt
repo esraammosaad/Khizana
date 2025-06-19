@@ -29,17 +29,17 @@ fun ProductRequestDomain.toDto(): ProductRequest {
 fun ProductsItem.toDto(): ProductsItemEntity {
     return ProductsItemEntity(
         image = image?.toDto(),
-        body_html = body_html,
+        bodyHtml = body_html,
         images = images?.map { it?.toDto() },
-        created_at = created_at,
+        createdAt = created_at,
         variants = variants?.map { it?.toDto() },
         title = title,
-        product_type = product_type,
-        updated_at = updated_at,
+        productType = product_type,
+        updatedAt = updated_at,
         vendor = vendor,
         options = options?.map { it.toDto() },
         id = id,
-        published_at = published_at,
+        publishedAt = published_at,
         status = status,
         tags = tags
     )
@@ -49,7 +49,7 @@ fun Image.toDto(): ImageEntity {
     return ImageEntity(
         src = src,
         alt = alt,
-        variant_ids = variant_ids,
+        variantIds = variant_ids,
     )
 }
 
@@ -57,7 +57,7 @@ fun ImagesItem.toDto(): ImagesItemEntity {
     return ImagesItemEntity(
         src = src,
         alt = alt,
-        variant_ids = variant_ids,
+        variantIds = variant_ids,
     )
 }
 
@@ -68,8 +68,8 @@ fun VariantsItem.toDto(): VariantsItemEntity {
         option3 = option3,
         option1 = option1,
         option2 = option2,
-        inventory_quantity = inventory_quantity,
-        inventory_item_id = inventory_item_id
+        inventoryQuantity = inventory_quantity,
+        inventoryItemId = inventory_item_id
     )
 }
 
