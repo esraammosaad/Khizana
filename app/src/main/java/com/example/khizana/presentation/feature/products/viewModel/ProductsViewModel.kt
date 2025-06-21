@@ -20,6 +20,7 @@ import com.example.khizana.domain.usecase.GetProductByIdUseCase
 import com.example.khizana.domain.usecase.GetProductsUseCase
 import com.example.khizana.utilis.Response
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
 
 @HiltViewModel
@@ -198,7 +200,8 @@ class ProductsViewModel @Inject constructor(
         optionList: List<OptionsItem>,
         showBottomSheet: MutableState<Boolean>,
         isEditable: Boolean,
-        productId: String? = null
+        productId: String? = null,
+        isUploading: MutableState<Boolean>
     ) {
         val urlList: MutableList<String> = mutableListOf()
         val uriList: MutableList<String> = mutableListOf()
@@ -273,17 +276,22 @@ class ProductsViewModel @Inject constructor(
                                     product = productItem
                                 )
                             )
+                            viewModelScope.launch {
+                                delay(1500)
+                                showBottomSheet.value = false
+                                isUploading.value = false
+                            }
                         } else {
                             createProduct(
                                 productRequestDomain = ProductRequestDomain(
                                     product = productItem
                                 )
                             )
+                            showBottomSheet.value = false
+                            isUploading.value = false
                         }
-                        showBottomSheet.value = false
                     }
                 }
-
                 override fun onError(requestId: String?, error: ErrorInfo?) {
                     viewModelScope.launch {
                         _message.emit(error?.description.toString())
@@ -331,7 +339,11 @@ class ProductsViewModel @Inject constructor(
                     product = productItem
                 )
             )
-            showBottomSheet.value = false
+            viewModelScope.launch {
+                delay(1500)
+                showBottomSheet.value = false
+                isUploading.value = false
+            }
         }
     }
 }

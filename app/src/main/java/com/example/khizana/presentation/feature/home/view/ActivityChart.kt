@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,8 +19,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.khizana.ui.theme.lighterPrimaryColor
-import com.example.khizana.ui.theme.primaryColor
-import com.example.khizana.ui.theme.secondaryColor
 
 @Composable
 fun ActivityChart(
@@ -29,7 +26,6 @@ fun ActivityChart(
     modifier: Modifier = Modifier
 ) {
     val maxValue = data.maxOrNull()?.takeIf { it > 0 } ?: 1
-    val spacing = 12.dp
     val chartHeight = 105.dp
 
     Row(
@@ -49,7 +45,7 @@ fun ActivityChart(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.8f) // Use 80% of the available width for the bar
+                        .fillMaxWidth(0.8f)
                         .height(if (value == 0) 8.dp else chartHeight * heightRatio)
                         .background(lighterPrimaryColor, shape = RoundedCornerShape(4.dp))
                 )

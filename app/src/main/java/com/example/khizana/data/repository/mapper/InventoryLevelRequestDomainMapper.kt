@@ -5,20 +5,20 @@ import com.example.khizana.domain.model.InventoryLevelRequestDomain
 
 fun InventoryLevelRequest.toDomain(): InventoryLevelRequestDomain {
     return InventoryLevelRequestDomain(
-        inventory_item_id = inventory_item_id,
-        available_adjustment = available_adjustment,
+        inventory_item_id = inventoryItemId,
+        available_adjustment = availableAdjustment,
         available = available,
-        location_id = location_id
+        location_id = locationId
     )
 }
 
 
 fun InventoryLevelRequestDomain.toDto(): InventoryLevelRequest {
     return InventoryLevelRequest(
-        inventory_item_id = inventory_item_id,
-        available_adjustment = available_adjustment,
+        inventoryItemId = inventory_item_id,
+        availableAdjustment = available_adjustment,
         available = available,
-        location_id = location_id
+        locationId = location_id
     )
 }
 

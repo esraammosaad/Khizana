@@ -1,9 +1,14 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class InventoryLevelRequest(
-    val inventory_item_id: String,
-    val available_adjustment: Int,
+    @SerializedName("inventory_item_id")
+    var inventoryItemId: String,
+    @SerializedName("available_adjustment")
+    val availableAdjustment: Int,
     val available: Int,
-    val location_id: String
+    @SerializedName("location_id")
+    val locationId: String
 )
 

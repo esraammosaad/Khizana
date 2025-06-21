@@ -9,9 +9,9 @@ import javax.inject.Singleton
 @Singleton
 class LocalStorageDataSource @Inject constructor(@ApplicationContext context: Context) {
 
-    private var prefs =
+    var prefs =
         context.getSharedPreferences(Strings.SHARED_PREF_NAME, Context.MODE_PRIVATE)
-    private var editor = prefs.edit()
+    var editor = prefs.edit()
 
     fun saveGetStartedStateState() {
         editor.putBoolean(Strings.SEEN_GET_STARTED, true)

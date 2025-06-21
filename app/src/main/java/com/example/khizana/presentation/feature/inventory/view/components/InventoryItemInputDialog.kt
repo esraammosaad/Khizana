@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -57,6 +58,7 @@ fun InventoryItemInputDialog(
     val errorTrack = remember { mutableStateOf(false) }
     val errorTrackText = remember { mutableStateOf("") }
     val inventoryItem = inventoryViewModel.inventoryItem.collectAsStateWithLifecycle().value
+    val context = LocalContext.current
     if (inventoryItemId.isNotEmpty()) {
         LaunchedEffect(inventoryItemId) {
             inventoryViewModel.getInventoryItem(inventoryItemId)
@@ -73,8 +75,8 @@ fun InventoryItemInputDialog(
 
             is Response.Success<*> -> {
                 inventoryItem as Response.Success<InventoryItemRequestDomain>
-                cost.value = inventoryItem.result?.inventory_item?.cost ?: ""
-                isTracked.value = inventoryItem.result?.inventory_item?.tracked ?: false
+                cost.value = inventoryItem.result?.inventoryItem?.cost ?: ""
+                isTracked.value = inventoryItem.result?.inventoryItem?.tracked ?: false
             }
         }
     }
@@ -85,20 +87,20 @@ fun InventoryItemInputDialog(
             containerColor = Color.White,
             onDismissRequest = { showDialog.value = false },
             title = {
-                Text("Edit Inventory Item")
+                Text(stringResource(R.string.edit_inventory_item))
             },
             text = {
                 Column {
                     CustomTextField(
                         value = quantity,
-                        label = "Quantity",
+                        label = "quantity",
                         error = error.value,
                         errorMessage = errorText.value
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     CustomTextField(
                         value = cost,
-                        label = "Cost",
+                        label = stringResource(R.string.cost),
                         error = errorCost.value,
                         errorMessage = errorCostText.value
                     )
@@ -116,7 +118,7 @@ fun InventoryItemInputDialog(
                             onCheckedChange = { isTracked.value = it },
                         )
                         Spacer(modifier = Modifier.width(3.dp))
-                        Text("Tracked")
+                        Text(stringResource(R.string.tracked))
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     if (errorTrack.value)
@@ -135,13 +137,14 @@ fun InventoryItemInputDialog(
 
                         if (cost.value.isEmpty() || cost.value == "null") {
                             errorCost.value = true
-                            errorCostText.value = "Please Enter Cost"
+                            errorCostText.value = context.getString(R.string.please_enter_cost)
                             return@Button
                         } else {
                             val newCost = cost.value.toDoubleOrNull()
                             if (newCost == null) {
                                 errorCost.value = true
-                                errorCostText.value = "Please Enter Valid Cost"
+                                errorCostText.value =
+                                    context.getString(R.string.please_enter_valid_cost)
                                 return@Button
                             } else {
                                 errorCost.value = false
@@ -153,18 +156,19 @@ fun InventoryItemInputDialog(
                             errorTrackText.value = ""
                         } else {
                             errorTrack.value = true
-                            errorTrackText.value = "Please Check Tracked"
+                            errorTrackText.value = context.getString(R.string.please_check_tracked)
                             return@Button
                         }
                         if (quantity.value.isEmpty()) {
                             error.value = true
-                            errorText.value = "Please Add New Quantity"
+                            errorText.value = context.getString(R.string.please_add_new_quantity)
                             return@Button
                         } else {
                             val newQuantity = quantity.value.toIntOrNull()
                             if (newQuantity == null) {
                                 error.value = true
-                                errorText.value = "Please Enter Valid Quantity"
+                                errorText.value =
+                                    context.getString(R.string.please_enter_valid_quantity)
                                 return@Button
                             } else {
                                 error.value = false
@@ -179,7 +183,7 @@ fun InventoryItemInputDialog(
                                 location_id = "70409781361"
                             )
                             val inventoryItem = InventoryItemRequestDomain(
-                                inventory_item = InventoryItem(
+                                inventoryItem = InventoryItem(
                                     cost = cost.value,
                                     tracked = isTracked.value
                                 )

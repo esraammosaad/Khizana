@@ -15,9 +15,9 @@ fun LocationsItemEntity.toDomain(): LocationsItem {
     return LocationsItem(
         country = country,
         active = active,
-        country_code = country_code,
+        country_code = countryCode,
         name = name,
-        country_name = country_name,
+        country_name = countryName,
         id = id
     )
 }

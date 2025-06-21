@@ -66,12 +66,14 @@ class PriceRuleViewModel @Inject constructor(
 
     fun createPriceRule(priceRule: PriceRuleRequestDomain) {
         viewModelScope.launch {
+            Log.i("TAG", "createPriceRule: $priceRule========")
             try {
                 createPriceRuleUseCase.createPriceRule(priceRule)
                 getAllPriceRules()
                 _message.emit("Price rule created successfully")
             } catch (e: Exception) {
                 _message.emit(e.message.toString())
+                Log.i("TAG", "createPriceRule: ${e.message}")
             }
         }
     }

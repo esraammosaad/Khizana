@@ -1,15 +1,15 @@
 package com.example.khizana.domain.model
 
 data class DiscountCodeDomain(
-    val discount_codes: List<Discount_codesItem>
+    val discountCodes: List<DiscountCodesItem>
 )
 
-data class Discount_codesItem(
-    val usage_count: Int,
-    val code: String,
-    val updated_at: String,
-    val price_rule_id: String,
-    val created_at: String,
+data class DiscountCodesItem(
+    val usageCount: Int,
+    var code: String,
+    val updatedAt: String,
+    val priceRuleId: String,
+    val createdAt: String,
     val id: String
 )
 

@@ -1,6 +1,5 @@
 package com.example.khizana.presentation.feature.inventory.view.components
 
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -29,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,6 +48,7 @@ import com.example.khizana.presentation.feature.inventory.viewModel.InventoryVie
 import com.example.khizana.ui.theme.offWhiteColor
 import com.example.khizana.ui.theme.primaryColor
 import com.example.khizana.utilis.CustomDivider
+import com.example.khizana.utilis.WarningDialog
 
 @Composable
 fun ExpandableCard(
@@ -57,12 +56,15 @@ fun ExpandableCard(
     showDialog: MutableState<Boolean>,
     inventoryItemId: MutableState<String>,
     productQuantity: MutableState<String>,
-    inventoryViewModel: InventoryViewModel = hiltViewModel()
+    inventoryViewModel: InventoryViewModel = hiltViewModel(),
+    isConnected: MutableState<Boolean>,
+    showWarningDialog: MutableState<Boolean>
 ) {
     val expandedState = rememberSaveable { mutableStateOf(false) }
     val rotationState = animateFloatAsState(
         targetValue = if (expandedState.value) 180f else 0f
     )
+
     Card(
         colors = CardColors(
             containerColor = Color.White,
@@ -119,7 +121,9 @@ fun ExpandableCard(
                 }
                 IconButton(
                     onClick = {
+
                         expandedState.value = !expandedState.value
+
                     },
                     modifier = Modifier
                         .size(50.dp)
@@ -127,7 +131,7 @@ fun ExpandableCard(
                 ) {
                     Icon(
                         Icons.Default.ArrowDropDown,
-                        contentDescription = "Drop-Down Arrow"
+                        contentDescription = stringResource(R.string.drop_down_arrow)
                     )
                 }
             }
@@ -161,27 +165,34 @@ fun ExpandableCard(
                                 )
                                 Icon(
                                     Icons.Default.Edit,
-                                    contentDescription = "edit icon",
+                                    contentDescription = stringResource(R.string.edit_icon),
                                     modifier = Modifier
                                         .size(18.dp)
                                         .clickable {
-                                            inventoryItemId.value =
-                                                variant?.inventory_item_id.toString()
-                                            productQuantity.value =
-                                                variant?.inventory_quantity.toString()
-                                            inventoryViewModel.getInventoryItem(inventoryItemId.value)
-                                            showDialog.value = true
+                                            if (isConnected.value) {
+                                                inventoryItemId.value =
+                                                    variant?.inventory_item_id.toString()
+                                                productQuantity.value =
+                                                    variant?.inventory_quantity.toString()
+                                                inventoryViewModel.getInventoryItem(inventoryItemId.value)
+                                                showDialog.value = true
+                                            } else {
+                                                showWarningDialog.value = true
+                                            }
                                         },
                                 )
                             }
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Price: ${variant?.price} EGP",
+                                text = stringResource(R.string.price_egp, variant?.price ?: ""),
                                 fontSize = 16.sp,
                                 color = primaryColor
                             )
                             Text(
-                                text = "Quantity: ${variant?.inventory_quantity}",
+                                text = stringResource(
+                                    R.string.variantQuantity,
+                                    variant?.inventory_quantity ?: ""
+                                ),
                                 fontSize = 16.sp,
                                 color = Color.Gray
                             )

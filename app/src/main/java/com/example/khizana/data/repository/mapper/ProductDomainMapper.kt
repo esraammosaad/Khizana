@@ -22,17 +22,17 @@ fun Product.toDomain(): ProductDomain {
 fun ProductsItemEntity.toDomain(): ProductsItem {
     return ProductsItem(
         image = image?.toDomain(),
-        body_html = body_html,
+        body_html = bodyHtml,
         images = images?.map { it?.toDomain() },
-        created_at = created_at,
+        created_at = createdAt,
         variants = variants?.map { it?.toDomain() },
         title = title,
-        product_type = product_type,
-        updated_at = updated_at,
+        product_type = productType,
+        updated_at = updatedAt,
         vendor = vendor,
         options = options?.map { it.toDomain() },
         id = id,
-        published_at = published_at,
+        published_at = publishedAt,
         status = status,
         tags = tags
     )
@@ -42,7 +42,7 @@ fun ImageEntity.toDomain(): Image {
     return Image(
         src = src,
         alt = alt,
-        variant_ids = variant_ids,
+        variant_ids = variantIds,
     )
 }
 
@@ -50,7 +50,7 @@ fun ImagesItemEntity.toDomain(): ImagesItem {
     return ImagesItem(
         src = src,
         alt = alt,
-        variant_ids = variant_ids,
+        variant_ids = variantIds,
     )
 }
 
@@ -61,8 +61,8 @@ fun VariantsItemEntity.toDomain(): VariantsItem {
         option3 = option3,
         option1 = option1,
         option2 = option2,
-        inventory_quantity = inventory_quantity,
-        inventory_item_id = inventory_item_id
+        inventory_quantity = inventoryQuantity,
+        inventory_item_id = inventoryItemId
     )
 }
 

@@ -1,11 +1,11 @@
 package com.example.khizana.domain.model
 
 data class InventoryItemRequestDomain(
-    val inventory_item: InventoryItem
+    val inventoryItem: InventoryItem
 )
 
 data class InventoryItem(
-    val cost: String,
-    val tracked: Boolean
+    var cost: String,
+    var tracked: Boolean
 )
 

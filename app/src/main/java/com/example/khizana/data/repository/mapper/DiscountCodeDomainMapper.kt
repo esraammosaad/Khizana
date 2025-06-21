@@ -1,23 +1,23 @@
 package com.example.khizana.data.repository.mapper
 
 import com.example.khizana.data.dto.DiscountCode
-import com.example.khizana.data.dto.Discount_codesItemEntity
+import com.example.khizana.data.dto.DiscountCodesItemEntity
 import com.example.khizana.domain.model.DiscountCodeDomain
-import com.example.khizana.domain.model.Discount_codesItem
+import com.example.khizana.domain.model.DiscountCodesItem
 
 fun DiscountCode.toDomain(): DiscountCodeDomain {
     return DiscountCodeDomain(
-        discount_codes = discount_codes.map { it.toDomain() }
+        discountCodes = discountCodes.map { it.toDomain() }
     )
 }
 
-fun Discount_codesItemEntity.toDomain(): Discount_codesItem {
-    return Discount_codesItem(
-        usage_count = usage_count,
+fun DiscountCodesItemEntity.toDomain(): DiscountCodesItem {
+    return DiscountCodesItem(
+        usageCount = usageCount,
         code = code,
-        updated_at = updated_at,
-        price_rule_id = price_rule_id,
-        created_at = created_at,
+        updatedAt = updatedAt,
+        priceRuleId = priceRuleId,
+        createdAt = createdAt,
         id = id
     )
 }

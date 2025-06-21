@@ -1,13 +1,19 @@
 package com.example.khizana.data.dto
 
+import com.google.gson.annotations.SerializedName
+
 data class InventoryLevel(
-    val inventory_levels: List<Inventory_levelsItemEntity>
+    @SerializedName("inventory_levels")
+    val inventoryLevels: List<InventoryLevelsItemEntity>
 )
 
-data class Inventory_levelsItemEntity(
-    val updated_at: String,
-    val inventory_item_id: String,
-    val available: Int,
-    val location_id: String
+data class InventoryLevelsItemEntity(
+    @SerializedName("updated_at")
+    val updatedAt: String,
+    @SerializedName("inventory_item_id")
+    val inventoryItemId: String,
+    var available: Int,
+    @SerializedName("location_id")
+    val locationId: String
 )
 

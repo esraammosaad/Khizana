@@ -1,13 +1,13 @@
 package com.example.khizana.domain.model
 
 data class InventoryLevelDomain(
-    val inventory_levels: List<Inventory_levelsItem>
+    val inventoryLevels: List<InventoryLevelsItem>
 )
 
-data class Inventory_levelsItem(
-    val updated_at: String,
-    val inventory_item_id: String,
-    val available: Int,
-    val location_id: String
+data class InventoryLevelsItem(
+    val updatedAt: String,
+    val inventoryItemId: String,
+    var available: Int,
+    val locationId: String
 )
 

@@ -1,5 +1,3 @@
-import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
@@ -9,17 +7,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import com.example.khizana.R
-import com.example.khizana.domain.model.Prerequisite_to_entitlement_quantity_ratio
 import com.example.khizana.domain.model.PriceRuleRequestDomain
-import com.example.khizana.domain.model.PriceRule
+import com.example.khizana.domain.model.PriceRuleDomainRequest
 import com.example.khizana.domain.model.PriceRuleItem
 import com.example.khizana.presentation.feature.priceRules.view.components.CustomDiscountCard
 import com.example.khizana.presentation.feature.priceRules.viewModel.PriceRuleViewModel
@@ -32,7 +27,6 @@ import java.util.*
 
 @Composable
 fun AddPriceRuleScreen(
-    modifier: Modifier = Modifier,
     priceRuleViewModel: PriceRuleViewModel,
     priceRule: PriceRuleItem? = null,
     showBottomSheet: MutableState<Boolean>,
@@ -45,12 +39,8 @@ fun AddPriceRuleScreen(
     val titleValue = remember { mutableStateOf("") }
     val discountValue = remember { mutableStateOf("") }
 
-    val context = LocalContext.current
-
     val startDate = remember { mutableStateOf("Start Date") }
     val endDate = remember { mutableStateOf("End Date") }
-
-    val calendar = Calendar.getInstance()
 
     val discountType = remember { mutableStateOf("percentage") }
     val discountOptions = listOf("percentage", "fixed_amount")
@@ -72,10 +62,10 @@ fun AddPriceRuleScreen(
             title.value = priceRule.title
             titleValue.value = priceRule.title
             discountValue.value = priceRule.value
-            startDate.value = priceRule.starts_at.substring(0, 10)
-            endDate.value = priceRule.ends_at.substring(0, 10)
+            startDate.value = priceRule.startsAt.substring(0, 10)
+            endDate.value = priceRule.endsAt.substring(0, 10)
             barcode.value = priceRule.id
-            discountType.value = priceRule.value_type
+            discountType.value = priceRule.valueType
             if (discountType.value == "percentage") {
                 discount.value = "${priceRule.value}%"
             } else {
@@ -91,23 +81,13 @@ fun AddPriceRuleScreen(
                 text = stringResource(R.string.are_you_sure_you_want_to_save_this_coupon),
                 onConfirm = {
                     val rule = PriceRuleRequestDomain(
-                        price_rule = PriceRule(
-                            allocation_method = "each",
-                            prerequisite_to_entitlement_quantity_ratio = Prerequisite_to_entitlement_quantity_ratio(
-                                prerequisite_quantity = 2,
-                                entitled_quantity = 1
-                            ),
-                            value_type = discountType.value,
-                            starts_at = startDate.value,
-                            allocation_limit = 3,
-                            target_type = "line_item",
-                            entitled_product_ids = listOf("7379132088433"),
+                        priceRule = PriceRuleDomainRequest(
+                            valueType = discountType.value,
+                            startsAt = startDate.value,
+                            targetType = "line_item",
                             title = titleValue.value,
-                            customer_selection = "all",
-                            target_selection = "entitled",
-                            ends_at = endDate.value,
+                            endsAt = endDate.value,
                             value = discountValue.value,
-                            prerequisite_collection_ids = listOf("288621756529")
                         ),
                     )
                     if (!isEditable) {
