@@ -17,6 +17,7 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,7 +35,7 @@ import com.example.khizana.domain.model.ProductsItem
 @Composable
 fun CustomProductCard(
     modifier: Modifier,
-    it: ProductsItem?
+    it: ProductsItem?,
 ) {
     Card(
         modifier = modifier

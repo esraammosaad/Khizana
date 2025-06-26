@@ -15,11 +15,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -30,13 +32,13 @@ import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.NavigationRoutes
 import com.example.khizana.utilis.Response
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.khizana.R
 import com.example.khizana.domain.model.ProductsItem
 import com.example.khizana.presentation.feature.products.view.components.CustomDeleteIcon
 import com.example.khizana.presentation.feature.products.view.components.CustomProductCard
 import com.example.khizana.presentation.feature.products.view.components.CustomStatusBox
 import com.example.khizana.presentation.feature.products.view.components.CustomTextField
-import com.example.khizana.utilis.internet.InternetConnectivityViewModel
-import kotlinx.coroutines.delay
+import com.example.khizana.utilis.WarningDialog
 
 
 @Composable
@@ -44,7 +46,9 @@ fun ProductsScreen(
     modifier: Modifier = Modifier,
     productsViewModel: ProductsViewModel = hiltViewModel(),
     navigationController: NavHostController,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    isConnected: MutableState<Boolean>,
+    onConfirmation: () -> Unit
 ) {
 
     val products = productsViewModel.products.collectAsStateWithLifecycle().value
@@ -52,6 +56,7 @@ fun ProductsScreen(
     val selectedProduct = remember { mutableStateOf("") }
     val searchText = rememberSaveable { mutableStateOf("") }
     val searchResult = rememberSaveable { mutableStateOf(emptyList<ProductsItem>()) }
+    val showWarningDialog = rememberSaveable { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -77,6 +82,13 @@ fun ProductsScreen(
         onDismiss = {
             showDialog.value = false
         }
+    )
+    WarningDialog(
+        onConfirmation = onConfirmation,
+        dialogText = stringResource(R.string.there_is_no_internet_connection_you_can_t_add_anything_right_now),
+        dialogTitle = stringResource(R.string.warning),
+        confirmText = stringResource(R.string.wifi_settings),
+        showAlert = showWarningDialog
     )
     Column(
         modifier = Modifier
@@ -128,7 +140,9 @@ fun ProductsScreen(
                                 modifier = Modifier.align(Alignment.TopStart),
                                 showDialog,
                                 selectedProduct,
-                                it
+                                it,
+                                isConnected,
+                                showWarningDialog
                             )
                         }
                     }

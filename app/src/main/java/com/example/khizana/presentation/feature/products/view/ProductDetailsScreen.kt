@@ -38,6 +38,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,6 +65,7 @@ import com.example.khizana.ui.theme.secondaryColor
 import com.example.khizana.utilis.CustomDivider
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.Response
+import com.example.khizana.utilis.WarningDialog
 import kotlinx.coroutines.delay
 
 
@@ -73,8 +75,11 @@ fun ProductDetailsScreen(
     productId: String,
     productsViewModel: ProductsViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState,
-    navigationController: NavController
-) {
+    navigationController: NavController,
+    isConnected: Boolean,
+    onConfirmation: () -> Unit,
+
+    ) {
     LaunchedEffect(Unit) {
         productsViewModel.getProductById(productId = productId)
         productsViewModel.message.collect {
@@ -97,6 +102,14 @@ fun ProductDetailsScreen(
         }
     }
     val showBottomSheet = remember { mutableStateOf(false) }
+    val showWarningDialog = rememberSaveable { mutableStateOf(false) }
+    WarningDialog(
+        onConfirmation = onConfirmation,
+        dialogText = stringResource(R.string.there_is_no_internet_connection_you_can_t_add_anything_right_now),
+        dialogTitle = stringResource(R.string.warning),
+        confirmText = stringResource(R.string.wifi_settings),
+        showAlert = showWarningDialog
+    )
     Box {
         LazyColumn(
             Modifier
@@ -333,7 +346,11 @@ fun ProductDetailsScreen(
         }
         FloatingActionButton(
             onClick = {
-                showBottomSheet.value = true
+                if (isConnected) {
+                    showBottomSheet.value = true
+                } else {
+                    showWarningDialog.value = true
+                }
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)

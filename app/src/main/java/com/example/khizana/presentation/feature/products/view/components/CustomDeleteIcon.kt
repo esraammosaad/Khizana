@@ -25,7 +25,9 @@ fun CustomDeleteIcon(
     modifier: Modifier,
     showDialog: MutableState<Boolean>,
     selectedProduct: MutableState<String>,
-    it: ProductsItem?
+    it: ProductsItem?,
+    isConnected: MutableState<Boolean>,
+    showWarningDialog: MutableState<Boolean>
 ) {
     Box(
         modifier = modifier
@@ -44,8 +46,12 @@ fun CustomDeleteIcon(
             modifier = Modifier
                 .size(20.dp)
                 .clickable {
-                    showDialog.value = true
-                    selectedProduct.value = it?.id ?: ""
+                    if (isConnected.value) {
+                        showDialog.value = true
+                        selectedProduct.value = it?.id ?: ""
+                    } else {
+                        showWarningDialog.value = true
+                    }
                 }
         )
     }
