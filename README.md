@@ -64,7 +64,7 @@
   - ViewModels
   - Use Cases
   - Repositories
-  - Utility classes (search, helpers, etc.)
+  - Local & Remote Data Sources
 
 ---
 
