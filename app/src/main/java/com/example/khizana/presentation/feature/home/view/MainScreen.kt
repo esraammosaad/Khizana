@@ -198,7 +198,9 @@ fun MainScreen(
                     1 -> {
                         return@Column ProductsScreen(
                             snackBarHostState = snackBarHostState,
-                            navigationController = navigationController
+                            navigationController = navigationController,
+                            isConnected = isConnected,
+                            onConfirmation = onConfirmation
                         )
 
                     }
@@ -215,7 +217,9 @@ fun MainScreen(
                     3 -> {
                         return@Column PriceRules(
                             snackBarHostState = snackBarHostState,
-                            navigationController = navigationController
+                            navigationController = navigationController,
+                            isConnected = isConnected,
+                            onConfirmation = onConfirmation
                         )
 
                     }

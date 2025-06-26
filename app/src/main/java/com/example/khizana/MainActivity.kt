@@ -109,7 +109,9 @@ class MainActivity : ComponentActivity() {
                     ProductDetailsScreen(
                         productId = id,
                         snackBarHostState = snackBarHostState,
-                        navigationController = navigationController
+                        navigationController = navigationController,
+                        isConnected = isConnected.value,
+                        onConfirmation = onConfirmation.value
                     )
                 }
                 composable<NavigationRoutes.DiscountCodesScreen> { backStackEntry ->

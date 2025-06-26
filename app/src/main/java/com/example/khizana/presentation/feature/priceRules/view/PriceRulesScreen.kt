@@ -14,14 +14,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.example.khizana.R
 import com.example.khizana.domain.model.PriceRuleDomain
 import com.example.khizana.domain.model.PriceRuleItem
 import com.example.khizana.presentation.feature.priceRules.view.components.DiscountCard
@@ -30,6 +33,7 @@ import com.example.khizana.utilis.ConfirmationDialog
 import com.example.khizana.utilis.CustomLoadingIndicator
 import com.example.khizana.utilis.NavigationRoutes
 import com.example.khizana.utilis.Response
+import com.example.khizana.utilis.WarningDialog
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,7 +41,9 @@ import com.example.khizana.utilis.Response
 fun PriceRules(
     priceRuleViewModel: PriceRuleViewModel = hiltViewModel(),
     navigationController: NavHostController,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
+    isConnected: MutableState<Boolean>,
+    onConfirmation: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         priceRuleViewModel.getAllPriceRules()
@@ -50,12 +56,21 @@ fun PriceRules(
     val selectedPriceRule = remember { mutableStateOf("") }
     val showBottomSheet = remember { mutableStateOf(false) }
     val priceRule: MutableState<PriceRuleItem?> = remember { mutableStateOf(null) }
+    val showWarningDialog = rememberSaveable { mutableStateOf(false) }
+
 
     PartialPriceRuleBottomSheet(
         showBottomSheet = showBottomSheet,
         priceRuleViewModel = priceRuleViewModel,
         priceRule = priceRule.value,
         isEditable = true
+    )
+    WarningDialog(
+        onConfirmation = onConfirmation,
+        dialogText = stringResource(R.string.there_is_no_internet_connection_you_can_t_add_anything_right_now),
+        dialogTitle = stringResource(R.string.warning),
+        confirmText = stringResource(R.string.wifi_settings),
+        showAlert = showWarningDialog
     )
     LazyColumn(
         Modifier
@@ -72,11 +87,15 @@ fun PriceRules(
                         modifier = Modifier
                             .animateItem()
                             .clickable {
-                                navigationController.navigate(
-                                    NavigationRoutes.DiscountCodesScreen(
-                                        priceRules.result?.priceRules?.get(it)?.id ?: ""
+                                if (isConnected.value) {
+                                    navigationController.navigate(
+                                        NavigationRoutes.DiscountCodesScreen(
+                                            priceRules.result?.priceRules?.get(it)?.id ?: ""
+                                        )
                                     )
-                                )
+                                } else {
+                                    showWarningDialog.value = true
+                                }
                             }
                     ) {
                         Box(contentAlignment = Alignment.TopEnd) {
@@ -91,9 +110,13 @@ fun PriceRules(
                                 endAt = priceRules.result?.priceRules?.get(it)?.endsAt ?: "",
                                 modifier = Modifier.animateItem(),
                                 onDeleteIconClicked = {
-                                    selectedPriceRule.value =
-                                        priceRules.result?.priceRules?.get(it)?.id ?: ""
-                                    showDialog.value = true
+                                    if (isConnected.value) {
+                                        selectedPriceRule.value =
+                                            priceRules.result?.priceRules?.get(it)?.id ?: ""
+                                        showDialog.value = true
+                                    } else {
+                                        showWarningDialog.value = true
+                                    }
                                 }
                             )
                             Text(
@@ -102,8 +125,12 @@ fun PriceRules(
                                 modifier = Modifier
                                     .padding(end = 32.dp, top = 16.dp)
                                     .clickable {
-                                        priceRule.value = priceRules.result?.priceRules?.get(it)
-                                        showBottomSheet.value = true
+                                        if (isConnected.value) {
+                                            priceRule.value = priceRules.result?.priceRules?.get(it)
+                                            showBottomSheet.value = true
+                                        } else {
+                                            showWarningDialog.value = true
+                                        }
                                     },
                                 fontSize = 16.sp
                             )
