@@ -67,13 +67,18 @@
   - Local & Remote Data Sources
 
 ---
+## Mockup
+
+<img width="1600" height="1200" alt="Mockup 01 (1)" src="https://github.com/user-attachments/assets/00443496-b454-4ec5-a834-a034e49a6687" />
+
+## Demo
+
+https://github.com/user-attachments/assets/d3871259-adfa-4862-a958-5c613dc30c11
 
 ## Overview about Khizana
 
 https://github.com/user-attachments/assets/e019ab93-7987-4776-b3fa-3e4d4caa30ab
 
-## Mockup
 
-<img width="1600" height="1200" alt="Mockup 01 (1)" src="https://github.com/user-attachments/assets/00443496-b454-4ec5-a834-a034e49a6687" />
 
 
